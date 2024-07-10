@@ -11,20 +11,20 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
-                   
+
 
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
                                 @if (count($todoList) > 0)
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-center"">
+                                        <th scope="col" class="px-6 py-3 text-center">
                                             {{ __('Titulo') }}
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-center"">
+                                        <th scope="col" class="px-6 py-3 text-center">
                                             {{ __(' Descrição') }}
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-center"">
+                                        <th scope="col" class="px-6 py-3 text-center">
                                             {{ __(' Status da atividade') }}
                                         </th>
 
@@ -56,8 +56,7 @@
                                         </td>
 
                                         <td class="px-7 py-8 text-center" id="outros">
-                                            <button
-                                                class="bg-green-500  text-white font-bold py-2 px-4 rounded">
+                                            <button class="bg-green-500  text-white font-bold py-2 px-4 rounded">
 
                                                 <a href="{{ route('todoEdit', $todosLists->id) }}"
                                                     class="group inline-flex items-center hover:text-gray-700 dark:hover:text-black "
