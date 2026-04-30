@@ -25,9 +25,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    $users = Todo::paginate(15);
- 
-    $users->withPath('/auth/todo');
+    // $users = Todo::paginate(15);
+
+    // $users->withPath('/auth/todo');
     Route::get('/todo', [TodoController::class, 'index'])->name('todo');
     Route::get('/show/{id}', [TodoController::class, 'show'])->name('showTodo');
     Route::post('/store', [TodoController::class, 'store'])->name('todoStore');
@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
 });
 
 
