@@ -1,57 +1,47 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SkyFlow 🚀 
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <a href="https://laravel.com" target="_blank">
+    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="300" alt="Laravel Logo">
+  </a>
 </p>
 
-SISTEMA SIMPLES PARA CADASTRAMENTO DE USUARIOS E USABILIDADE DE CRIAÇÃO DE ATIVIDADES, FEITO EM LARAVEL E UTILIZANDO TECNOLOGIAS FRONT-END COMO VITE, 
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-10.x-red?style=for-the-badge&logo=laravel" alt="Laravel Version">
+  <img src="https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge&logo=php" alt="PHP Version">
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="Postgres">
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite">
+</p>
 
- para o bom funcionamento do sistema deve-se instalar os pacotes necessarios do laravel como manda na documentação, 
+O **SkyFlow** é uma solução moderna e robusta para gestão de fluxos de produtividade pessoal. Este projeto integra a **Coleção Sky**, uma série de aplicações modulares desenvolvidas para demonstrar competências avançadas em arquitetura de software, segurança e escalabilidade no ecossistema Laravel.
 
- php  8.1 (pode ser separado ou então com o wampp server ou xampp, o que for mais viavel )
- Laravel  10X
-   
-     
-1.1 instalações necessárias
+## 🛠️ Tecnologias e Stack
+* **Backend:** Laravel 10.x (PHP 8.1+)
+* **Frontend:** Blade + TailwindCSS + Livewire (Stack Laravel Breeze)
+* **Banco de Dados:** PostgreSQL (Identidade: **SkyFlowDB**)
+* **Bundler:** Vite ⚡
+* **Ícones:** Font Awesome (Integrado via NPM)
 
-        
-         composer
-         npm 
-         node versão atual 
-         vite
-         fonteaewsome    
-         breezer-larvel
-        se der algum erro de drive
-        
-        ativar o drive no php. ini  
-        
-        extension=pdo_pgsql
+## 🌟 Diferenciais Técnicos (Nível Sênior)
+* **Arquitetura de Segurança:** Autenticação completa e gestão de sessões via Laravel Breeze.
+* **Persistência Profissional:** Configuração otimizada para PostgreSQL, utilizando drivers nativos para alta performance.
+* **Gestão de Dependências:** Controle rigoroso de assets via NPM e Vite para carregamento otimizado.
+* **Resiliência:** Preparado para implementação de Service Patterns e DTOs (Data Transfer Objects).
 
+## 🚀 Instalação e Configuração
 
-1.1 para executar o projeto deve-se usar o npm e também o php artisan server e as migrations do laravel, no terminal execute 
+### 1. Requisitos do Sistema
+* PHP >= 8.1 (Habilitar extensão `pdo_pgsql` no `php.ini`)
+* Composer e Node.js (Versão LTS atual)
 
-    1.1   composer global require laravel/installer  OU      laravel new example-app  (caso já não tenha instalado o laravel na maquina)
-       
-        
-         criar à base de dados do sistema: gerenciamento_tarefas
-         rodas às migrations : php artisan migrate
-         instalar fonteawesome :  npm install @fortawesome/fontawesome-free       
-          
-           se tiver necessidade instalar também o laravel breezer dentro do projeto já clonado em maquina
-           composer require laravel/breeze --dev  
-           escolher a versao com blade e livewire tailwindcss       
-         
-         npm run build or npm run dev
-         php artisan serve
+### 2. Passo a Passo Local
+```bash
+# Clone o repositório
+git clone [https://github.com/portuga02/SkyFlow.git](https://github.com/portuga02/SkyFlow.git)
 
-2 para usar o sistema primeiro 
+# Instale as dependências
+composer install
+npm install
 
-        deve-se cadastrar na tela de login e 
-        depois fazer o login com o email cadastrado 
-         
-3 importante
-
-         ver as configurações no .env se está de acordo com sua maquina local
+# Configure o ambiente
+cp .env.example .env
