@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\TodoRequest;
 use App\Models\Todo;
 use Symfony\Component\HttpFoundation\Response;
-use App\Http\Controllers\Controller;
-
 
 class TodoController extends Controller
 {
     public function index()
     {
-        $todoList = Todo::all();
-        return view('auth.todo', [
-            'todoList' => $todoList
-        ]);
+        // Usar latest() garante que as tarefas mais novas apareçam primeiro
+        $todoList = Todo::latest()->get();
+
+        return view('auth.todo', compact('todoList'));
     }
+
     public function create()
     {
         return view('auth.create-todo');
@@ -25,120 +23,91 @@ class TodoController extends Controller
 
     public function store(TodoRequest $request)
     {
-
         try {
+            // Criação limpa pegando apenas os dados validados pelo TodoRequest
             Todo::create([
-                'title' => $request->title,
-                'description' => $request->description,
-                'is_completed' => 0,
-
+                ...$request->validated(),
+                'is_completed' => false,
             ]);
 
-            $request->session()->flash('alert-success', 'Item criado com sucesso');
+            return to_route('todos.index')
+                ->with('alert-success', 'Atividade criada com sucesso!');
 
-            return to_route('todoCreate');
         } catch (\Throwable $th) {
             return response()->json([
-                'info' => 'error',
-                'result' => 'Não foi possível capturar os dados do usuário!.',
-                'error' => $th->getMessage(),
-                'Linha' => $th->getLine(),
-                'Arquivo' => $th->getFile()
-            ], Response::HTTP_BAD_REQUEST);
+                'status'  => 'error',
+                'message' => 'Não foi possível criar a atividade.',
+                'error'   => $th->getMessage(),
+                'file'    => $th->getFile(),
+                'line'    => $th->getLine()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function show($id)
+
+    // O Laravel já injeta o $todo automaticamente por causa da URL /{todo}
+    public function show(Todo $todo)
     {
         try {
-            $todo = Todo::find($id);
+            return view('auth.showTodo', compact('todo'));
 
-            if (!$todo) {
-                request()->session()->flash('alert-error', 'O item não pode ser criado com sucesso. Por favor, tente novamente');
-                return to_route('todo')->withErrors([
-                    'error' => 'error no sistema'
-                ]);
-            }
-            request()->session()->flash('alert-success', 'Item criado com sucesso');
-            return view('auth.showTodo', ['todo' => $todo]);
         } catch (\Throwable $th) {
             return response()->json([
-                'info' => 'error',
-                'result' => 'Não foi possível capturar os dados do usuário tente novamente!.',
-                'error' => $th->getMessage(),
-                'Linha' => $th->getLine(),
-                'Arquivo' => $th->getFile()
-            ], Response::HTTP_BAD_REQUEST);
+                'status'  => 'error',
+                'message' => 'Não foi possível carregar os dados.',
+                'error'   => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function editTodo($id)
-    {
-
-        try {
-            $todo = Todo::find($id);
-            if (!$todo) {
-                request()->session()->flash('alert-error', 'EXISTE UM ERRO NA LISTA');
-                return to_route('todo')->withErrors([
-                    'error' => 'EXISTE UM ERRO NA LISTA'
-                ]);
-            }
-            request()->session()->flash('alert-success', 'Item foi editado com sucesso');
-            return view('auth.edit-todo', ['todo' => $todo]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'info' => 'error',
-                'result' => 'Não foi possível capturar os dados do usuário!.',
-                'error' => $th->getMessage(),
-                'Linha' => $th->getLine(),
-                'Arquivo' => $th->getFile()
-            ], Response::HTTP_BAD_REQUEST);
-        }
-    }
-
-    public function update(TodoRequest $request)
+    // Mudei o nome de 'editTodo' para 'edit' (Padrão absoluto do mercado)
+    public function edit(Todo $todo)
     {
         try {
-            $todo = Todo::find($request->todo_id);
+            return view('auth.edit-todo', compact('todo'));
 
-            if (!$todo) {
-                request()->session()->flash('alert-error', 'Não conseguimos atualiza sua atividade. Por favor, tente novamente');
-                return to_route('todo')->withErrors([
-                    'error' => 'Existe um erro que deve ser avaliado.'
-                ]);
-            }
-            $todo->update([
-                'title' => $request->title,
-                'description' => $request->description,
-                'is_completed' => $request->is_completed
-            ]);
-            request()->session()->flash('alert-success', 'Item atualizado com sucesso');
-
-            return view('auth.showTodo', ['todo' => $todo]);
         } catch (\Throwable $th) {
             return response()->json([
-                'info' => 'error',
-                'result' => 'Não foi possível capturar os dados do usuário!.',
-                'error' => $th->getMessage(),
-                'Linha' => $th->getLine(),
-                'Arquivo' => $th->getFile()
-            ], Response::HTTP_BAD_REQUEST);
+                'status'  => 'error',
+                'message' => 'Erro ao abrir a tela de edição.',
+                'error'   => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function dropTodo(Request $request)
+    public function update(TodoRequest $request, Todo $todo)
     {
+        try {
+            // Atualiza direto no modelo injetado
+            $todo->update($request->validated());
 
-        $todo = Todo::find($request->todo_id);
+            return to_route('todos.show', $todo->id)
+                ->with('alert-success', 'Atividade atualizada com sucesso!');
 
-        if (!$todo) {
-            request()->session()->flash('error', 'Não foi possivel deletar o item existente');
-            return to_route('todo')->withErrors([
-                'error' => 'EXISTE UM ERRO NA LISTA'
-            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Não foi possível atualizar a atividade.',
+                'error'   => $th->getMessage(),
+                'file'    => $th->getFile(),
+                'line'    => $th->getLine()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
 
-        $todo->delete();
-        $request->session()->flash('alert-success', 'Item deletado com sucesso');
-        return to_route('todo');
+    public function destroy(Todo $todo)
+    {
+        try {
+            $todo->delete();
+
+            return to_route('todos.index')
+                ->with('alert-success', 'Atividade deletada com sucesso!');
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Não foi possível deletar o item.',
+                'error'   => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
