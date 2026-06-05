@@ -2,19 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TodoController;
-use App\Models\Todo;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::get('/', function () {
     return view('auth.login');
@@ -25,24 +13,26 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // $users = Todo::paginate(15);
 
-    // $users->withPath('/auth/todo');
-    Route::get('/todo', [TodoController::class, 'index'])->name('todo');
-    Route::get('/show/{id}', [TodoController::class, 'show'])->name('showTodo');
-    Route::post('/store', [TodoController::class, 'store'])->name('todoStore');
-    Route::get('/create-todo', [TodoController::class, 'create'])->name('todoCreate');
-    Route::get('/{id}/edit-todo', [TodoController::class, 'editTodo'])->name('todoEdit');
-    Route::put('/update-todo', [TodoController::class, 'update'])->name('todoUpdate');
-    Route::delete('/drop-Todo', [TodoController::class, 'dropTodo'])->name('todoDestroy');
+    // 👤 Rotas do Profile (Breeze) - Voltou ao normal (sem o {todo})
+    Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', 'edit')->name('edit');
+        Route::patch('/', 'update')->name('update');
+        Route::delete('/', 'destroy')->name('destroy');
+    });
+
+    // 🚀 Rotas do SkyFlow (Tarefas) - Padrão REST puro!
+    Route::controller(TodoController::class)->prefix('todos')->name('todos.')->group(function () {
+        Route::get('/', 'index')->name('index');             // todos.index
+        Route::get('/create', 'create')->name('create');     // todos.create
+        Route::post('/', 'store')->name('store');            // todos.store
+        Route::get('/{todo}', 'show')->name('show');         // todos.show
+
+        // As duas rotas abaixo agora apontam para os métodos corretos do novo Controller!
+        Route::get('/{todo}/edit', 'edit')->name('edit');    // todos.edit
+        Route::put('/{todo}', 'update')->name('update');     // todos.update
+        Route::delete('/{todo}', 'destroy')->name('destroy');// todos.destroy
+    });
 });
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-});
-
 
 require __DIR__ . '/auth.php';
