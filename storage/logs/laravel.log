@@ -279,3 +279,67 @@ Stack trace:
 #62 C:/Users/savio/Downloads/SkyFlow-master/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('...')
 #63 {main}
 "} 
+[2026-08-06 01:52:11] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-08-06 01:52:12] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-08-06 01:52:12] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-08-06 01:52:14] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-08-06 01:52:14] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-08-06 01:52:14] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-08-06 01:52:14] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-08-06 01:52:14] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 

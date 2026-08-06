@@ -13,24 +13,28 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <style>[x-cloak] { display: none !important; }</style>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gradient-to-b from-brand-50 via-white to-brand-50">
-            @include('layouts.navigation')
+        <div class="min-h-screen flex bg-gradient-to-b from-brand-50 via-white to-brand-50">
 
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="bg-white/70 backdrop-blur border-b border-brand-100">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif
+            @include('layouts.sidebar')
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+            <div class="flex-1 min-w-0">
+                <!-- Page Heading -->
+                @if (isset($header))
+                    <header class="bg-white/70 backdrop-blur border-b border-brand-100">
+                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                            {{ $header }}
+                        </div>
+                    </header>
+                @endif
+
+                <!-- Page Content -->
+                <main>
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
     </body>
 </html>

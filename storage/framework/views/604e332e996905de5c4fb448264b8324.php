@@ -13,27 +13,30 @@
 
         <!-- Scripts -->
         <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
+        <style>[x-cloak] { display: none !important; }</style>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gradient-to-b from-brand-50 via-white to-brand-50">
-            <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <div class="min-h-screen flex bg-gradient-to-b from-brand-50 via-white to-brand-50">
 
-            <!-- Page Heading -->
-            <?php if(isset($header)): ?>
-                <header class="bg-white/70 backdrop-blur border-b border-brand-100">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        <?php echo e($header); ?>
+            <?php echo $__env->make('layouts.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-                    </div>
-                </header>
-            <?php endif; ?>
+            <div class="flex-1 min-w-0">
+                <!-- Page Heading -->
+                <?php if(isset($header)): ?>
+                    <header class="bg-white/70 backdrop-blur border-b border-brand-100">
+                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                            <?php echo e($header); ?>
 
-            <!-- Page Content -->
-            <main>
-                <?php echo e($slot); ?>
+                        </div>
+                    </header>
+                <?php endif; ?>
 
-            </main>
+                <!-- Page Content -->
+                <main>
+                    <?php echo e($slot); ?>
+
+                </main>
+            </div>
         </div>
     </body>
-</html>
-<?php /**PATH C:\Workspace\SkyFlow\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\Workspace\SkyFlow\resources\views/layouts/app.blade.php ENDPATH**/ ?>
