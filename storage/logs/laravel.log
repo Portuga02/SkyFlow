@@ -355,3 +355,27 @@ Stack trace:
 #7 Command line code(1): Illuminate/Foundation/Console/Kernel->handle()
 #8 {main}
 "} 
+[2026-08-06 15:42:28] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-08-06 15:42:31] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-08-06 15:42:33] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
