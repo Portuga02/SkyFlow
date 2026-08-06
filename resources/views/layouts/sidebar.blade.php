@@ -4,7 +4,7 @@
     };
 @endphp
 
-<aside x-data="{ mobileOpen: false }" class="lg:w-64 shrink-0">
+<aside x-data="{ mobileOpen: false }" class="w-full lg:w-64 shrink-0 z-40">
 
     <!-- Mobile top bar -->
     <div

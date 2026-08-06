@@ -16,7 +16,7 @@
         <style>[x-cloak] { display: none !important; }</style>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen flex bg-gradient-to-b from-brand-50 via-white to-brand-50">
+      <div class="min-h-screen flex flex-col lg:flex-row bg-gradient-to-b from-brand-50 via-white to-brand-50">
 
             @include('layouts.sidebar')
 
