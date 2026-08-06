@@ -1,73 +1,71 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-
-        </h2>
+        <div>
+            <h2 class="font-extrabold text-2xl text-brand-950 leading-tight">
+                {{ __('Nova Tarefa') }}
+            </h2>
+            <p class="text-sm text-brand-600 mt-1">{{ __('Descreva o que precisa ser feito.') }}</p>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                @if (session('alert-success'))
-                    <div class="bg-indigo-900 text-center py-4 lg:px-4">
-                        <div class="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex"
-                            role="alert">
-                            <span
-                                class="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">Sucesso</span>
-                            <span
-                                class="font-semibold mr-2 text-left flex-auto">{{ __('Atividade Criada com sucesso') }}</span>
-                            <svg class="fill-current opacity-75 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20">
-                                <path
-                                    d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z" />
-                            </svg>
-                        </div>
-                    </div>
-                @endif
-                <div class="p-6 text-gray-900">
+    <div class="py-10">
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
 
-                    <h3 class="font-semibold text-xl text-gray-800 leading-tight">
-                        {{ 'Adicionar um novo Item' }}
+            @if (session('alert-success'))
+                <div class="mb-6 animate-fade-in flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800 shadow-sm">
+                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                    <span class="text-sm font-medium">{{ session('alert-success') }}</span>
+                </div>
+            @endif
+
+            <div class="bg-white rounded-2xl shadow-card border border-brand-50 overflow-hidden">
+                <div class="px-6 pt-6 pb-2 flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-brand-100 flex items-center justify-center text-brand-600">
+                        <i class="fa-solid fa-circle-plus"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-brand-950">
+                        {{ __('Adicionar um novo item') }}
                     </h3>
                 </div>
 
                 @if ($errors->any())
-                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" role="alert">
-
-                        <ul>
+                    <div class="mx-6 mt-3 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3" role="alert">
+                        <ul class="text-sm text-rose-700 space-y-1">
                             @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
+                                <li><i class="fa-solid fa-circle-exclamation mr-1"></i>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
                 @endif
-                <form method="POST" action="{{ route('todoStore') }}">
+
+                <form method="POST" action="{{ route('todos.store') }}" class="p-6 space-y-5">
                     @csrf
 
-                    <div class="p-6">
-                        <x-input-label class="form-label"> {{ 'Titulo' }}
-                            <x-text-input id="title" class="block mt-1 w-full" type="text" name="title" />
-                        </x-input-label>
-
-
-                        <x-input-label for="message"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('Mensagem') }}
-                        </x-input-label>
-                        <textarea id="message" name="description" rows="4"
-                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 ">
-                        </textarea>
-                        <div class="flex justify-end mt-4">
-                            <button  class="bg-blue-500  text-white font-bold py-2 px-4 rounded">
-                                
-                                
-                                <i class="fa-solid fa-floppy-disk fa-lg"></i>
-                            </button>
-                        </div>
+                    <div>
+                        <x-input-label for="title">{{ __('Título') }}</x-input-label>
+                        <x-text-input id="title" class="block w-full" type="text" name="title"
+                            placeholder="{{ __('Ex: Enviar relatório semanal') }}" value="{{ old('title') }}" required autofocus />
                     </div>
 
+                    <div>
+                        <x-input-label for="message">{{ __('Descrição') }}</x-input-label>
+                        <textarea id="message" name="description" rows="4"
+                            placeholder="{{ __('Detalhe a atividade...') }}"
+                            class="block p-3 w-full text-sm text-gray-900 bg-white rounded-lg border border-brand-200 focus:ring-brand-500 focus:border-brand-500">{{ old('description') }}</textarea>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-2">
+                        <a href="{{ route('todos.index') }}"
+                            class="inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 transition">
+                            {{ __('Cancelar') }}
+                        </a>
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg shadow-soft transition">
+                            <i class="fa-solid fa-floppy-disk"></i> {{ __('Salvar tarefa') }}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
-
 </x-app-layout>
