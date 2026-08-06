@@ -42,4 +42,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Categorias criadas por este usuário.
+     */
+    public function categories()
+    {
+        return $this->hasMany(\App\Models\Category::class);
+    }
 }
