@@ -18,15 +18,14 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            // Auto-relacionamento: permite criar subcategorias
             $table->foreignId('parent_id')
                 ->nullable()
                 ->constrained('categories')
                 ->nullOnDelete();
 
             $table->string('name');
-            $table->string('color', 7)->default('#0c8fe6'); // hex color (tema brand-500)
-            $table->string('icon')->default('fa-solid fa-layer-group'); // classe do Font Awesome
+            $table->string('color', 7)->default('#0c8fe6'); 
+            $table->string('icon')->default('fa-solid fa-layer-group'); 
 
             $table->timestamps();
         });

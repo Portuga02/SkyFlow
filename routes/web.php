@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TodoController;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('/', 'destroy')->name('destroy');
     });
 
-    // 🚀 Rotas do SkyFlow (Tarefas) - Padrão REST puro!
     Route::controller(TodoController::class)->prefix('todos')->name('todos.')->group(function () {
         Route::get('/', 'index')->name('index');             // todos.index
         Route::get('/create', 'create')->name('create');     // todos.create
@@ -33,6 +33,16 @@ Route::middleware('auth')->group(function () {
         Route::put('/{todo}', 'update')->name('update');     // todos.update
         Route::patch('/{todo}/toggle', 'toggle')->name('toggle'); // todos.toggle
         Route::delete('/{todo}', 'destroy')->name('destroy');// todos.destroy
+    });
+
+
+    Route::controller(CategoryController::class)->prefix('categories')->name('categories.')->group(function () {
+        Route::get('/', 'index')->name('index');                 // categories.index
+        Route::get('/create', 'create')->name('create');         // categories.create
+        Route::post('/', 'store')->name('store');                // categories.store
+        Route::get('/{category}/edit', 'edit')->name('edit');    // categories.edit
+        Route::put('/{category}', 'update')->name('update');     // categories.update
+        Route::delete('/{category}', 'destroy')->name('destroy');// categories.destroy
     });
 });
 
