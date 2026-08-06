@@ -132,41 +132,41 @@ php artisan serve
 ---
 
 ## 📂 Estrutura relevante do projeto
-app/
-├── Http/
-│ ├── Controllers/
-│ │ ├── TodoController.php
-│ │ ├── CategoryController.php
-│ │ └── ProfileController.php
-│ └── Requests/
-│ ├── TodoRequest.php
-│ └── CategoryRequest.php
-└── Models/
-├── Todo.php
-├── Category.php
-└── User.php
+  - app/
+  ├── Http/
+  │ ├── Controllers/
+  │ │ ├── TodoController.php
+  │ │ ├── CategoryController.php
+  │ │ └── ProfileController.php
+  │ └── Requests/
+  │ ├── TodoRequest.php
+  │ └── CategoryRequest.php
+  └── Models/
+  ├── Todo.php
+  ├── Category.php
+  └── User.php
 
-resources/views/
-├── layouts/
-│ ├── app.blade.php
-│ ├── guest.blade.php
-│ └── sidebar.blade.php
-├── auth/
-│ ├── todo.blade.php
-│ ├── create-todo.blade.php
-│ ├── edit-todo.blade.php
-│ └── showTodo.blade.php
-├── categories/
-│ ├── index.blade.php
-│ ├── create.blade.php
-│ └── edit.blade.php
-├── components/ # x-primary-button, x-text-input, etc.
-└── dashboard.blade.php
+  - resources/views/
+  ├── layouts/
+  │ ├── app.blade.php
+  │ ├── guest.blade.php
+  │ └── sidebar.blade.php
+  ├── auth/
+  │ ├── todo.blade.php
+  │ ├── create-todo.blade.php
+  │ ├── edit-todo.blade.php
+  │ └── showTodo.blade.php
+  ├── categories/
+  │ ├── index.blade.php
+  │ ├── create.blade.php
+  │ └── edit.blade.php
+  ├── components/ # x-primary-button, x-text-input, etc.
+  └── dashboard.blade.php
 
-database/migrations/
-├── create_todos_table.php
-├── create_categories_table.php
-└── add_category_id_to_todos_table.php
+  database/migrations/
+  ├── create_todos_table.php
+  ├── create_categories_table.php
+  └── add_category_id_to_todos_table.php
 
 
 ---
