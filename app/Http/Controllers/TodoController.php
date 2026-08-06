@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TodoRequest;
 use App\Models\Todo;
+use App\Models\Category; // Importando o model de Categorias
 use Symfony\Component\HttpFoundation\Response;
 
 class TodoController extends Controller
@@ -18,29 +19,30 @@ class TodoController extends Controller
 
     public function create()
     {
-        return view('auth.create-todo');
+        // Buscando todas as categorias para preencher o select no form
+        $categories = Category::all();
+        return view('auth.create-todo', compact('categories'));
     }
 
     public function store(TodoRequest $request)
     {
         try {
-            // Criação limpa pegando apenas os dados validados pelo TodoRequest
-            Todo::create([
-                ...$request->validated(),
-                'is_completed' => false,
-            ]);
+            // Unindo os dados validados com o status inicial usando array_merge e sintaxe array()
+            $data = array_merge($request->validated(), array('is_completed' => false));
+            
+            Todo::create($data);
 
             return to_route('todos.index')
                 ->with('alert-success', 'Atividade criada com sucesso!');
 
         } catch (\Throwable $th) {
-            return response()->json([
+            return response()->json(array(
                 'status'  => 'error',
                 'message' => 'Não foi possível criar a atividade.',
                 'error'   => $th->getMessage(),
                 'file'    => $th->getFile(),
                 'line'    => $th->getLine()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -51,11 +53,11 @@ class TodoController extends Controller
             return view('auth.showTodo', compact('todo'));
 
         } catch (\Throwable $th) {
-            return response()->json([
+            return response()->json(array(
                 'status'  => 'error',
                 'message' => 'Não foi possível carregar os dados.',
                 'error'   => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -63,14 +65,16 @@ class TodoController extends Controller
     public function edit(Todo $todo)
     {
         try {
-            return view('auth.edit-todo', compact('todo'));
+            // Buscando as categorias para exibir no select de edição
+            $categories = Category::all();
+            return view('auth.edit-todo', compact('todo', 'categories'));
 
         } catch (\Throwable $th) {
-            return response()->json([
+            return response()->json(array(
                 'status'  => 'error',
                 'message' => 'Erro ao abrir a tela de edição.',
                 'error'   => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -84,13 +88,13 @@ class TodoController extends Controller
                 ->with('alert-success', 'Atividade atualizada com sucesso!');
 
         } catch (\Throwable $th) {
-            return response()->json([
+            return response()->json(array(
                 'status'  => 'error',
                 'message' => 'Não foi possível atualizar a atividade.',
                 'error'   => $th->getMessage(),
                 'file'    => $th->getFile(),
                 'line'    => $th->getLine()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -98,18 +102,18 @@ class TodoController extends Controller
     public function toggle(Todo $todo)
     {
         try {
-            $todo->update([
+            $todo->update(array(
                 'is_completed' => $todo->is_completed ? 0 : 1,
-            ]);
+            ));
 
             return back()->with('alert-success', 'Status da atividade atualizado!');
 
         } catch (\Throwable $th) {
-            return response()->json([
+            return response()->json(array(
                 'status'  => 'error',
                 'message' => 'Não foi possível atualizar o status.',
                 'error'   => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -122,11 +126,11 @@ class TodoController extends Controller
                 ->with('alert-success', 'Atividade deletada com sucesso!');
 
         } catch (\Throwable $th) {
-            return response()->json([
+            return response()->json(array(
                 'status'  => 'error',
                 'message' => 'Não foi possível deletar o item.',
                 'error'   => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

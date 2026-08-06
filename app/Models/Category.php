@@ -46,7 +46,7 @@ class Category extends Model
     /**
      * Tarefas vinculadas a esta categoria.
      */
-    public function todos(): HasMany
+  public function todos()
     {
         return $this->hasMany(Todo::class);
     }

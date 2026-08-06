@@ -45,7 +45,20 @@
                         <textarea id="description" name="description" rows="5"
                             class="block p-3 w-full text-sm text-gray-900 bg-white rounded-lg border border-brand-200 focus:ring-brand-500 focus:border-brand-500">{{ old('description', $todo->description) }}</textarea>
                     </div>
-
+                    <!-- Seletor de Categoria (Adicionado) -->
+                    <div>
+                        <x-input-label for="category_id">{{ __('Categoria') }} <span
+                                class="text-xs text-brand-400 font-normal ml-1">({{ __('Opcional') }})</span></x-input-label>
+                        <select id="category_id" name="category_id"
+                            class="block p-3 w-full text-sm text-gray-900 bg-white rounded-lg border border-brand-200 focus:ring-brand-500 focus:border-brand-500 mt-1">
+                            <option value="">{{ __('Sem categoria') }}</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" @selected(old('category_id', $todo->category_id) == $category->id)>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div>
                         <x-input-label for="is_completed">{{ __('Status') }}</x-input-label>
                         <select id="is_completed" name="is_completed"

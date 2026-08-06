@@ -22,12 +22,11 @@ class TodoRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-
+        return array(
             'title' => 'required|string|max:255',
             'description' => 'required|string|min:5|max:500',
             'is_completed' => 'sometimes|boolean',
-
-        ];
+            'category_id' => 'nullable|exists:categories,id',
+        );
     }
 }
