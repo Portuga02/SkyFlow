@@ -53,6 +53,19 @@
                             placeholder="{{ __('Detalhe a atividade...') }}"
                             class="block p-3 w-full text-sm text-gray-900 bg-white rounded-lg border border-brand-200 focus:ring-brand-500 focus:border-brand-500">{{ old('description') }}</textarea>
                     </div>
+                    <!-- Seletor de Categoria (Adicionado) -->
+                    <div>
+                        <x-input-label for="category_id">{{ __('Categoria') }} <span class="text-xs text-brand-400 font-normal ml-1">({{ __('Opcional') }})</span></x-input-label>
+                        <select id="category_id" name="category_id"
+                            class="block p-3 w-full text-sm text-gray-900 bg-white rounded-lg border border-brand-200 focus:ring-brand-500 focus:border-brand-500 mt-1">
+                            <option value="">{{ __('Sem categoria') }}</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <div class="flex justify-end gap-3 pt-2">
                         <a href="{{ route('todos.index') }}"

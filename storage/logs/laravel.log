@@ -343,39 +343,21 @@ Stack trace:
 #3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
 #4 {main}
 "} 
-[2026-08-06 15:37:56] local.ERROR: Class "App\Providers\AppServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"App\\Providers\\AppServiceProvider\" not found at C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php:961)
+[2026-08-06 14:25:50] local.ERROR: Class "App\Models\Todo" not found {"exception":"[object] (Error(code: 0): Class \"App\\Models\\Todo\" not found at C:/Workspace/SkyFlow/app/Providers/AppServiceProvider.php:28)
 [stacktrace]
-#0 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(893): Illuminate/Foundation/Application->resolveProvider()
-#1 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/ProviderRepository.php(74): Illuminate/Foundation/Application->register()
-#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(871): Illuminate/Foundation/ProviderRepository->load()
-#3 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/RegisterProviders.php(37): Illuminate/Foundation/Application->registerConfiguredProviders()
-#4 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(342): Illuminate/Foundation/Bootstrap/RegisterProviders->bootstrap()
-#5 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(494): Illuminate/Foundation/Application->bootstrapWith()
-#6 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(196): Illuminate/Foundation/Console/Kernel->bootstrap()
-#7 Command line code(1): Illuminate/Foundation/Console/Kernel->handle()
-#8 {main}
-"} 
-[2026-08-06 15:42:28] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
-[stacktrace]
-#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
-#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
-#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
-#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
-#4 {main}
-"} 
-[2026-08-06 15:42:31] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
-[stacktrace]
-#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
-#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
-#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
-#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
-#4 {main}
-"} 
-[2026-08-06 15:42:33] local.ERROR: Command "tinker" is not defined. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"tinker\" is not defined. at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:749)
-[stacktrace]
-#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find()
-#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun()
-#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
-#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
-#4 {main}
+#0 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): App/Providers/AppServiceProvider->boot()
+#1 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::{closure:Illuminate/Container/BoundMethod::call():35}()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(96): Illuminate/Container/Util::unwrapIfClosure()
+#3 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod()
+#4 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Container/Container.php(799): Illuminate/Container/BoundMethod::call()
+#5 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1151): Illuminate/Container/Container->call()
+#6 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1132): Illuminate/Foundation/Application->bootProvider()
+#7 [internal function]: Illuminate/Foundation/Application->{closure:Illuminate/Foundation/Application::boot():1131}()
+#8 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1131): array_walk()
+#9 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php(17): Illuminate/Foundation/Application->boot()
+#10 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(342): Illuminate/Foundation/Bootstrap/BootProviders->bootstrap()
+#11 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(494): Illuminate/Foundation/Application->bootstrapWith()
+#12 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(196): Illuminate/Foundation/Console/Kernel->bootstrap()
+#13 Command line code(1): Illuminate/Foundation/Console/Kernel->handle()
+#14 {main}
 "} 
