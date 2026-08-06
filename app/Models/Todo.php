@@ -11,5 +11,8 @@ class Todo extends Model
   
     protected $fillable = ['title', 'description', 'is_completed'];
 
-    
+    protected $casts = [
+        'is_completed' => 'boolean',
+    ];
+
 }

@@ -94,6 +94,25 @@ class TodoController extends Controller
         }
     }
 
+    // Alterna rapidamente o status concluído/pendente direto na listagem
+    public function toggle(Todo $todo)
+    {
+        try {
+            $todo->update([
+                'is_completed' => $todo->is_completed ? 0 : 1,
+            ]);
+
+            return back()->with('alert-success', 'Status da atividade atualizado!');
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Não foi possível atualizar o status.',
+                'error'   => $th->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function destroy(Todo $todo)
     {
         try {

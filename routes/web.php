@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
         // As duas rotas abaixo agora apontam para os métodos corretos do novo Controller!
         Route::get('/{todo}/edit', 'edit')->name('edit');    // todos.edit
         Route::put('/{todo}', 'update')->name('update');     // todos.update
+        Route::patch('/{todo}/toggle', 'toggle')->name('toggle'); // todos.toggle
         Route::delete('/{todo}', 'destroy')->name('destroy');// todos.destroy
     });
 });

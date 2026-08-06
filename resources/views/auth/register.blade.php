@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <div class="mb-6 text-center">
+        <h1 class="text-xl font-extrabold text-brand-950">{{ __('Crie sua conta') }}</h1>
+        <p class="text-sm text-gray-500 mt-1">{{ __('Comece a organizar suas tarefas em minutos.') }}</p>
+    </div>
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
@@ -35,7 +40,7 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            <a class="underline text-sm text-brand-600 hover:text-brand-800 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500"
                 href="{{ route('login') }}">
                 {{ __('Já está Registrado?') }}
             </a>

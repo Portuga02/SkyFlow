@@ -24,8 +24,9 @@ class TodoRequest extends FormRequest
     {
         return [
 
-            'title' => 'required|string',
-            'description' => 'required|string|min:5|max:500'
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|min:5|max:500',
+            'is_completed' => 'sometimes|boolean',
 
         ];
     }
