@@ -22,11 +22,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Proteção: O Laravel só vai tentar contar as tarefas se a tabela já existir no banco.
-        // Isso impede que o comando 'php artisan migrate' quebre na inicialização!
-        if (Schema::hasTable('todos')) {
-            $totalTodos = Todo::count();
-            View::share('totalTodos', $totalTodos);
+        // Proteção 1: Impede qualquer execução no terminal (como o build do Railway ou comandos artisan)
+        if (! $this->app->runningInConsole()) {
+            
+            // Proteção 2: O Laravel só vai tentar contar as tarefas se a tabela já existir no banco.
+            if (Schema::hasTable('todos')) {
+                $totalTodos = Todo::count();
+                View::share('totalTodos', $totalTodos);
+            }
+            
         }
     }
 }

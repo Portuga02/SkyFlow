@@ -343,3 +343,15 @@ Stack trace:
 #3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
 #4 {main}
 "} 
+[2026-08-06 15:37:56] local.ERROR: Class "App\Providers\AppServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"App\\Providers\\AppServiceProvider\" not found at C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php:961)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(893): Illuminate/Foundation/Application->resolveProvider()
+#1 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/ProviderRepository.php(74): Illuminate/Foundation/Application->register()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(871): Illuminate/Foundation/ProviderRepository->load()
+#3 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/RegisterProviders.php(37): Illuminate/Foundation/Application->registerConfiguredProviders()
+#4 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(342): Illuminate/Foundation/Bootstrap/RegisterProviders->bootstrap()
+#5 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(494): Illuminate/Foundation/Application->bootstrapWith()
+#6 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(196): Illuminate/Foundation/Console/Kernel->bootstrap()
+#7 Command line code(1): Illuminate/Foundation/Console/Kernel->handle()
+#8 {main}
+"} 
