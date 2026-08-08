@@ -25,6 +25,13 @@
                 <?php echo e(__('Nova Tarefa')); ?>
 
             </a>
+
+            <a href="<?php echo e(route('kanban.index')); ?>"
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-50 hover:bg-brand-100 text-brand-600 text-sm font-semibold rounded-lg transition"
+                title="<?php echo e(__('Ver em Kanban')); ?>">
+                <i class="fa-solid fa-grip"></i>
+                <span class="hidden sm:inline"><?php echo e(__('Kanban')); ?></span>
+            </a>
         </div>
      <?php $__env->endSlot(); ?>
 
@@ -100,6 +107,7 @@
                     <ul class="p-5 space-y-3">
                         <?php $__currentLoopData = $todoList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $todosLists): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <li x-show="filter === 'all' || (filter === 'pending' && <?php echo e($todosLists->is_completed ? 'false' : 'true'); ?>) || (filter === 'done' && <?php echo e($todosLists->is_completed ? 'true' : 'false'); ?>)"
+                                style="border-left-width: 4px; border-left-color: <?php echo e(['low' => '#10b981', 'medium' => '#f59e0b', 'high' => '#f43f5e'][$todosLists->priority ?? 'medium']); ?>;"
                                 class="group animate-fade-in flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border <?php echo e($todosLists->is_completed ? 'border-emerald-100 bg-emerald-50/40' : 'border-brand-100 bg-white'); ?> p-4 hover:shadow-card-hover transition">
 
                                 <!-- Toggle status -->
@@ -116,14 +124,35 @@
 
                                 <!-- Title & description -->
                                 <div class="flex-1 min-w-0">
-                                    <p class="font-semibold text-brand-950 <?php echo e($todosLists->is_completed ? 'line-through text-brand-400' : ''); ?>">
-                                        <?php echo e($todosLists->title); ?>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <p class="font-semibold text-brand-950 <?php echo e($todosLists->is_completed ? 'line-through text-brand-400' : ''); ?>">
+                                            <?php echo e($todosLists->title); ?>
 
-                                    </p>
+                                        </p>
+                                        <?php $__currentLoopData = $todosLists->labels ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <span class="text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style="background-color: <?php echo e($label['color']); ?>">
+                                                <?php echo e($label['name']); ?>
+
+                                            </span>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </div>
                                     <p class="text-sm text-gray-500 truncate <?php echo e($todosLists->is_completed ? 'line-through' : ''); ?>">
                                         <?php echo e($todosLists->description); ?>
 
                                     </p>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <?php if($todosLists->due_date): ?>
+                                            <span class="text-[11px] font-semibold <?php echo e($todosLists->is_overdue ? 'text-rose-500' : 'text-gray-400'); ?>">
+                                                <i class="fa-regular fa-calendar mr-1"></i><?php echo e($todosLists->due_date->format('d/m')); ?>
+
+                                            </span>
+                                        <?php endif; ?>
+                                        <?php if(count($todosLists->checklist ?? [])): ?>
+                                            <span class="text-[11px] font-semibold text-gray-400">
+                                                <i class="fa-solid fa-list-check mr-1"></i><?php echo e($todosLists->checklist_progress); ?>%
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
 
                                 <!-- Status pill -->

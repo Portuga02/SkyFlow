@@ -14,6 +14,13 @@
                 <i class="fa-solid fa-circle-plus"></i>
                 {{ __('Nova Tarefa') }}
             </a>
+
+            <a href="{{ route('kanban.index') }}"
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-brand-50 hover:bg-brand-100 text-brand-600 text-sm font-semibold rounded-lg transition"
+                title="{{ __('Ver em Kanban') }}">
+                <i class="fa-solid fa-grip"></i>
+                <span class="hidden sm:inline">{{ __('Kanban') }}</span>
+            </a>
         </div>
     </x-slot>
 
@@ -89,6 +96,7 @@
                     <ul class="p-5 space-y-3">
                         @foreach ($todoList as $todosLists)
                             <li x-show="filter === 'all' || (filter === 'pending' && {{ $todosLists->is_completed ? 'false' : 'true' }}) || (filter === 'done' && {{ $todosLists->is_completed ? 'true' : 'false' }})"
+                                style="border-left-width: 4px; border-left-color: {{ ['low' => '#10b981', 'medium' => '#f59e0b', 'high' => '#f43f5e'][$todosLists->priority ?? 'medium'] }};"
                                 class="group animate-fade-in flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border {{ $todosLists->is_completed ? 'border-emerald-100 bg-emerald-50/40' : 'border-brand-100 bg-white' }} p-4 hover:shadow-card-hover transition">
 
                                 <!-- Toggle status -->
@@ -105,12 +113,31 @@
 
                                 <!-- Title & description -->
                                 <div class="flex-1 min-w-0">
-                                    <p class="font-semibold text-brand-950 {{ $todosLists->is_completed ? 'line-through text-brand-400' : '' }}">
-                                        {{ $todosLists->title }}
-                                    </p>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <p class="font-semibold text-brand-950 {{ $todosLists->is_completed ? 'line-through text-brand-400' : '' }}">
+                                            {{ $todosLists->title }}
+                                        </p>
+                                        @foreach ($todosLists->labels ?? [] as $label)
+                                            <span class="text-[10px] font-bold text-white px-2 py-0.5 rounded-full" style="background-color: {{ $label['color'] }}">
+                                                {{ $label['name'] }}
+                                            </span>
+                                        @endforeach
+                                    </div>
                                     <p class="text-sm text-gray-500 truncate {{ $todosLists->is_completed ? 'line-through' : '' }}">
                                         {{ $todosLists->description }}
                                     </p>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        @if ($todosLists->due_date)
+                                            <span class="text-[11px] font-semibold {{ $todosLists->is_overdue ? 'text-rose-500' : 'text-gray-400' }}">
+                                                <i class="fa-regular fa-calendar mr-1"></i>{{ $todosLists->due_date->format('d/m') }}
+                                            </span>
+                                        @endif
+                                        @if (count($todosLists->checklist ?? []))
+                                            <span class="text-[11px] font-semibold text-gray-400">
+                                                <i class="fa-solid fa-list-check mr-1"></i>{{ $todosLists->checklist_progress }}%
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
 
                                 <!-- Status pill -->

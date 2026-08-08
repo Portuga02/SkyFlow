@@ -7,10 +7,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
-{ 
+{
     /**
      * Display the user's profile form.
      */
@@ -47,7 +48,6 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
-       
 
         Auth::logout();
 
@@ -57,5 +57,38 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Upload avatar
+     */
+    public function uploadAvatar(Request $request): RedirectResponse
+    {
+        $request->validate(['avatar' => 'required|image|max:2048']);
+
+        $user = Auth::user();
+
+        // Delete old avatar
+        if ($user->avatar_path) {
+            Storage::disk('public')->delete($user->avatar_path);
+        }
+
+        // Save new
+        $path = $request->file('avatar')->store('avatars', 'public');
+        $user->update(['avatar_path' => $path]);
+
+        return back()->with('status', 'avatar-updated');
+    }
+
+    /**
+     * Update theme color
+     */
+    public function updateTheme(Request $request): RedirectResponse
+    {
+        $request->validate(['theme_color' => 'required|string|max:7|regex:/^#[0-9A-Fa-f]{6}$/']);
+
+        Auth::user()->update(['theme_color' => $request->theme_color]);
+
+        return back()->with('status', 'theme-updated');
     }
 }

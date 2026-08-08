@@ -1,164 +1,126 @@
-<?php
-    $navItem = function (string $route, string $icon, string $label, bool $soon = false) {
-        return compact('route', 'icon', 'label', 'soon');
-    };
-?>
+<!-- Sidebar -->
+<aside class="fixed top-0 left-0 h-screen w-64 bg-white border-r border-brand-100 flex flex-col z-40
+    transform transition-transform duration-300 -translate-x-full md:translate-x-0"
+    :class="mobileOpen ? 'translate-x-0' : ''">
 
-<aside x-data="{ mobileOpen: false }" class="lg:w-64 shrink-0">
-
-    <!-- Mobile top bar -->
-    <div
-        class="lg:hidden flex items-center justify-between px-4 h-16 bg-white/80 backdrop-blur border-b border-brand-100 sticky top-0 z-40">
-        <a href="<?php echo e(route('dashboard')); ?>"><?php if (isset($component)) { $__componentOriginal8892e718f3d0d7a916180885c6f012e7 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal8892e718f3d0d7a916180885c6f012e7 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.application-logo','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('application-logo'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal8892e718f3d0d7a916180885c6f012e7)): ?>
-<?php $attributes = $__attributesOriginal8892e718f3d0d7a916180885c6f012e7; ?>
-<?php unset($__attributesOriginal8892e718f3d0d7a916180885c6f012e7); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal8892e718f3d0d7a916180885c6f012e7)): ?>
-<?php $component = $__componentOriginal8892e718f3d0d7a916180885c6f012e7; ?>
-<?php unset($__componentOriginal8892e718f3d0d7a916180885c6f012e7); ?>
-<?php endif; ?></a>
-        <button @click="mobileOpen = true"
-            class="flex h-9 w-9 items-center justify-center rounded-lg text-brand-600 hover:bg-brand-50">
-            <i class="fa-solid fa-bars text-lg"></i>
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 border-b border-brand-50">
+        <div class="flex items-center gap-2">
+            <div class="h-8 w-8 rounded-lg bg-brand-600 text-white flex items-center justify-center text-sm font-bold">
+                <i class="fa-solid fa-cloud-bolt"></i>
+            </div>
+            <span class="font-bold text-brand-950">SkyFlow</span>
+        </div>
+        <button @click="mobileOpen = false" class="md:hidden text-gray-400 hover:text-gray-600">
+            <i class="fa-solid fa-xmark text-lg"></i>
         </button>
     </div>
 
-    <!-- Mobile overlay -->
-    <div x-show="mobileOpen" x-cloak @click="mobileOpen = false"
-        class="lg:hidden fixed inset-0 bg-brand-950/40 backdrop-blur-sm z-50"></div>
+    <!-- Nav links -->
+    <nav class="flex-1 overflow-y-auto scrollbar-thin px-3 py-5 space-y-6">
 
-    <!-- Sidebar panel -->
-    <div x-cloak :class="mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-        class="fixed lg:sticky top-0 left-0 h-screen w-72 lg:w-64 bg-white border-r border-brand-100 z-50 flex flex-col transition-transform duration-200 ease-in-out">
+        <!-- Search Button -->
+        <button @click="$dispatch('search-open'); mobileOpen = false" 
+            class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold bg-brand-50 text-brand-600 hover:bg-brand-100 transition">
+            <i class="fa-solid fa-magnifying-glass w-4 text-center shrink-0"></i>
+            <span class="flex-1 text-left text-xs sm:text-sm"><?php echo e(__('Buscar...')); ?></span>
+            <kbd class="text-xs px-1.5 py-0.5 rounded bg-white border border-brand-200 hidden sm:inline">⌘K</kbd>
+        </button>
 
-        <!-- Brand + close (mobile) -->
-        <div class="flex items-center justify-between h-16 px-5 border-b border-brand-50">
-            <a href="<?php echo e(route('dashboard')); ?>"><?php if (isset($component)) { $__componentOriginal8892e718f3d0d7a916180885c6f012e7 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal8892e718f3d0d7a916180885c6f012e7 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.application-logo','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('application-logo'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal8892e718f3d0d7a916180885c6f012e7)): ?>
-<?php $attributes = $__attributesOriginal8892e718f3d0d7a916180885c6f012e7; ?>
-<?php unset($__attributesOriginal8892e718f3d0d7a916180885c6f012e7); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal8892e718f3d0d7a916180885c6f012e7)): ?>
-<?php $component = $__componentOriginal8892e718f3d0d7a916180885c6f012e7; ?>
-<?php unset($__componentOriginal8892e718f3d0d7a916180885c6f012e7); ?>
-<?php endif; ?></a>
-            <button @click="mobileOpen = false"
-                class="lg:hidden flex h-8 w-8 items-center justify-center rounded-lg text-brand-400 hover:bg-brand-50">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+        <div class="space-y-1">
+            <p class="px-3 mb-2 text-[11px] font-bold uppercase tracking-wider text-brand-300"><?php echo e(__('Principal')); ?></p>
+
+            <a href="<?php echo e(route('dashboard')); ?>"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
+                    <?php echo e(request()->routeIs('dashboard') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>"
+                @click="mobileOpen = false">
+                <i class="fa-solid fa-gauge-high w-4 text-center shrink-0"></i> 
+                <span class="truncate"><?php echo e(__('Dashboard')); ?></span>
+            </a>
+
+            <a href="<?php echo e(route('todos.index')); ?>"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
+                    <?php echo e(request()->routeIs('todos.*') && !request()->routeIs('todos.create') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>"
+                @click="mobileOpen = false">
+                <i class="fa-solid fa-list-check w-4 text-center shrink-0"></i> 
+                <span class="truncate"><?php echo e(__('Tarefas')); ?></span>
+            </a>
+
+            <a href="<?php echo e(route('todos.create')); ?>"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
+                    <?php echo e(request()->routeIs('todos.create') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>"
+                @click="mobileOpen = false">
+                <i class="fa-solid fa-circle-plus w-4 text-center shrink-0"></i> 
+                <span class="truncate"><?php echo e(__('Nova Tarefa')); ?></span>
+            </a>
+
+            <a href="<?php echo e(route('kanban.index')); ?>"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
+                    <?php echo e(request()->routeIs('kanban.*') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>"
+                @click="mobileOpen = false">
+                <i class="fa-solid fa-grip w-4 text-center shrink-0"></i> 
+                <span class="truncate"><?php echo e(__('Kanban')); ?></span>
+            </a>
         </div>
 
-        <!-- Nav links -->
-        <nav class="flex-1 overflow-y-auto scrollbar-thin px-3 py-5 space-y-6">
+        <div class="space-y-1">
+            <p class="px-3 mb-2 text-[11px] font-bold uppercase tracking-wider text-brand-300"><?php echo e(__('Organização')); ?></p>
 
-            <div class="space-y-1">
-                <p class="px-3 mb-2 text-[11px] font-bold uppercase tracking-wider text-brand-300"><?php echo e(__('Principal')); ?>
+            <a href="<?php echo e(route('calendar.index')); ?>"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
+                    <?php echo e(request()->routeIs('calendar.*') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>"
+                @click="mobileOpen = false">
+                <i class="fa-solid fa-calendar w-4 text-center shrink-0"></i> 
+                <span class="truncate"><?php echo e(__('Calendário')); ?></span>
+            </a>
 
-                </p>
+            <a href="<?php echo e(route('categories.index')); ?>"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
+                    <?php echo e(request()->routeIs('categories.*') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>"
+                @click="mobileOpen = false">
+                <i class="fa-solid fa-layer-group w-4 text-center shrink-0"></i> 
+                <span class="truncate"><?php echo e(__('Categorias')); ?></span>
+            </a>
 
-                <a href="<?php echo e(route('dashboard')); ?>"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
-                        <?php echo e(request()->routeIs('dashboard') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>">
-                    <i class="fa-solid fa-gauge-high w-4 text-center"></i> <?php echo e(__('Dashboard')); ?>
+            <a href="<?php echo e(route('notes.index')); ?>"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
+                    <?php echo e(request()->routeIs('notes.*') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>"
+                @click="mobileOpen = false">
+                <i class="fa-solid fa-note-sticky w-4 text-center shrink-0"></i> 
+                <span class="truncate"><?php echo e(__('Bloco de Notas')); ?></span>
+            </a>
+        </div>
+    </nav>
 
-                </a>
+    <!-- Footer User -->
+    <div class="border-t border-brand-50 p-4" x-data="{ open: false }">
+        <button @click="open = !open" class="w-full flex items-center gap-3 text-sm font-semibold text-brand-950 hover:text-brand-700">
+            <?php if(Auth::user()->avatar_path): ?>
+                <img src="<?php echo e(asset('storage/' . Auth::user()->avatar_path)); ?>" alt="<?php echo e(Auth::user()->name); ?>"
+                    class="h-8 w-8 rounded-full object-cover">
+            <?php else: ?>
+                <div class="h-8 w-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold shrink-0">
+                    <?php echo e(strtoupper(substr(Auth::user()->name, 0, 1))); ?>
 
-                <a href="<?php echo e(route('todos.index')); ?>"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
-                        <?php echo e(request()->routeIs('todos.index') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>">
-                    <i class="fa-solid fa-list-check w-4 text-center"></i> <?php echo e(__('Tarefas')); ?>
-
-                </a>
-
-                <a href="<?php echo e(route('todos.create')); ?>"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
-                        <?php echo e(request()->routeIs('todos.create') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>">
-                    <i class="fa-solid fa-circle-plus w-4 text-center"></i> <?php echo e(__('Nova Tarefa')); ?>
-
-                </a>
-            </div>
-
-            <div class="space-y-1">
-                <p class="px-3 mb-2 text-[11px] font-bold uppercase tracking-wider text-brand-300">
-                    <?php echo e(__('Organização')); ?></p>
-
-                <a href="<?php echo e(route('categories.index')); ?>"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition
-        <?php echo e(request()->routeIs('categories.*') ? 'bg-brand-100 text-brand-700' : 'text-gray-600 hover:bg-brand-50 hover:text-brand-700'); ?>">
-                    <i class="fa-solid fa-layer-group w-4 text-center"></i> <?php echo e(__('Categorias')); ?>
-
-                </a>
-
-                <span
-                    class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-gray-400 cursor-not-allowed select-none">
-                    <span class="flex items-center gap-3"><i class="fa-solid fa-table-columns w-4 text-center"></i>
-                        <?php echo e(__('Kanban')); ?></span>
-                    <span
-                        class="text-[10px] font-bold uppercase bg-brand-50 text-brand-400 px-2 py-0.5 rounded-full"><?php echo e(__('em breve')); ?></span>
-                </span>
-            </div>
-        </nav>
-
-        <!-- User footer -->
-        <div class="border-t border-brand-50 p-3">
-            <div x-data="{ open: false }" class="relative">
-                <button @click="open = !open" @click.outside="open = false"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-brand-50 transition text-left">
-                    <span
-                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white text-sm font-bold">
-                        <?php echo e(strtoupper(substr(Auth::user()->name, 0, 1))); ?>
-
-                    </span>
-                    <span class="flex-1 min-w-0">
-                        <span
-                            class="block text-sm font-semibold text-brand-950 truncate"><?php echo e(Auth::user()->name); ?></span>
-                        <span class="block text-xs text-gray-400 truncate"><?php echo e(Auth::user()->email); ?></span>
-                    </span>
-                    <i class="fa-solid fa-chevron-up text-xs text-brand-300"></i>
-                </button>
-
-                <div x-show="open" x-cloak x-transition
-                    class="absolute bottom-full mb-2 left-0 right-0 bg-white rounded-lg shadow-card-hover border border-brand-100 overflow-hidden">
-                    <a href="<?php echo e(route('profile.edit')); ?>"
-                        class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700">
-                        <i class="fa-solid fa-user-gear w-4 text-center text-brand-500"></i> <?php echo e(__('Perfil')); ?>
-
-                    </a>
-                    <form method="POST" action="<?php echo e(route('logout')); ?>">
-                        <?php echo csrf_field(); ?>
-                        <button type="submit"
-                            class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700">
-                            <i class="fa-solid fa-right-from-bracket w-4 text-center text-brand-500"></i>
-                            <?php echo e(__('Sair')); ?>
-
-                        </button>
-                    </form>
                 </div>
-            </div>
+            <?php endif; ?>
+            <span class="flex-1 text-left truncate text-xs sm:text-sm"><?php echo e(Auth::user()->name); ?></span>
+            <i class="fa-solid fa-chevron-down text-xs transition shrink-0" :class="open && 'rotate-180'"></i>
+        </button>
+
+        <div x-show="open" @click.outside="open = false" class="mt-2 space-y-1" x-transition x-cloak>
+            <a href="<?php echo e(route('profile.edit')); ?>" class="block px-3 py-2 text-sm text-gray-600 hover:bg-brand-50 rounded-lg transition"
+                @click="mobileOpen = false">
+                <?php echo e(__('Perfil')); ?>
+
+            </a>
+            <form method="POST" action="<?php echo e(route('logout')); ?>" class="block">
+                <?php echo csrf_field(); ?>
+                <button type="submit" class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-rose-50 rounded-lg transition">
+                    <?php echo e(__('Sair')); ?>
+
+                </button>
+            </form>
         </div>
     </div>
-</aside>
-<?php /**PATH C:\Workspace\SkyFlow\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>
+</aside><?php /**PATH C:\Workspace\SkyFlow\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>
