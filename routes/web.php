@@ -81,14 +81,17 @@ Route::middleware('auth')->group(function () {
         Route::patch('/reschedule', 'reschedule')->name('reschedule');
     });
 
-    // 📊 Rotas do SkyFlow (Kanban)
-   Route::controller(KanbanController::class)->prefix('kanban')->name('kanban.')->group(function () {
-    Route::get('/', 'index')->name('index');
-    Route::get('/columns', 'columns')->name('columns');
-    Route::post('/move', 'move')->name('move');
-    Route::post('/column/create', 'createColumn')->name('column.create');
-    Route::delete('/column/{columnKey}', 'deleteColumn')->name('column.delete');
-});
+// 📊 Rotas do SkyFlow (Kanban)
+    Route::controller(KanbanController::class)->prefix('kanban')->name('kanban.')->group(function () {
+        Route::get('/', 'index')->name('index'); // URL final: /kanban
+        Route::get('/columns', 'columns')->name('columns'); // URL final: /kanban/columns
+        Route::post('/move', 'move')->name('move'); // URL final: /kanban/move
+        
+        // Aqui usamos o storeColumn (que criamos no controller) para a URL /kanban/column/create
+        Route::post('/column/create', 'storeColumn')->name('column.store'); 
+        
+        Route::delete('/column/{columnKey}', 'deleteColumn')->name('column.delete');
+    });
 
     // Toggle view mode (list vs kanban)
     Route::post('/todos/view-toggle', [TodoController::class, 'toggleViewMode'])->name('todos.view-toggle');

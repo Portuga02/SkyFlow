@@ -2,82 +2,125 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KanbanColumn;
 use App\Models\Todo;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class KanbanController extends Controller
 {
     public function index()
     {
-        $todos = Auth::user()->todos()->latest()->get();
-        return view('kanban.index', compact('todos'));
+        // Busca as colunas do usuário logado
+        $columns = KanbanColumn::where('user_id', Auth::id())
+                    ->orderBy('order')
+                    ->get();
+
+        // Se o usuário não tiver colunas, cria as 3 básicas automaticamente
+        if ($columns->isEmpty()) {
+            $defaultColumns = [
+                ['name' => 'A Fazer', 'color' => '#f59e0b', 'slug' => 'todo'],
+                ['name' => 'Em Andamento', 'color' => '#3b82f6', 'slug' => 'in_progress'],
+                ['name' => 'Concluído', 'color' => '#10b981', 'slug' => 'done'],
+            ];
+
+            foreach ($defaultColumns as $index => $col) {
+                KanbanColumn::create([
+                    'user_id' => Auth::id(),
+                    'name'    => $col['name'],
+                    'slug'    => $col['slug'],
+                    'color'   => $col['color'],
+                    'order'   => $index,
+                ]);
+            }
+
+            $columns = KanbanColumn::where('user_id', Auth::id())->orderBy('order')->get();
+        }
+
+        // Busca as tarefas do usuário logado
+        $todos = Todo::where('user_id', Auth::id())->get();
+
+        return view('kanban.index', compact('columns', 'todos'));
     }
 
-    public function move()
+    // AQUI ESTÁ O MÉTODO STORECOLUMN! 👇
+    // Ele é o responsável por receber os dados do seu Modal e salvar no banco
+    public function storeColumn(Request $request)
     {
         try {
-            $validated = request()->validate([
-                'id' => 'required|exists:todos,id',
-                'status' => 'required|in:todo,in_progress,done'
+            $request->validate([
+                'name'  => 'required|string|max:255',
+                'color' => 'required|string|max:10',
             ]);
 
-            $todo = Todo::findOrFail($validated['id']);
-            abort_if($todo->user_id !== Auth::id(), 403);
+            // Transforma o nome digitado em um slug (ex: "Em Revisão" vira "em-revisao")
+            $slug = Str::slug($request->name);
 
-            $todo->update(['status' => $validated['status']]);
+            // Evita colunas com slugs repetidos para o mesmo usuário
+            $count = KanbanColumn::where('user_id', Auth::id())
+                        ->where('slug', 'LIKE', "{$slug}%")
+                        ->count();
+            if ($count > 0) {
+                $slug = $slug . '-' . $count;
+            }
 
-            return response()->json(['success' => true, 'message' => 'Card movido com sucesso!']);
+            // Descobre a ordem da última coluna para colocar a nova no final
+            $maxOrder = KanbanColumn::where('user_id', Auth::id())->max('order');
+
+            KanbanColumn::create([
+                'user_id' => Auth::id(),
+                'name'    => $request->name,
+                'slug'    => $slug,
+                'color'   => $request->color,
+                'order'   => $maxOrder !== null ? $maxOrder + 1 : 0,
+            ]);
+
+            return response()->json(['success' => true]);
+
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()], 400);
+            return response()->json([
+                'success' => false,
+                'error'   => 'Erro interno ao salvar coluna.'
+            ], 500);
         }
     }
 
-    public function columns()
+    // O método que move os cards de uma coluna para outra
+    public function move(Request $request)
     {
-        $user = Auth::user();
-        $customColumns = $user->kanban_columns ?? [
-            'todo' => ['label' => 'A Fazer', 'icon' => 'fa-circle-notch', 'color' => '#f59e0b'],
-            'in_progress' => ['label' => 'Em Andamento', 'icon' => 'fa-circle-play', 'color' => '#0c8fe6'],
-            'done' => ['label' => 'Concluído', 'icon' => 'fa-circle-check', 'color' => '#10b981'],
-        ];
+        try {
+            $todo = Todo::findOrFail($request->id);
 
-        return response()->json($customColumns);
-    }
+            if ($todo->user_id !== Auth::id()) {
+                return response()->json(['success' => false], 403);
+            }
 
-    public function createColumn()
-    {
-        $validated = request()->validate([
-            'name' => 'required|string|max:50',
-            'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/'
-        ]);
+            $todo->update([
+                'status' => $request->status
+            ]);
 
-        $user = Auth::user();
-        $columns = $user->kanban_columns ?? [];
-        
-        $columnKey = strtolower(str_replace(' ', '_', $validated['name']));
-        $columns[$columnKey] = [
-            'label' => $validated['name'],
-            'icon' => 'fa-circle',
-            'color' => $validated['color']
-        ];
-
-        $user->update(['kanban_columns' => $columns]);
-
-        return response()->json(['success' => true, 'columnKey' => $columnKey, 'column' => $columns[$columnKey]]);
-    }
-
-    public function deleteColumn()
-    {
-        $validated = request()->validate(['columnKey' => 'required|string']);
-
-        $user = Auth::user();
-        $columns = $user->kanban_columns ?? [];
-        
-        if (isset($columns[$validated['columnKey']])) {
-            unset($columns[$validated['columnKey']]);
-            $user->update(['kanban_columns' => $columns]);
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false], 500);
         }
+    }
+    // O método que apaga a coluna do banco de dados
+    public function deleteColumn($columnKey)
+    {
+        try {
+          
+            $column = KanbanColumn::where('user_id', Auth::id())->findOrFail($columnKey);
 
-        return response()->json(['success' => true]);
+            $column->delete();
+
+            return response()->json(['success' => true]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Não foi possível excluir a coluna.'
+            ], 500);
+        }
     }
 }
