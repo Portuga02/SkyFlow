@@ -4,13 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     public function up(): void
     {
         Schema::table('todos', function (Blueprint $table) {
-            $table->string('priority')->default('medium')->after('is_completed'); // low | medium | high
-            $table->date('due_date')->nullable()->after('priority');
+            // Atualizado para os novos valores do Bitbucket/Jira
+            $table->string('priority')->default('high')->after('is_completed'); // lowest | low | high | highest
+
+            // Alterado de date() para dateTime() para suportar a hora exata
+            $table->dateTime('due_date')->nullable()->after('priority');
 
             $table->foreignId('assigned_to')
                 ->nullable()

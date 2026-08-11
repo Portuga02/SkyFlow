@@ -107,17 +107,28 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
+                        <!-- Dropdown Customizado de Prioridades (Estilo Jira/Bitbucket) -->
+                        <div x-data="{
+                                open: false,
+                                selected: '<?php echo e(old('priority', 'high')); ?>',
+                                options: {
+                                    'highest': { label: 'Mais Alta (Highest)', icon: 'fa-solid fa-angles-up', color: 'text-rose-500' },
+                                    'high':    { label: 'Alta (High)', icon: 'fa-solid fa-angle-up', color: 'text-rose-500' },
+                                    'low':     { label: 'Baixa (Low)', icon: 'fa-solid fa-angle-down', color: 'text-blue-500' },
+                                    'lowest':  { label: 'Mais Baixa (Lowest)', icon: 'fa-solid fa-angles-down', color: 'text-blue-500' }
+                                }
+                            }" class="relative">
+                            
                             <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input-label','data' => ['for' => 'priority']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.input-label','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('input-label'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['for' => 'priority']); ?><?php echo e(__('Prioridade')); ?> <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes([]); ?><?php echo e(__('Prioridade')); ?> <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581)): ?>
 <?php $attributes = $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581; ?>
@@ -127,12 +138,38 @@
 <?php $component = $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581; ?>
 <?php unset($__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581); ?>
 <?php endif; ?>
-                            <select id="priority" name="priority" class="block w-full rounded-lg border-brand-200 focus:border-brand-500 focus:ring-brand-500 text-sm">
-                                <option value="low" <?php if(old('priority') == 'low'): echo 'selected'; endif; ?>><?php echo e(__('Baixa')); ?></option>
-                                <option value="medium" <?php if(old('priority', 'medium') == 'medium'): echo 'selected'; endif; ?>><?php echo e(__('Média')); ?></option>
-                                <option value="high" <?php if(old('priority') == 'high'): echo 'selected'; endif; ?>><?php echo e(__('Alta')); ?></option>
-                            </select>
+                            
+                            <!-- Input Oculto -->
+                            <input type="hidden" name="priority" :value="selected">
+
+                            <!-- Botão Principal -->
+                            <button @click="open = !open" @click.outside="open = false" type="button"
+                                class="w-full flex items-center justify-between px-3 py-2 mt-1 bg-white border border-brand-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition shadow-sm">
+                                <span class="flex items-center gap-2">
+                                    <i :class="options[selected].icon + ' ' + options[selected].color"></i>
+                                    <span x-text="options[selected].label" class="text-brand-950 font-medium"></span>
+                                </span>
+                                <i class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
+                            </button>
+
+                            <!-- Lista Suspensa -->
+                            <div x-show="open" x-transition x-cloak
+                                class="absolute z-10 w-full mt-1 bg-white border border-brand-100 rounded-lg shadow-lg overflow-hidden">
+                                <template x-for="(option, key) in options" :key="key">
+                                    <div @click="selected = key; open = false"
+                                        class="flex items-center gap-2 px-3 py-2.5 cursor-pointer hover:bg-brand-50 transition"
+                                        :class="selected === key ? 'bg-brand-50' : ''">
+                                        
+                                        <i :class="option.icon + ' ' + option.color" class="w-4 text-center"></i>
+                                        <span x-text="option.label" class="text-sm font-medium text-brand-950"></span>
+                                        
+                                        <i x-show="selected === key" class="fa-solid fa-check ml-auto text-brand-600 text-xs"></i>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
+
+                        <!-- Data e Hora com datetime-local -->
                         <div>
                             <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
@@ -143,7 +180,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['for' => 'due_date']); ?><?php echo e(__('Prazo (opcional)')); ?> <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['for' => 'due_date']); ?><?php echo e(__('Prazo e Hora (opcional)')); ?> <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581)): ?>
 <?php $attributes = $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581; ?>
@@ -155,14 +192,14 @@
 <?php endif; ?>
                             <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal18c21970322f9e5c938bc954620c12bb = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['id' => 'due_date','class' => 'block w-full','type' => 'date','name' => 'due_date','value' => ''.e(old('due_date')).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['id' => 'due_date','class' => 'block w-full text-sm mt-1','type' => 'datetime-local','name' => 'due_date','value' => ''.e(old('due_date')).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('text-input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['id' => 'due_date','class' => 'block w-full','type' => 'date','name' => 'due_date','value' => ''.e(old('due_date')).'']); ?>
+<?php $component->withAttributes(['id' => 'due_date','class' => 'block w-full text-sm mt-1','type' => 'datetime-local','name' => 'due_date','value' => ''.e(old('due_date')).'']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal18c21970322f9e5c938bc954620c12bb)): ?>
@@ -197,7 +234,7 @@
 <?php $component = $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581; ?>
 <?php unset($__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581); ?>
 <?php endif; ?>
-                            <select id="category_id" name="category_id" class="block w-full rounded-lg border-brand-200 focus:border-brand-500 focus:ring-brand-500 text-sm">
+                            <select id="category_id" name="category_id" class="block w-full rounded-lg border-brand-200 focus:border-brand-500 focus:ring-brand-500 text-sm mt-1">
                                 <option value=""><?php echo e(__('Nenhuma')); ?></option>
                                 <?php $__currentLoopData = \App\Models\Category::orderBy('name')->get(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($cat->id); ?>" <?php if(old('category_id') == $cat->id): echo 'selected'; endif; ?>><?php echo e($cat->name); ?></option>
@@ -224,7 +261,7 @@
 <?php $component = $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581; ?>
 <?php unset($__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581); ?>
 <?php endif; ?>
-                            <select id="assigned_to" name="assigned_to" class="block w-full rounded-lg border-brand-200 focus:border-brand-500 focus:ring-brand-500 text-sm">
+                            <select id="assigned_to" name="assigned_to" class="block w-full rounded-lg border-brand-200 focus:border-brand-500 focus:ring-brand-500 text-sm mt-1">
                                 <option value=""><?php echo e(__('Ninguém')); ?></option>
                                 <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($user->id); ?>" <?php if(old('assigned_to') == $user->id): echo 'selected'; endif; ?>><?php echo e($user->name); ?></option>
@@ -256,5 +293,4 @@
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php /**PATH C:\Workspace\SkyFlow\resources\views/auth/create-todo.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\Workspace\SkyFlow\resources\views/auth/create-todo.blade.php ENDPATH**/ ?>
