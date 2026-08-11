@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug'); // O identificador interno (Ex: em-revisao) - vai bater com o 'status' do Todo
             $table->string('color')->default('#f59e0b'); // A cor que você escolheu no modal
             $table->integer('order')->default(0); // Para poder reordenar as colunas no futuro
+            $table->string('icon')->default('fa-layer-group');
             
             $table->timestamps();
         });

@@ -1,36 +1,46 @@
-<x-app-layout>
-    <x-slot name="header">
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     <?php $__env->slot('header', null, []); ?> 
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h2 class="font-extrabold text-2xl text-brand-950">{{ __('Bloco de Notas') }}</h2>
-                <p class="text-sm text-brand-600 mt-1">{{ __('Suas anotações rápidas e coloridas.') }}</p>
+                <h2 class="font-extrabold text-2xl text-brand-950"><?php echo e(__('Bloco de Notas')); ?></h2>
+                <p class="text-sm text-brand-600 mt-1"><?php echo e(__('Suas anotações rápidas e coloridas.')); ?></p>
             </div>
-            <form method="POST" action="{{ route('notes.store') }}" class="flex-shrink-0">
-                @csrf
+            <form method="POST" action="<?php echo e(route('notes.store')); ?>" class="flex-shrink-0">
+                <?php echo csrf_field(); ?>
                 <button type="submit"
                     class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg shadow-soft transition">
-                    <i class="fa-solid fa-circle-plus"></i> {{ __('Nova Nota') }}
+                    <i class="fa-solid fa-circle-plus"></i> <?php echo e(__('Nova Nota')); ?>
+
                 </button>
             </form>
         </div>
-    </x-slot>
+     <?php $__env->endSlot(); ?>
 
     <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        @if ($notes->isEmpty())
+        <?php if($notes->isEmpty()): ?>
             <div class="text-center py-12">
                 <i class="fa-solid fa-note-sticky text-5xl text-gray-300 mb-4"></i>
-                <p class="text-gray-500 font-medium">{{ __('Nenhuma nota ainda. Crie uma!') }}</p>
+                <p class="text-gray-500 font-medium"><?php echo e(__('Nenhuma nota ainda. Crie uma!')); ?></p>
             </div>
-        @else
+        <?php else: ?>
             <!-- Grid de Post-Its -->
             <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
-                @foreach ($notes as $note)
+                <?php $__currentLoopData = $notes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $note): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <div class="break-inside-avoid rounded-lg shadow-card border border-brand-50 overflow-hidden hover:shadow-lg transition cursor-pointer group relative"
-                        style="background-color: {{ $note->color ?? '#fef08a' }};"
-                        @click="open{{ $note->id }} = true" x-data="{ open{{ $note->id }}: false }">
+                        style="background-color: <?php echo e($note->color ?? '#fef08a'); ?>;"
+                        @click="open<?php echo e($note->id); ?> = true" x-data="{ open<?php echo e($note->id); ?>: false }">
 
                         <!-- Card View (Closed) -->
-                        <div class="p-4 min-h-[160px] flex flex-col pb-14 relative" x-show="!open{{ $note->id }}">
+                        <div class="p-4 min-h-[160px] flex flex-col pb-14 relative" x-show="!open<?php echo e($note->id); ?>">
 
                             <!-- Botão de Copiar Mágico -->
                             <button type="button"
@@ -41,22 +51,23 @@
                             </button>
 
                             <h3 class="font-bold text-sm text-gray-900 line-clamp-2 mb-2">
-                                {{ $note->title ?: 'Sem título' }}</h3>
+                                <?php echo e($note->title ?: 'Sem título'); ?></h3>
 
                             <div x-ref="noteContent" class="text-xs text-gray-700 flex-1 prose-sm">
-                                {!! $note->content ?: 'Clique para editar...' !!}
+                                <?php echo $note->content ?: 'Clique para editar...'; ?>
+
                             </div>
 
                             <!-- BOTOES DE HOVER ORIGINAIS -->
                             <div
                                 class="flex gap-2 opacity-0 group-hover:opacity-100 transition absolute bottom-4 left-4 right-4 z-10">
-                                <button @click.stop="open{{ $note->id }} = true"
+                                <button @click.stop="open<?php echo e($note->id); ?> = true"
                                     class="flex-1 py-1.5 text-xs font-semibold bg-black/10 hover:bg-black/20 rounded text-gray-900 transition">
                                     Editar
                                 </button>
-                                <form method="POST" action="{{ route('notes.destroy', $note->id) }}" class="flex-1"
+                                <form method="POST" action="<?php echo e(route('notes.destroy', $note->id)); ?>" class="flex-1"
                                     @click.stop>
-                                    @csrf @method('DELETE')
+                                    <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
                                     <button type="submit"
                                         class="w-full py-1.5 text-xs font-semibold bg-red-500/30 hover:bg-red-500/50 rounded text-red-900 transition">
                                         Deletar
@@ -68,36 +79,36 @@
                         <!-- O SEGREDO ESTÁ AQUI: x-teleport="body" tira o modal da prisão do post-it -->
                         <template x-teleport="body">
                             <!-- Edit Modal (Open) -->
-                            <div x-show="open{{ $note->id }}"
+                            <div x-show="open<?php echo e($note->id); ?>"
                                 class="fixed inset-0 z-[100] flex items-center justify-center p-4" x-transition
                                 style="display: none;">
 
                                 <!-- Fundo escuro (Backdrop) -->
                                 <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                                    @click="open{{ $note->id }} = false"></div>
+                                    @click="open<?php echo e($note->id); ?> = false"></div>
 
                                 <!-- Janela do Modal -->
                                 <div class="relative w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden transition-colors duration-300"
-                                    x-data="noteForm{{ $note->id }}()" :style="`background-color: ${color}`">
+                                    x-data="noteForm<?php echo e($note->id); ?>()" :style="`background-color: ${color}`">
 
                                     <!-- Header -->
                                     <div
                                         class="flex items-center justify-between p-4 border-b border-black/10 bg-black/5">
-                                        <h3 class="font-bold text-gray-900">{{ __('Editar Nota') }}</h3>
-                                        <button @click="open{{ $note->id }} = false"
+                                        <h3 class="font-bold text-gray-900"><?php echo e(__('Editar Nota')); ?></h3>
+                                        <button @click="open<?php echo e($note->id); ?> = false"
                                             class="text-gray-600 hover:text-gray-900 transition">
                                             <i class="fa-solid fa-xmark text-xl"></i>
                                         </button>
                                     </div>
 
                                     <!-- Form -->
-                                    <form method="POST" action="{{ route('notes.update', $note->id) }}"
+                                    <form method="POST" action="<?php echo e(route('notes.update', $note->id)); ?>"
                                         @submit.prevent="submit()" class="p-6 space-y-4">
-                                        @csrf @method('PATCH')
+                                        <?php echo csrf_field(); ?> <?php echo method_field('PATCH'); ?>
 
                                         <div>
                                             <label
-                                                class="block text-sm font-semibold text-gray-900 mb-2">{{ __('Título') }}</label>
+                                                class="block text-sm font-semibold text-gray-900 mb-2"><?php echo e(__('Título')); ?></label>
                                             <!-- BG-WHITE FORÇADO PARA NÃO FICAR TRANSPARENTE -->
                                             <input type="text" name="title" x-model="title"
                                                 class="w-full px-3 py-2 rounded-lg border border-black/10 focus:border-black/30 outline-none bg-white text-gray-900 transition shadow-sm">
@@ -105,7 +116,7 @@
 
                                         <div>
                                             <label
-                                                class="block text-sm font-semibold text-gray-900 mb-2">{{ __('Conteúdo') }}</label>
+                                                class="block text-sm font-semibold text-gray-900 mb-2"><?php echo e(__('Conteúdo')); ?></label>
 
                                             <div
                                                 class="rounded-lg border border-black/10 focus-within:border-black/30 bg-white shadow-sm overflow-hidden transition">
@@ -192,7 +203,7 @@
                                         <!-- Color Picker com as 11 cores -->
                                         <div>
                                             <label
-                                                class="block text-sm font-semibold text-gray-900 mb-2">{{ __('Cor do Post-It') }}</label>
+                                                class="block text-sm font-semibold text-gray-900 mb-2"><?php echo e(__('Cor do Post-It')); ?></label>
                                             <div class="flex flex-wrap gap-2">
                                                 <button type="button" @click="color = '#fef08a'"
                                                     class="h-8 w-8 rounded-lg bg-[#fef08a] border border-black/20 hover:border-black shadow-sm transition"
@@ -233,13 +244,15 @@
 
                                         <!-- Actions -->
                                         <div class="flex gap-3 justify-end pt-4 border-t border-black/10">
-                                            <button type="button" @click="open{{ $note->id }} = false"
+                                            <button type="button" @click="open<?php echo e($note->id); ?> = false"
                                                 class="px-4 py-2 rounded-lg font-semibold text-gray-900 bg-black/10 hover:bg-black/20 transition">
-                                                {{ __('Cancelar') }}
+                                                <?php echo e(__('Cancelar')); ?>
+
                                             </button>
                                             <button type="submit"
                                                 class="px-4 py-2 rounded-lg font-semibold text-white bg-brand-600 hover:bg-brand-700 transition shadow-md">
-                                                {{ __('Salvar') }}
+                                                <?php echo e(__('Salvar')); ?>
+
                                             </button>
                                         </div>
                                     </form>
@@ -247,21 +260,21 @@
                             </div>
                         </template>
                     </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
-        @endif
+        <?php endif; ?>
     </div>
 
     <script>
-        @foreach ($notes as $note)
-            function noteForm{{ $note->id }}() {
+        <?php $__currentLoopData = $notes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $note): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            function noteForm<?php echo e($note->id); ?>() {
                 return {
-                    title: '{{ $note->title }}',
-                    content: {!! json_encode($note->content ?? '') !!},
-                    color: '{{ $note->color ?? '#fef08a' }}',
+                    title: '<?php echo e($note->title); ?>',
+                    content: <?php echo json_encode($note->content ?? ''); ?>,
+                    color: '<?php echo e($note->color ?? '#fef08a'); ?>',
                     async submit() {
                         try {
-                            const res = await fetch('{{ route('notes.update', $note->id) }}', {
+                            const res = await fetch('<?php echo e(route('notes.update', $note->id)); ?>', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -275,7 +288,7 @@
                                 })
                             });
                             if (res.ok) {
-                                open{{ $note->id }} = false;
+                                open<?php echo e($note->id); ?> = false;
                                 location.reload();
                             }
                         } catch (err) {
@@ -284,7 +297,7 @@
                     }
                 }
             }
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </script>
     <style>
         /* Força as listas a aparecerem dentro do nosso editor de notas */
@@ -304,4 +317,14 @@
             display: list-item !important;
         }
     </style>
-</x-app-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php /**PATH C:\Workspace\SkyFlow\resources\views/notes/index.blade.php ENDPATH**/ ?>

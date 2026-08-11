@@ -1,10 +1,19 @@
-<x-app-layout>
-    <x-slot name="header">
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     <?php $__env->slot('header', null, []); ?> 
         <div>
-            <h2 class="font-extrabold text-2xl text-brand-950 leading-tight">{{ __('Calendário') }}</h2>
-            <p class="text-sm text-brand-600 mt-1">{{ __('Visualize e arraste suas tarefas entre datas.') }}</p>
+            <h2 class="font-extrabold text-2xl text-brand-950 leading-tight"><?php echo e(__('Calendário')); ?></h2>
+            <p class="text-sm text-brand-600 mt-1"><?php echo e(__('Visualize e arraste suas tarefas entre datas.')); ?></p>
         </div>
-    </x-slot>
+     <?php $__env->endSlot(); ?>
 
     <div class="py-10">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -24,7 +33,7 @@
         
         <!-- Cabeçalho da Gaveta -->
         <div class="p-6 border-b border-brand-100 flex items-center justify-between bg-slate-50">
-            <h3 class="font-extrabold text-lg text-brand-950">{{ __('Detalhes da Tarefa') }}</h3>
+            <h3 class="font-extrabold text-lg text-brand-950"><?php echo e(__('Detalhes da Tarefa')); ?></h3>
             <button onclick="closeDrawer()" class="text-gray-400 hover:text-rose-500 transition">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
@@ -33,7 +42,7 @@
         <!-- Corpo da Gaveta -->
         <div class="p-6 flex-1 overflow-y-auto space-y-6">
             <div>
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{{ __('Título') }}</p>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1"><?php echo e(__('Título')); ?></p>
                 <h4 id="drawer-title" class="text-xl font-bold text-brand-900 leading-tight">--</h4>
             </div>
 
@@ -42,7 +51,7 @@
             </div>
 
             <div>
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{{ __('Descrição') }}</p>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"><?php echo e(__('Descrição')); ?></p>
                 <div class="bg-slate-50 rounded-xl p-4 border border-brand-50">
                     <p id="drawer-desc" class="text-sm text-gray-700 whitespace-pre-line">--</p>
                 </div>
@@ -52,7 +61,7 @@
         <!-- Rodapé da Gaveta -->
         <div class="p-6 border-t border-brand-100 bg-white">
             <a id="drawer-link" href="#" class="w-full flex items-center justify-center gap-2 px-5 py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-xl shadow-md transition hover:-translate-y-0.5">
-                {{ __('Acessar Tarefa Completa') }} <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <?php echo e(__('Acessar Tarefa Completa')); ?> <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
         </div>
     </div>
@@ -214,4 +223,13 @@
             z-index: 10;
         }
     </style>
-</x-app-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?><?php /**PATH C:\Workspace\SkyFlow\resources\views/calendar/index.blade.php ENDPATH**/ ?>

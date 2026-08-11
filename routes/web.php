@@ -7,6 +7,7 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TodoController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,7 +15,39 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = Auth::user();
+
+    // Estatísticas dos cards
+    $stats = [
+        'total'     => $user->todos()->count(),
+        'pending'   => $user->todos()->where('status', '!=', 'done')->count(),
+        'completed' => $user->todos()->where('status', 'done')->count(),
+    ];
+
+    // Tarefas Urgentes (Fogo no parquinho!)
+    $urgentTodos = $user->todos()
+        ->where('status', '!=', 'done')
+        ->whereIn('priority', ['high', 'highest']) // Pega as altas
+        ->orderByRaw('due_date IS NULL, due_date ASC') // Ordena por data
+        ->take(5)
+        ->get();
+
+    // Últimas Anotações
+    $recentNotes = \App\Models\Note::where('user_id', $user->id)
+        ->latest()
+        ->take(3)
+        ->get();
+
+    // Para o gráfico de categorias (ex: SkyCast Pro, SkyMaps, etc)
+    $categories = \App\Models\Category::where('user_id', $user->id)
+        ->withCount(['todos' => function ($query) {
+            $query->where('status', '!=', 'done');
+        }])
+        ->orderByDesc('todos_count')
+        ->take(4)
+        ->get();
+
+    return view('dashboard', compact('stats', 'urgentTodos', 'recentNotes', 'categories'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -81,15 +114,15 @@ Route::middleware('auth')->group(function () {
         Route::patch('/reschedule', 'reschedule')->name('reschedule');
     });
 
-// 📊 Rotas do SkyFlow (Kanban)
+    // 📊 Rotas do SkyFlow (Kanban)
     Route::controller(KanbanController::class)->prefix('kanban')->name('kanban.')->group(function () {
         Route::get('/', 'index')->name('index'); // URL final: /kanban
         Route::get('/columns', 'columns')->name('columns'); // URL final: /kanban/columns
         Route::post('/move', 'move')->name('move'); // URL final: /kanban/move
-        
+
         // Aqui usamos o storeColumn (que criamos no controller) para a URL /kanban/column/create
-        Route::post('/column/create', 'storeColumn')->name('column.store'); 
-        
+        Route::post('/column/create', 'storeColumn')->name('column.store');
+
         Route::delete('/column/{columnKey}', 'deleteColumn')->name('column.delete');
     });
 

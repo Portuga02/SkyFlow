@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
@@ -12,30 +13,38 @@ class NoteController extends Controller
         $notes = Auth::user()->notes()->latest()->get();
         return view('notes.index', compact('notes'));
     }
-
-    public function store()
+    public function store(Request $request)
     {
-        $note = Auth::user()->notes()->create([
-            'title'   => 'Nova nota',
-            'content' => '',
-            'color'   => '#fef08a', // Amarelo padrão
+        // Se a requisição vier vazia (botão Nova Nota), ele cria um amarelinho padrão
+        $request->user()->notes()->create([
+            'title'   => $request->title ?? 'Nova nota',
+            'content' => $request->content ?? 'Clique para editar...',
+            'color'   => $request->color ?? '#fef08a', // Cor padrão amarela
         ]);
 
-        return to_route('notes.index')->with('open_note', $note->id);
+        // Se for JSON (veio pelo Javascript do Dashboard), devolve JSON
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back();
     }
 
-    public function update(Note $note)
+    public function update(Request $request, Note $note)
     {
-        abort_if($note->user_id !== Auth::id(), 403);
+        // Garante que a nota é do cara logado
+        abort_if($note->user_id !== $request->user()->id, 403);
 
-        $note->update(request()->validate([
-            'title'   => 'required|string|max:255',
-            'content' => 'required|string',
-            'color'   => 'sometimes|string|regex:/^#[0-9A-Fa-f]{6}$/',
-        ]));
+        $note->update([
+            'title'   => $request->title,
+            'content' => $request->content,
+            'color'   => $request->color, // <-- A cor sendo salva aqui!
+        ]);
 
-        return response()->json(['success' => true, 'message' => 'Nota atualizada!']);
+        return response()->json(['success' => true]);
     }
+
+
 
     public function destroy(Note $note)
     {
