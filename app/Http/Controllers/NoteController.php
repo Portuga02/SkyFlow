@@ -3,16 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 
 class NoteController extends Controller
 {
     public function index()
     {
-        $notes = Auth::user()->notes()->latest('updated_at')->get();
-
+        $notes = Auth::user()->notes()->latest()->get();
         return view('notes.index', compact('notes'));
     }
 
@@ -21,35 +18,30 @@ class NoteController extends Controller
         $note = Auth::user()->notes()->create([
             'title'   => 'Nova nota',
             'content' => '',
+            'color'   => '#fef08a', // Amarelo padrão
         ]);
 
         return to_route('notes.index')->with('open_note', $note->id);
     }
 
-    // Autosave: chamado via fetch() a cada pausa de digitação
-    public function update(Request $request, Note $note)
+    public function update(Note $note)
     {
-        abort_if($note->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
+        abort_if($note->user_id !== Auth::id(), 403);
 
-        $request->validate([
-            'title'   => 'nullable|string|max:255',
-            'content' => 'nullable|string',
-        ]);
+        $note->update(request()->validate([
+            'title'   => 'required|string|max:255',
+            'content' => 'required|string',
+            'color'   => 'sometimes|string|regex:/^#[0-9A-Fa-f]{6}$/',
+        ]));
 
-        $note->update([
-            'title'   => $request->title ?: 'Sem título',
-            'content' => $request->content,
-        ]);
-
-        return response()->json(['status' => 'saved', 'updated_at' => $note->updated_at->diffForHumans()]);
+        return response()->json(['success' => true, 'message' => 'Nota atualizada!']);
     }
 
     public function destroy(Note $note)
     {
-        abort_if($note->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-
+        abort_if($note->user_id !== Auth::id(), 403);
         $note->delete();
 
-        return back()->with('alert-success', 'Nota excluída!');
+        return back()->with('alert-success', 'Nota deletada!');
     }
 }

@@ -82,11 +82,13 @@ Route::middleware('auth')->group(function () {
     });
 
     // 📊 Rotas do SkyFlow (Kanban)
-    Route::controller(KanbanController::class)->prefix('kanban')->name('kanban.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/columns', 'columns')->name('columns');
-        Route::post('/move', 'move')->name('move');
-    });
+   Route::controller(KanbanController::class)->prefix('kanban')->name('kanban.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/columns', 'columns')->name('columns');
+    Route::post('/move', 'move')->name('move');
+    Route::post('/column/create', 'createColumn')->name('column.create');
+    Route::delete('/column/{columnKey}', 'deleteColumn')->name('column.delete');
+});
 
     // Toggle view mode (list vs kanban)
     Route::post('/todos/view-toggle', [TodoController::class, 'toggleViewMode'])->name('todos.view-toggle');

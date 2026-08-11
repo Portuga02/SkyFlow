@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Http\FormRequest;
@@ -28,7 +29,7 @@ class TodoRequest extends FormRequest
             'description' => 'required|string|min:5|max:500',
             'is_completed' => 'sometimes|boolean',
             'category_id' => 'nullable|exists:categories,id',
-            'priority' => 'sometimes|in:low,medium,high',
+            'priority' => 'required|in:low,medium,high,highest',
             'due_date' => 'nullable|date',
             'assigned_to' => 'nullable|exists:users,id',
 
