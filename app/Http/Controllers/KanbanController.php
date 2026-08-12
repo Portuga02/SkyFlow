@@ -6,7 +6,7 @@ use App\Models\KanbanColumn;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Str;
 
 class KanbanController extends Controller
 {
@@ -17,12 +17,12 @@ class KanbanController extends Controller
                     ->orderBy('order')
                     ->get();
 
-        // Se o usuário não tiver colunas, cria as 3 básicas automaticamente
+        // Se o usuário não tiver colunas, cria as 3 básicas automaticamente com ícones seguros
         if ($columns->isEmpty()) {
             $defaultColumns = [
-                ['name' => 'A Fazer', 'color' => '#f59e0b', 'slug' => 'todo'],
-                ['name' => 'Em Andamento', 'color' => '#3b82f6', 'slug' => 'in_progress'],
-                ['name' => 'Concluído', 'color' => '#10b981', 'slug' => 'done'],
+                ['name' => 'A Fazer', 'color' => '#f59e0b', 'slug' => 'todo', 'icon' => 'fa-list-ul'],
+                ['name' => 'Em Andamento', 'color' => '#3b82f6', 'slug' => 'in_progress', 'icon' => 'fa-fire'],
+                ['name' => 'Concluído', 'color' => '#10b981', 'slug' => 'done', 'icon' => 'fa-check-double'],
             ];
 
             foreach ($defaultColumns as $index => $col) {
@@ -31,6 +31,7 @@ class KanbanController extends Controller
                     'name'    => $col['name'],
                     'slug'    => $col['slug'],
                     'color'   => $col['color'],
+                    'icon'    => $col['icon'], // Adicionado para evitar erro em produção!
                     'order'   => $index,
                 ]);
             }
@@ -43,23 +44,39 @@ class KanbanController extends Controller
 
         return view('kanban.index', compact('columns', 'todos'));
     }
-   public function storeColumn(Request $request)
+
+    public function storeColumn(Request $request)
     {
-        $request->validate(array(
-            'name'  => 'required|string|max:255',
-            'color' => 'required|string',
-            'icon'  => 'nullable|string'
-        ));
+        try {
+            $request->validate([
+                'name'  => 'required|string|max:255',
+                'color' => 'required|string',
+                'icon'  => 'nullable|string'
+            ]);
 
-        $column = $request->user()->kanbanColumns()->create(array(
-            'name'  => $request->name,
-            'slug'  => \Illuminate\Support\Str::slug($request->name),
-            'color' => $request->color,
-            'icon'  => $request->icon ?? 'fa-layer-group', // Salva o ícone escolhido!
-            'order' => $request->user()->kanbanColumns()->count()
-        ));
+            $baseSlug = Str::slug($request->name);
+            $slug = $baseSlug;
 
-        return response()->json(array('success' => true, 'column' => $column));
+            // Evita duplicação de slugs para o mesmo usuário
+            $count = 1;
+            while (KanbanColumn::where('user_id', Auth::id())->where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $count;
+                $count++;
+            }
+
+            $column = $request->user()->kanbanColumns()->create([
+                'name'  => $request->name,
+                'slug'  => $slug,
+                'color' => $request->color,
+                'icon'  => $request->icon ?? 'fa-layer-group',
+                'order' => $request->user()->kanbanColumns()->count()
+            ]);
+
+            return response()->json(['success' => true, 'column' => $column]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function move(Request $request)
@@ -80,13 +97,11 @@ class KanbanController extends Controller
             return response()->json(['success' => false], 500);
         }
     }
-   
+
     public function deleteColumn($columnKey)
     {
         try {
-          
             $column = KanbanColumn::where('user_id', Auth::id())->findOrFail($columnKey);
-
             $column->delete();
 
             return response()->json(['success' => true]);
@@ -97,24 +112,5 @@ class KanbanController extends Controller
                 'error' => 'Não foi possível excluir a coluna.'
             ], 500);
         }
-    }
-    public function createColumn(Request $request)
-    {
-        $request->validate(array(
-            'name'  => 'required|string|max:255',
-            'color' => 'required|string',
-            'icon'  => 'nullable|string' 
-        ));
-
-      
-        $column = $request->user()->kanbanColumns()->create(array(
-            'name'  => $request->name,
-            'slug'  => \Illuminate\Support\Str::slug($request->name),
-            'color' => $request->color,
-            'icon'  => $request->icon ?? 'fa-layer-group',
-            'order' => $request->user()->kanbanColumns()->count()
-        ));
-
-        return response()->json(array('success' => true, 'column' => $column));
     }
 }
