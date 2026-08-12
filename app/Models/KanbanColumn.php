@@ -15,9 +15,8 @@ class KanbanColumn extends Model
         'slug',
         'color',
         'order',
+        'icon'
     ];
-
-    // Uma coluna tem várias tarefas (todos)
     public function todos()
     {
         return $this->hasMany(Todo::class, 'status', 'slug');

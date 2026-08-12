@@ -47,18 +47,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     );
-
-    /**
-     * Categorias criadas por este usuário.
-     */
     public function categories()
     {
         return $this->hasMany(\App\Models\Category::class);
     }
-
-    /**
-     * Notas/anotações criadas por este usuário.
-     */
     public function notes()
     {
         return $this->hasMany(\App\Models\Note::class);
@@ -67,5 +59,9 @@ class User extends Authenticatable
     public function todos()
     {
         return $this->hasMany(\App\Models\Todo::class);
+    }
+    public function kanbanColumns()
+    {
+        return $this->hasMany(KanbanColumn::class, 'user_id');
     }
 }

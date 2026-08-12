@@ -20,23 +20,22 @@
     </x-slot>
 
     <div class="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-        <div class="overflow-x-auto pb-4">
+        <div class="overflow-x-auto pb-4 custom-scrollbar">
             <div class="flex gap-6 min-w-max" style="min-width: fit-content;">
 
                 <!-- LOOP DINÂMICO DE COLUNAS -->
                 @foreach ($columns as $column)
-                    <div
-                        class="flex-shrink-0 w-96 flex flex-col bg-white rounded-2xl shadow-lg border-0 overflow-hidden">
+                    <div class="flex-shrink-0 w-96 flex flex-col bg-white rounded-2xl shadow-lg border-0 overflow-hidden">
 
-                        <!-- Cabeçalho Dinâmico -->
                         <!-- Cabeçalho Dinâmico -->
                         <div class="p-4 border-b-2"
                             style="background-color: {{ $column->color }}15; border-color: {{ $column->color }}50;">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
+                                    <!-- AQUI ENTRA O ÍCONE DINÂMICO -->
                                     <div class="h-8 w-8 rounded-full flex items-center justify-center text-white"
                                         style="background-color: {{ $column->color }}">
-                                        <i class="fa-solid fa-layer-group text-sm"></i>
+                                        <i class="fa-solid {{ $column->icon ?? 'fa-layer-group' }} text-sm"></i>
                                     </div>
                                     <h3 class="font-bold text-brand-950">{{ $column->name }}</h3>
                                 </div>
@@ -46,7 +45,7 @@
                                         class="inline-flex items-center justify-center h-7 w-7 rounded-full text-white text-sm font-bold"
                                         style="background-color: {{ $column->color }}">0</span>
 
-                                    <!-- NOVO BOTÃO DE EXCLUIR AQUI 👇 -->
+                                    <!-- BOTÃO DE EXCLUIR -->
                                     <button onclick="deleteColumn({{ $column->id }})"
                                         class="text-gray-400 hover:text-rose-500 transition" title="Excluir Coluna">
                                         <i class="fa-solid fa-trash text-sm"></i>
@@ -56,7 +55,7 @@
                         </div>
 
                         <!-- Corpo da Coluna -->
-                        <div class="kanban-column flex-1 min-h-96 max-h-96 space-y-3 p-4 overflow-y-auto"
+                        <div class="kanban-column flex-1 min-h-96 max-h-96 space-y-3 p-4 overflow-y-auto custom-scrollbar"
                             style="background-color: {{ $column->color }}05;" data-status="{{ $column->slug }}"
                             ondragover="event.preventDefault()" ondrop="handleDrop(event, '{{ $column->slug }}')">
 
@@ -72,14 +71,11 @@
 
                                     <div class="flex flex-wrap gap-1.5 mb-3">
                                         @if ($todo->priority === 'highest' || $todo->priority === 'high')
-                                            <span
-                                                class="text-[10px] font-bold text-white bg-rose-500 px-2.5 py-1 rounded-full">{{ __('Alta') }}</span>
+                                            <span class="text-[10px] font-bold text-white bg-rose-500 px-2.5 py-1 rounded-full">{{ __('Alta') }}</span>
                                         @elseif ($todo->priority === 'medium')
-                                            <span
-                                                class="text-[10px] font-bold text-white bg-amber-500 px-2.5 py-1 rounded-full">{{ __('Média') }}</span>
+                                            <span class="text-[10px] font-bold text-white bg-amber-500 px-2.5 py-1 rounded-full">{{ __('Média') }}</span>
                                         @else
-                                            <span
-                                                class="text-[10px] font-bold text-white bg-blue-500 px-2.5 py-1 rounded-full">{{ __('Baixa') }}</span>
+                                            <span class="text-[10px] font-bold text-white bg-blue-500 px-2.5 py-1 rounded-full">{{ __('Baixa') }}</span>
                                         @endif
                                     </div>
 
@@ -120,21 +116,44 @@
                         <input type="color" id="columnColor" value="#f59e0b"
                             class="h-10 w-20 rounded-lg cursor-pointer border-2 border-brand-200">
                         <div class="flex gap-2">
-                            <button type="button" onclick="setColor('#f59e0b')"
-                                class="h-8 w-8 rounded-lg bg-amber-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
-                            <button type="button" onclick="setColor('#0c8fe6')"
-                                class="h-8 w-8 rounded-lg bg-blue-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
-                            <button type="button" onclick="setColor('#10b981')"
-                                class="h-8 w-8 rounded-lg bg-emerald-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
-                            <button type="button" onclick="setColor('#8b5cf6')"
-                                class="h-8 w-8 rounded-lg bg-purple-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
-                            <button type="button" onclick="setColor('#ec4899')"
-                                class="h-8 w-8 rounded-lg bg-pink-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
+                            <button type="button" onclick="setColor('#f59e0b')" class="h-8 w-8 rounded-lg bg-amber-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
+                            <button type="button" onclick="setColor('#0c8fe6')" class="h-8 w-8 rounded-lg bg-blue-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
+                            <button type="button" onclick="setColor('#10b981')" class="h-8 w-8 rounded-lg bg-emerald-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
+                            <button type="button" onclick="setColor('#8b5cf6')" class="h-8 w-8 rounded-lg bg-purple-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
+                            <button type="button" onclick="setColor('#ec4899')" class="h-8 w-8 rounded-lg bg-pink-500 border-2 border-gray-300 hover:border-gray-900 transition"></button>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex gap-3 justify-end pt-2">
+                <!-- SELETOR DINÂMICO DE ÍCONES (ALPINE JS) -->
+                <div x-data="{ 
+                        selectedIcon: 'fa-layer-group', 
+                        icons: [
+                            'fa-layer-group', 'fa-list-ul', 'fa-bars-staggered', 'fa-fire', 
+                            'fa-bug', 'fa-rocket', 'fa-code', 'fa-terminal', 
+                            'fa-database', 'fa-server', 'fa-paint-roller', 'fa-vial', 
+                            'fa-box-open', 'fa-hammer', 'fa-lightbulb', 'fa-star', 
+                            'fa-check-double', 'fa-flag-checkered', 'fa-triangle-exclamation', 'fa-calendar-days'
+                        ] 
+                    }" class="pt-2">
+                    
+                    <label class="block text-sm font-semibold text-brand-950 mb-2">{{ __('Ícone da Coluna') }}</label>
+                    
+                    <div class="grid grid-cols-5 sm:grid-cols-10 gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl max-h-40 overflow-y-auto custom-scrollbar">
+                        <template x-for="icon in icons" :key="icon">
+                            <button type="button" @click="selectedIcon = icon"
+                                :class="selectedIcon === icon ? 'bg-brand-100 border-brand-500 text-brand-700 shadow-md transform scale-110' : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-100'"
+                                class="h-10 w-10 flex items-center justify-center rounded-lg border transition-all">
+                                <i class="fa-solid text-lg" :class="icon"></i>
+                            </button>
+                        </template>
+                    </div>
+
+                    <!-- Input Oculto lido pelo JS abaixo -->
+                    <input type="hidden" id="columnIcon" name="icon" x-model="selectedIcon">
+                </div>
+
+                <div class="flex gap-3 justify-end pt-4">
                     <button type="button" onclick="closeNewColumnModal()"
                         class="px-5 py-2.5 rounded-lg font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 transition">
                         {{ __('Cancelar') }}
@@ -168,6 +187,7 @@
 
             const name = document.getElementById('columnName').value.trim();
             const color = document.getElementById('columnColor').value;
+            const icon = document.getElementById('columnIcon').value; // Pega o ícone selecionado!
 
             if (!name) return;
 
@@ -179,7 +199,8 @@
                     },
                     body: JSON.stringify({
                         name,
-                        color
+                        color,
+                        icon // Envia o ícone para a API
                     })
                 })
                 .then(r => r.json())
@@ -215,9 +236,7 @@
 
             const card = document.querySelector(`[data-id="${draggedId}"]`);
             if (card) {
-                // Adiciona o card à nova coluna visualmente
                 e.currentTarget.appendChild(card);
-                // Chama a API para salvar
                 updateCardStatus(draggedId, status);
             }
             draggedId = null;
@@ -249,7 +268,6 @@
             }
         }
 
-        // Nova função dinâmica para contar os cards (funciona para infinitas colunas!)
         function updateCounts() {
             document.querySelectorAll('.kanban-column').forEach(column => {
                 const status = column.dataset.status;
@@ -295,8 +313,11 @@
     </script>
 
     <style>
-        .hover\:scale-102:hover {
-            transform: scale(1.02);
-        }
+        .hover\:scale-102:hover { transform: scale(1.02); }
+        /* Barra de rolagem personalizada e suave */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </x-app-layout>

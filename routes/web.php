@@ -89,7 +89,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{todo}/labels/{index}', 'labelDestroy')->name('labels.destroy');
     });
 
-    // 📁 Rotas do SkyFlow (Categorias)
+   
     Route::controller(CategoryController::class)->prefix('categories')->name('categories.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
@@ -98,38 +98,30 @@ Route::middleware('auth')->group(function () {
         Route::put('/{category}', 'update')->name('update');
         Route::delete('/{category}', 'destroy')->name('destroy');
     });
-
-    // 📝 Rotas do SkyFlow (Bloquinho de Notas)
     Route::controller(NoteController::class)->prefix('notes')->name('notes.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/', 'store')->name('store');
         Route::patch('/{note}', 'update')->name('update');
         Route::delete('/{note}', 'destroy')->name('destroy');
     });
-
-    // 📅 Rotas do SkyFlow (Calendário)
     Route::controller(CalendarController::class)->prefix('calendar')->name('calendar.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/events', 'events')->name('events');
         Route::patch('/reschedule', 'reschedule')->name('reschedule');
     });
 
-    // 📊 Rotas do SkyFlow (Kanban)
-    Route::controller(KanbanController::class)->prefix('kanban')->name('kanban.')->group(function () {
-        Route::get('/', 'index')->name('index'); // URL final: /kanban
-        Route::get('/columns', 'columns')->name('columns'); // URL final: /kanban/columns
-        Route::post('/move', 'move')->name('move'); // URL final: /kanban/move
+   Route::controller(KanbanController::class)->prefix('kanban')->name('kanban.')->group(function () {
+        Route::get('/', 'index')->name('index'); 
+        Route::get('/columns', 'columns')->name('columns'); 
+        Route::post('/move', 'move')->name('move');
 
-        // Aqui usamos o storeColumn (que criamos no controller) para a URL /kanban/column/create
         Route::post('/column/create', 'storeColumn')->name('column.store');
 
         Route::delete('/column/{columnKey}', 'deleteColumn')->name('column.delete');
     });
 
-    // Toggle view mode (list vs kanban)
     Route::post('/todos/view-toggle', [TodoController::class, 'toggleViewMode'])->name('todos.view-toggle');
 
-    // 🔍 Busca Global (SKY-FLOW-XIV)
     Route::get('/search', [SearchController::class, 'global'])->name('search.global');
 });
 
