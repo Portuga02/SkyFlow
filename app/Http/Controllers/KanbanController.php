@@ -6,7 +6,7 @@ use App\Models\KanbanColumn;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+
 
 class KanbanController extends Controller
 {
@@ -43,50 +43,25 @@ class KanbanController extends Controller
 
         return view('kanban.index', compact('columns', 'todos'));
     }
-
-    // AQUI ESTÁ O MÉTODO STORECOLUMN! 👇
-    // Ele é o responsável por receber os dados do seu Modal e salvar no banco
-    public function storeColumn(Request $request)
+   public function storeColumn(Request $request)
     {
-        try {
-            $request->validate([
-                'name'  => 'required|string|max:255',
-                'color' => 'required|string|max:10',
-            ]);
+        $request->validate(array(
+            'name'  => 'required|string|max:255',
+            'color' => 'required|string',
+            'icon'  => 'nullable|string'
+        ));
 
-            // Transforma o nome digitado em um slug (ex: "Em Revisão" vira "em-revisao")
-            $slug = Str::slug($request->name);
+        $column = $request->user()->kanbanColumns()->create(array(
+            'name'  => $request->name,
+            'slug'  => \Illuminate\Support\Str::slug($request->name),
+            'color' => $request->color,
+            'icon'  => $request->icon ?? 'fa-layer-group', // Salva o ícone escolhido!
+            'order' => $request->user()->kanbanColumns()->count()
+        ));
 
-            // Evita colunas com slugs repetidos para o mesmo usuário
-            $count = KanbanColumn::where('user_id', Auth::id())
-                        ->where('slug', 'LIKE', "{$slug}%")
-                        ->count();
-            if ($count > 0) {
-                $slug = $slug . '-' . $count;
-            }
-
-            // Descobre a ordem da última coluna para colocar a nova no final
-            $maxOrder = KanbanColumn::where('user_id', Auth::id())->max('order');
-
-            KanbanColumn::create([
-                'user_id' => Auth::id(),
-                'name'    => $request->name,
-                'slug'    => $slug,
-                'color'   => $request->color,
-                'order'   => $maxOrder !== null ? $maxOrder + 1 : 0,
-            ]);
-
-            return response()->json(['success' => true]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error'   => 'Erro interno ao salvar coluna.'
-            ], 500);
-        }
+        return response()->json(array('success' => true, 'column' => $column));
     }
 
-    // O método que move os cards de uma coluna para outra
     public function move(Request $request)
     {
         try {
@@ -105,7 +80,7 @@ class KanbanController extends Controller
             return response()->json(['success' => false], 500);
         }
     }
-    // O método que apaga a coluna do banco de dados
+   
     public function deleteColumn($columnKey)
     {
         try {
@@ -122,5 +97,24 @@ class KanbanController extends Controller
                 'error' => 'Não foi possível excluir a coluna.'
             ], 500);
         }
+    }
+    public function createColumn(Request $request)
+    {
+        $request->validate(array(
+            'name'  => 'required|string|max:255',
+            'color' => 'required|string',
+            'icon'  => 'nullable|string' 
+        ));
+
+      
+        $column = $request->user()->kanbanColumns()->create(array(
+            'name'  => $request->name,
+            'slug'  => \Illuminate\Support\Str::slug($request->name),
+            'color' => $request->color,
+            'icon'  => $request->icon ?? 'fa-layer-group',
+            'order' => $request->user()->kanbanColumns()->count()
+        ));
+
+        return response()->json(array('success' => true, 'column' => $column));
     }
 }
