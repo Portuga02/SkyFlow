@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TodoRequest;
+use App\Models\Category;
 use App\Models\Todo;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -13,66 +14,89 @@ class TodoController extends Controller
 {
     public function index()
     {
-        $todoList = Auth::user()->todos()->latest()->get();
+        $userId = Auth::id();
+
+        $todoList = Todo::with(['category', 'assignedUsers'])
+            ->where(function ($query) use ($userId) {
+                $query->where('user_id', $userId)
+                ->orWhereHas('assignedUsers', function ($q) use ($userId) {
+                    $q->where('users.id', $userId);
+                });
+            })
+            ->latest()
+            ->get();
 
         return view('auth.todo', compact('todoList'));
     }
 
     public function create()
     {
-        $users = \App\Models\User::orderBy('name')->get();
+        $users = \App\Models\User::where('team_id', Auth::user()->team_id)
+            ->orderBy('name')
+            ->get();
 
         return view('auth.create-todo', compact('users'));
     }
 
-    public function store(TodoRequest $request)
+    public function store(Request $request)
     {
-        try {
-            Auth::user()->todos()->create([
-                ...$request->validated(),
-                'is_completed' => false,
-                'status' => 'todo',
-            ]);
+        $validated = $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'priority'    => 'required|string',
+            'due_date'    => 'nullable|date',
+            'category_id' => 'nullable|exists:categories,id',
+            'assigned_to' => 'nullable|array',
+            'assigned_to.*' => 'exists:users,id',
+        ]);
 
-            return to_route('todos.index')
-                ->with('alert-success', 'Atividade criada com sucesso!');
+        $todo = Todo::create([
+            'title'       => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'priority'    => $validated['priority'],
+            'due_date'    => $validated['due_date'] ?? null,
+            'category_id' => $validated['category_id'] ?? null,
+            'user_id'     => Auth::id(),
+        ]);
 
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Não foi possível criar a atividade.',
-                'error'   => $th->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        // Sincroniza os múltiplos responsáveis selecionados
+        if (!empty($validated['assigned_to'])) {
+            $todo->assignedUsers()->sync($validated['assigned_to']);
         }
+
+        return redirect()->route('todos.index')->with('alert-success', 'Tarefa criada com sucesso!');
     }
 
-    public function show(Todo $todo)
+   public function show(Todo $todo)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         try {
-            $users = \App\Models\User::orderBy('name')->get();
+            // CORREÇÃO: Trazendo apenas a galera da mesma equipe
+            $users = User::where('team_id', Auth::user()->team_id)
+                         ->orderBy('name')
+                         ->get();
 
             return view('auth.showTodo', compact('todo', 'users'));
-
         } catch (\Throwable $th) {
-            return response()->json([
+            return response()->json(array(
                 'status'  => 'error',
                 'message' => 'Não foi possível carregar os dados.',
                 'error'   => $th->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
     public function edit(Todo $todo)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         try {
-            $users = \App\Models\User::orderBy('name')->get();
+           
+            $users = User::where('team_id', Auth::user()->team_id)
+                         ->orderBy('name')
+                         ->get();
 
             return view('auth.edit-todo', compact('todo', 'users'));
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status'  => 'error',
@@ -81,35 +105,45 @@ class TodoController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    public function update(TodoRequest $request, Todo $todo)
+    public function update(Request $request, Todo $todo)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
-        try {
-            $todo->update($request->validated());
+        $this->authorizeTodoAccess($todo);
 
-            return to_route('todos.show', $todo->id)
-                ->with('alert-success', 'Atividade atualizada com sucesso!');
+    $validated = $request->validate(array(
+            'title'        => 'required|string|max:255',
+            'description'  => 'nullable|string',
+            'priority'     => 'required|string',
+            'due_date'     => 'nullable|date',
+            'category_id'  => 'nullable|exists:categories,id',
+            'is_completed' => 'required|boolean',
+            'assigned_to'  => 'nullable|array',
+            // TRAVA DE SEGURANÇA NA EDIÇÃO
+            'assigned_to.*' => 'exists:users,id,team_id,' . Auth::user()->team_id,
+        ));
 
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Não foi possível atualizar a atividade.',
-                'error'   => $th->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $todo->update([
+            'title'        => $validated['title'],
+            'description'  => $validated['description'] ?? null,
+            'priority'     => $validated['priority'],
+            'due_date'     => $validated['due_date'] ?? null,
+            'category_id'  => $validated['category_id'] ?? null,
+            'is_completed' => $validated['is_completed'],
+        ]);
+
+        // Atualiza a lista de responsáveis na tabela pivot
+        $todo->assignedUsers()->sync($request->input('assigned_to', []));
+
+        return redirect()->route('todos.index')->with('alert-success', 'Tarefa atualizada com sucesso!');
     }
 
     public function toggle(Todo $todo)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         try {
             $todo->update(['is_completed' => $todo->is_completed ? 0 : 1]);
 
             return back()->with('alert-success', 'Status da atividade atualizado!');
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status'  => 'error',
@@ -121,14 +155,13 @@ class TodoController extends Controller
 
     public function destroy(Todo $todo)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         try {
             $todo->delete();
 
-            return to_route('todos.index')
+            return redirect()->route('todos.index')
                 ->with('alert-success', 'Atividade deletada com sucesso!');
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status'  => 'error',
@@ -141,8 +174,8 @@ class TodoController extends Controller
     // Checklist
     public function checklistStore(Request $request, Todo $todo)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         $request->validate(['text' => 'required|string|max:255']);
 
         $checklist = $todo->checklist ?? [];
@@ -155,8 +188,8 @@ class TodoController extends Controller
 
     public function checklistToggle(Todo $todo, int $index)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         $checklist = $todo->checklist ?? [];
 
         if (isset($checklist[$index])) {
@@ -169,8 +202,8 @@ class TodoController extends Controller
 
     public function checklistDestroy(Todo $todo, int $index)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         $checklist = $todo->checklist ?? [];
 
         if (isset($checklist[$index])) {
@@ -184,8 +217,8 @@ class TodoController extends Controller
     // Comentários
     public function commentStore(Request $request, Todo $todo)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         $request->validate(['body' => 'required|string|max:1000']);
 
         $comments = $todo->comments ?? [];
@@ -203,8 +236,8 @@ class TodoController extends Controller
     // Anexos
     public function attachmentStore(Request $request, Todo $todo)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         $request->validate(['file' => 'required|file|max:10240']);
 
         $path = $request->file('file')->store('attachments', 'public');
@@ -222,8 +255,8 @@ class TodoController extends Controller
 
     public function attachmentDestroy(Todo $todo, int $index)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         $attachments = $todo->attachments ?? [];
 
         if (isset($attachments[$index])) {
@@ -238,8 +271,8 @@ class TodoController extends Controller
     // Etiquetas
     public function labelStore(Request $request, Todo $todo)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         $request->validate([
             'name'  => 'required|string|max:30',
             'color' => 'required|string|max:7',
@@ -255,8 +288,8 @@ class TodoController extends Controller
 
     public function labelDestroy(Todo $todo, int $index)
     {
-        abort_if($todo->user_id !== Auth::id(), Response::HTTP_FORBIDDEN);
-        
+        $this->authorizeTodoAccess($todo);
+
         $labels = $todo->labels ?? [];
 
         if (isset($labels[$index])) {
@@ -270,5 +303,42 @@ class TodoController extends Controller
     public function toggleViewMode()
     {
         return redirect()->route('kanban.index');
+    }
+
+    /**
+     * Valida se o usuário logado é o autor ou faz parte da equipe da tarefa.
+     */
+    private function authorizeTodoAccess(Todo $todo): void
+    {
+        $userId = Auth::id();
+
+        // É o autor da tarefa?
+        $isAuthor = $todo->user_id === $userId;
+
+        // Faz parte dos responsáveis atribuídos à tarefa?
+        $isAssigned = $todo->assignedUsers()->where('users.id', $userId)->exists();
+
+        // Se não for o autor nem estiver na equipe, bloqueia o acesso
+        abort_if(!$isAuthor && !$isAssigned, Response::HTTP_FORBIDDEN);
+    }
+    public function storeTeamMember(Request $request)
+    {
+        // Valida os dados que você digitou
+        $validated = $request->validate(array(
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+        ));
+
+        // Cria o usuário já amarrado à sua equipe
+        User::create(array(
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            // A mágica acontece aqui: ele herda o seu ID de equipe!
+            'team_id'  => Auth::user()->team_id,
+        ));
+
+        return back()->with('alert-success', 'Membro da equipe criado com sucesso!');
     }
 }

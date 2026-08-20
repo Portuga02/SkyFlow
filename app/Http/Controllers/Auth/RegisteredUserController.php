@@ -35,11 +35,14 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+        $team = \App\Models\Team::create([
+            'name' => 'Equipe de ' . $request->name,
+        ]);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'team_id' => $team->id,
         ]);
 
         event(new Registered($user));

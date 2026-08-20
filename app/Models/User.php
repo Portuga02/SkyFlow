@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -23,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'team_id',
         'avatar_path',
         'theme_color',
         'view_mode',
@@ -64,4 +66,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(KanbanColumn::class, 'user_id');
     }
+    public function getAvatarUrlAttribute(): string
+    {
+        
+        if (!empty($this->avatar)) {
+            return Storage::url($this->avatar);
+        }
+
+        if (!empty($this->profile_photo_path)) {
+            return Storage::url($this->profile_photo_path);
+        }
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF&bold=true';
+    }
+    public function team()
+{
+    return $this->belongsTo(Team::class);
+}
 }

@@ -5,19 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Todo extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+ protected $fillable = [
+        'user_id', 
         'category_id',
         'title',
         'description',
         'is_completed',
         'priority',
         'due_date',
-        'assigned_to',
+        'assigned_to', 
         'status',
         'labels',
         'checklist',
@@ -63,4 +65,9 @@ class Todo extends Model
             && !$this->is_completed
             && $this->due_date->isPast();
     }
+    
+  public function assignedUsers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+{
+    return $this->belongsToMany(User::class, 'todo_user', 'todo_id', 'user_id');
+}
 }
