@@ -7,6 +7,7 @@ use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,7 +32,7 @@ class TodoController extends Controller
 
     public function create()
     {
-        $users = \App\Models\User::where('team_id', Auth::user()->team_id)
+        $users = User::where('team_id', Auth::user()->team_id)
             ->orderBy('name')
             ->get();
 
@@ -58,8 +59,6 @@ class TodoController extends Controller
             'category_id' => $validated['category_id'] ?? null,
             'user_id'     => Auth::id(),
         ]);
-
-        // Sincroniza os múltiplos responsáveis selecionados
         if (!empty($validated['assigned_to'])) {
             $todo->assignedUsers()->sync($validated['assigned_to']);
         }
@@ -67,12 +66,12 @@ class TodoController extends Controller
         return redirect()->route('todos.index')->with('alert-success', 'Tarefa criada com sucesso!');
     }
 
-   public function show(Todo $todo)
+    public function show(Todo $todo)
     {
         $this->authorizeTodoAccess($todo);
 
         try {
-            // CORREÇÃO: Trazendo apenas a galera da mesma equipe
+         
             $users = User::where('team_id', Auth::user()->team_id)
                          ->orderBy('name')
                          ->get();
@@ -91,7 +90,7 @@ class TodoController extends Controller
         $this->authorizeTodoAccess($todo);
 
         try {
-           
+
             $users = User::where('team_id', Auth::user()->team_id)
                          ->orderBy('name')
                          ->get();
@@ -109,17 +108,17 @@ class TodoController extends Controller
     {
         $this->authorizeTodoAccess($todo);
 
-    $validated = $request->validate(array(
-            'title'        => 'required|string|max:255',
-            'description'  => 'nullable|string',
-            'priority'     => 'required|string',
-            'due_date'     => 'nullable|date',
-            'category_id'  => 'nullable|exists:categories,id',
-            'is_completed' => 'required|boolean',
-            'assigned_to'  => 'nullable|array',
-            // TRAVA DE SEGURANÇA NA EDIÇÃO
-            'assigned_to.*' => 'exists:users,id,team_id,' . Auth::user()->team_id,
-        ));
+        $validated = $request->validate(array(
+                'title'        => 'required|string|max:255',
+                'description'  => 'nullable|string',
+                'priority'     => 'required|string',
+                'due_date'     => 'nullable|date',
+                'category_id'  => 'nullable|exists:categories,id',
+                'is_completed' => 'required|boolean',
+                'assigned_to'  => 'nullable|array',
+                // TRAVA DE SEGURANÇA NA EDIÇÃO
+                'assigned_to.*' => 'exists:users,id,team_id,' . Auth::user()->team_id,
+            ));
 
         $todo->update([
             'title'        => $validated['title'],
