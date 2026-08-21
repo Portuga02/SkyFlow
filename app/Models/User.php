@@ -26,6 +26,7 @@ class User extends Authenticatable
         'password',
         'team_id',
         'avatar_path',
+        'role',
         'theme_color',
         'view_mode',
     );

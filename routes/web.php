@@ -6,6 +6,7 @@ use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TodoController;
 use App\Models\Todo;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +54,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-
+Route::get('/team', [TeamController::class, 'index'])->name('team.index');
+    Route::post('/team', [TeamController::class, 'store'])->name('team.store');
     // 👤 Rotas do Profile (Breeze)
     Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
         Route::get('/', 'edit')->name('edit');
