@@ -12,9 +12,6 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
     public function edit(Request $request): View
     {
         return view('profile.edit', [
@@ -22,19 +19,16 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-
         $user->fill($request->validated());
 
-        // Se houver upload de avatar
         if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar_path = $path;
+            $file = $request->file('avatar');
+            $mime = $file->getMimeType();
+            $base64 = base64_encode(file_get_contents($file->getRealPath()));
+            $user->avatar_path = "data:{$mime};base64,{$base64}";
         }
 
         if ($user->isDirty('email')) {
@@ -45,9 +39,7 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
-    /**
-     * Delete the user's account.
-     */
+
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [
@@ -65,31 +57,20 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
-
-    /**
-     * Upload avatar
-     */
     public function uploadAvatar(Request $request): RedirectResponse
     {
         $request->validate(['avatar' => 'required|image|max:2048']);
 
         $user = Auth::user();
 
-        // Delete old avatar
         if ($user->avatar_path) {
             Storage::disk('public')->delete($user->avatar_path);
         }
-
-        // Save new
         $path = $request->file('avatar')->store('avatars', 'public');
         $user->update(['avatar_path' => $path]);
 
         return back()->with('status', 'avatar-updated');
     }
-
-    /**
-     * Update theme color
-     */
     public function updateTheme(Request $request): RedirectResponse
     {
         $request->validate(['theme_color' => 'required|string|max:7|regex:/^#[0-9A-Fa-f]{6}$/']);
