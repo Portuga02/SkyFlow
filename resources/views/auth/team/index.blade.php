@@ -42,14 +42,16 @@
                         <tbody class="divide-y divide-brand-50">
                             @foreach($members as $member)
                                 @php
-                                    $avatar = !empty($member->avatar_path) 
-                                        ? asset('storage/' . $member->avatar_path) 
-                                        : 'https://api.dicebear.com/7.x/notionists/svg?seed=' . urlencode($member->name) . '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
+                                    $dicebear = 'https://api.dicebear.com/7.x/notionists/svg?seed=' . urlencode($member->name) . '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
+                                    $avatar = !empty($member->avatar_path) ? $member->avatar_path : $dicebear;
                                 @endphp
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
-                                            <img src="{{ $avatar }}" class="w-10 h-10 rounded-full object-cover border border-brand-100 bg-white">
+                                            <img src="{{ $avatar }}" 
+                                                 alt="{{ $member->name }}"
+                                                 class="w-10 h-10 rounded-full object-cover border border-brand-100 bg-white shadow-xs"
+                                                 onerror="this.src='{{ $dicebear }}'">
                                             <div>
                                                 <p class="font-bold text-brand-950">{{ $member->name }} 
                                                     @if($member->id === Auth::id()) <span class="text-xs text-brand-500 font-semibold">(Você)</span> @endif

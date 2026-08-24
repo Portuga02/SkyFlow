@@ -51,14 +51,16 @@
                         <tbody class="divide-y divide-brand-50">
                             <?php $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
-                                    $avatar = !empty($member->avatar_path) 
-                                        ? asset('storage/' . $member->avatar_path) 
-                                        : 'https://api.dicebear.com/7.x/notionists/svg?seed=' . urlencode($member->name) . '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
+                                    $dicebear = 'https://api.dicebear.com/7.x/notionists/svg?seed=' . urlencode($member->name) . '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
+                                    $avatar = !empty($member->avatar_path) ? $member->avatar_path : $dicebear;
                                 ?>
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
-                                            <img src="<?php echo e($avatar); ?>" class="w-10 h-10 rounded-full object-cover border border-brand-100 bg-white">
+                                            <img src="<?php echo e($avatar); ?>" 
+                                                 alt="<?php echo e($member->name); ?>"
+                                                 class="w-10 h-10 rounded-full object-cover border border-brand-100 bg-white shadow-xs"
+                                                 onerror="this.src='<?php echo e($dicebear); ?>'">
                                             <div>
                                                 <p class="font-bold text-brand-950"><?php echo e($member->name); ?> 
                                                     <?php if($member->id === Auth::id()): ?> <span class="text-xs text-brand-500 font-semibold">(Você)</span> <?php endif; ?>
