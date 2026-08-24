@@ -232,8 +232,6 @@
                             <p class="text-sm text-gray-500 text-center py-4">Nenhuma categoria ativa no momento.</p>
                         <?php endif; ?>
                     </div>
-
-                    <!-- Post-its (Últimas Notas) -->
                     <div class="bg-white rounded-2xl shadow-sm border border-brand-50 p-6">
                         <h3 class="font-extrabold text-lg text-brand-950 mb-4 flex items-center gap-2">
                             <i class="fa-solid fa-thumbtack text-amber-500"></i> Anotações Recentes
@@ -259,9 +257,9 @@
     </div>
     
     <script>
-        // === SCRIPT DO CLIMA (Minimalista e Rápido) ===
+     
         document.addEventListener('DOMContentLoaded', () => {
-            // Latitude e Longitude de Recife
+  
             const lat = -8.0543;
             const lon = -34.8813;
             
@@ -273,7 +271,6 @@
                     const temp = Math.round(data.current.temperature_2m);
                     const code = data.current.weather_code;
                     
-                    // Lógica para ícone (usando emojis estilizados ou substitua por <img> se preferir)
                     let icon = '☀️';
                     let desc = 'Ensolarado';
                     
@@ -309,7 +306,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        location.reload(); // Recarrega para atualizar os gráficos perfeitamente
+                        location.reload(); 
                     } else {
                         alert('Ocorreu um erro ao concluir a tarefa.');
                     }
