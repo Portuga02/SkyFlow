@@ -21,16 +21,21 @@
     <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-6" x-data="{ tab: 'geral' }">
 
         <!-- Card de Resumo do Usuário & Workspace -->
-        <div
-            class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div class="flex items-center gap-4">
                 <div class="relative">
                     <?php if(Auth::user()->avatar_path): ?>
-                        <img src="<?php echo e(asset('storage/' . Auth::user()->avatar_path)); ?>" alt="<?php echo e(Auth::user()->name); ?>"
-                            class="h-16 w-16 rounded-2xl object-cover shadow-sm ring-2 ring-brand-100">
+                        <img src="<?php echo e(Auth::user()->avatar_path); ?>" alt="<?php echo e(Auth::user()->name); ?>"
+                            class="h-16 w-16 rounded-2xl object-cover shadow-sm ring-2 ring-brand-100"
+                            onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+
+                        <!-- Fallback caso a imagem dê 404/erro -->
+                        <div class="h-16 w-16 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-2xl font-bold shadow-sm hidden">
+                            <?php echo e(strtoupper(substr(Auth::user()->name, 0, 1))); ?>
+
+                        </div>
                     <?php else: ?>
-                        <div
-                            class="h-16 w-16 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-2xl font-bold shadow-sm">
+                        <div class="h-16 w-16 rounded-2xl bg-brand-600 text-white flex items-center justify-center text-2xl font-bold shadow-sm">
                             <?php echo e(strtoupper(substr(Auth::user()->name, 0, 1))); ?>
 
                         </div>
@@ -43,20 +48,17 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <div
-                    class="px-3.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
+                <div class="px-3.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700">
                     <i class="fa-solid fa-building-user text-slate-400 mr-1.5"></i>
                     Workspace: <strong class="text-brand-950"><?php echo e(Auth::user()->team->name ?? 'Pessoal'); ?></strong>
                 </div>
 
                 <?php if(Auth::user()->role === 'admin'): ?>
-                    <span
-                        class="px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold flex items-center gap-1.5">
+                    <span class="px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold flex items-center gap-1.5">
                         <i class="fa-solid fa-crown text-purple-600"></i> Admin
                     </span>
                 <?php else: ?>
-                    <span
-                        class="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold flex items-center gap-1.5">
+                    <span class="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold flex items-center gap-1.5">
                         <i class="fa-solid fa-user text-blue-600"></i> Membro
                     </span>
                 <?php endif; ?>
@@ -66,15 +68,13 @@
         <!-- Navegação por Abas -->
         <div class="flex border-b border-slate-200 gap-6">
             <button @click="tab = 'geral'"
-                :class="tab === 'geral' ? 'border-brand-600 text-brand-600 font-bold' :
-                    'border-transparent text-slate-500 hover:text-slate-800'"
+                :class="tab === 'geral' ? 'border-brand-600 text-brand-600 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800'"
                 class="pb-3 border-b-2 text-sm flex items-center gap-2 transition">
                 <i class="fa-solid fa-user-gear text-xs"></i> <?php echo e(__('Geral & Aparência')); ?>
 
             </button>
             <button @click="tab = 'seguranca'"
-                :class="tab === 'seguranca' ? 'border-brand-600 text-brand-600 font-bold' :
-                    'border-transparent text-slate-500 hover:text-slate-800'"
+                :class="tab === 'seguranca' ? 'border-brand-600 text-brand-600 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800'"
                 class="pb-3 border-b-2 text-sm flex items-center gap-2 transition">
                 <i class="fa-solid fa-shield-halved text-xs"></i> <?php echo e(__('Segurança & Senha')); ?>
 
@@ -97,12 +97,11 @@
 
                     <!-- Upload com Preview Dinâmico -->
                     <div>
-                        <label
-                            class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3"><?php echo e(__('Foto de Perfil')); ?></label>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3"><?php echo e(__('Foto de Perfil')); ?></label>
                         <div class="flex items-center gap-5">
                             <div id="avatarPreviewContainer" class="relative shrink-0">
                                 <?php if(Auth::user()->avatar_path): ?>
-                                    <img id="avatarPreview" src="<?php echo e(asset('storage/' . Auth::user()->avatar_path)); ?>"
+                                    <img id="avatarPreview" src="<?php echo e(Auth::user()->avatar_path); ?>"
                                         class="h-16 w-16 rounded-2xl object-cover ring-2 ring-brand-100 shadow-xs">
                                 <?php else: ?>
                                     <div id="avatarFallback"
@@ -258,8 +257,7 @@
 
                     <!-- Personalização do Tema com Cores Rápidas -->
                     <div class="pt-4 border-t border-slate-100">
-                        <label
-                            class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2"><?php echo e(__('Cor do Tema')); ?></label>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2"><?php echo e(__('Cor do Tema')); ?></label>
                         <p class="text-xs text-slate-400 mb-3">
                             <?php echo e(__('Escolha uma cor de destaque para botões, destaques e menus.')); ?></p>
 
@@ -516,12 +514,10 @@
             const picker = document.getElementById('theme_color_picker');
             if (picker) {
                 picker.value = color;
-               
                 document.documentElement.style.setProperty('--brand-primary', color);
             }
         }
 
-        // Ao mudar no input de cor
         document.getElementById('theme_color_picker')?.addEventListener('input', function(e) {
             document.documentElement.style.setProperty('--brand-primary', e.target.value);
         });
@@ -550,5 +546,4 @@
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php /**PATH C:\Workspace\SkyFlow\resources\views/profile/edit.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\Workspace\SkyFlow\resources\views/profile/edit.blade.php ENDPATH**/ ?>

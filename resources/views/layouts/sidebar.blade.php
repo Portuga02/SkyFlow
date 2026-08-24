@@ -137,46 +137,40 @@
         </div>
     </nav>
 
-    <!-- Footer User (Renderiza direto do Banco em Base64 com Fallback Seguro) -->
-    <div class="border-t border-brand-50 p-4" x-data="{ open: false }">
-        <button @click="open = !open"
-            class="group w-full flex items-center gap-3 text-sm font-semibold text-brand-950 hover:text-brand-600 transition">
+<div class="border-t border-brand-50 p-4" x-data="{ open: false }">
+    @php
+        $user = Auth::user();
+        $fallbackAvatar = 'https://api.dicebear.com/7.x/notionists/svg?seed=' . urlencode($user->name) . '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
+        $userAvatar = !empty($user->avatar_path) ? $user->avatar_path : $fallbackAvatar;
+    @endphp
 
-            <div class="relative shrink-0">
-                @if (Auth::user()->avatar_path)
-                    <img src="{{ Auth::user()->avatar_path }}" alt="{{ Auth::user()->name }}"
-                        class="h-8 w-8 rounded-full object-cover transition-transform duration-200 group-hover:scale-105 shadow-xs"
-                        onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+    <button @click="open = !open"
+        class="group w-full flex items-center gap-3 text-sm font-semibold text-brand-950 hover:text-brand-600 transition">
 
-                    <div
-                        class="h-8 w-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold shrink-0 transition-transform duration-200 group-hover:scale-105 hidden">
-                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                    </div>
-                @else
-                    <div
-                        class="h-8 w-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold shrink-0 transition-transform duration-200 group-hover:scale-105">
-                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                    </div>
-                @endif
-            </div>
-
-            <span class="flex-1 text-left truncate text-xs sm:text-sm">{{ Auth::user()->name }}</span>
-            <i class="fa-solid fa-chevron-down text-xs transition shrink-0" :class="open && 'rotate-180'"></i>
-        </button>
-
-        <div x-show="open" @click.outside="open = false" class="mt-2 space-y-1" x-transition x-cloak>
-            <a href="{{ route('profile.edit') }}"
-                class="block px-3 py-2 text-sm text-gray-600 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition"
-                @click="mobileOpen = false">
-                {{ __('Perfil') }}
-            </a>
-            <form method="POST" action="{{ route('logout') }}" class="block">
-                @csrf
-                <button type="submit"
-                    class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-rose-50 hover:text-rose-600 rounded-lg transition">
-                    {{ __('Sair') }}
-                </button>
-            </form>
+        <div class="relative shrink-0">
+            <img src="{{ $userAvatar }}" 
+                 alt="{{ $user->name }}"
+                 class="h-8 w-8 rounded-full object-cover shadow-xs ring-1 ring-brand-100 bg-white"
+                 onerror="this.src='{{ $fallbackAvatar }}'">
         </div>
+
+        <span class="flex-1 text-left truncate text-xs sm:text-sm font-bold text-brand-950">{{ $user->name }}</span>
+        <i class="fa-solid fa-chevron-down text-xs transition shrink-0 text-slate-400" :class="open && 'rotate-180'"></i>
+    </button>
+
+    <div x-show="open" @click.outside="open = false" class="mt-2 space-y-1" x-transition x-cloak>
+        <a href="{{ route('profile.edit') }}"
+            class="block px-3 py-2 text-sm text-gray-600 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition"
+            @click="mobileOpen = false">
+            {{ __('Perfil') }}
+        </a>
+        <form method="POST" action="{{ route('logout') }}" class="block">
+            @csrf
+            <button type="submit"
+                class="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-rose-50 hover:text-rose-600 rounded-lg transition">
+                {{ __('Sair') }}
+            </button>
+        </form>
     </div>
+</div>
 </aside>
