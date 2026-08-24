@@ -15,7 +15,8 @@ class KanbanColumn extends Model
         'slug',
         'color',
         'order',
-        'icon'
+        'icon',
+        'team_id'
     ];
     public function todos()
     {

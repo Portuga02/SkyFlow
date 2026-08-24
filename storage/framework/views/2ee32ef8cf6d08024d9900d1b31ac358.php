@@ -12,15 +12,12 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-    <!-- Scripts / Styles -->
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 </head>
 <body class="font-sans antialiased text-slate-900 bg-gradient-to-b from-brand-600 to-brand-900 min-h-screen">
-    
-    <!-- Container que centraliza vertical e horizontalmente + Margem de segurança lateral (px-4) -->
+ 
     <div class="min-h-screen flex flex-col justify-center items-center px-4 py-8 sm:px-6">
-        
-        <!-- Logo / Marca -->
+
         <div class="mb-6">
             <a href="/" class="flex items-center gap-2.5 group">
                 <div class="h-11 w-11 rounded-2xl bg-white text-brand-600 flex items-center justify-center text-xl font-bold shadow-lg group-hover:scale-105 transition-transform duration-200">
@@ -29,8 +26,6 @@
                 <span class="font-extrabold text-2xl text-white tracking-tight">SkyFlow</span>
             </a>
         </div>
-
-        <!-- Card Branco com Padding, Cantos Arredondados e Limite de Largura -->
         <div class="w-full max-w-[420px] bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/20 backdrop-blur-xs">
             <?php echo e($slot); ?>
 
