@@ -1,41 +1,40 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'SkyFlow') }}</title>
+    <title>{{ config('app.name', 'SkyFlow') }}</title>
 
-        <!-- Favicon & PWA -->
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-        <link rel="manifest" href="/site.webmanifest">
-        <meta name="theme-color" content="#0071c4">
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="font-sans antialiased text-slate-900 bg-gradient-to-b from-brand-600 to-brand-900 min-h-screen">
+ 
+    <div class="min-h-screen flex flex-col justify-center items-center px-4 py-8 sm:px-6">
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="relative min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 overflow-hidden bg-gradient-to-br from-brand-900 via-brand-700 to-brand-500">
-
-            <!-- decorative blobs -->
-            <div class="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-white/10 blur-3xl"></div>
-            <div class="pointer-events-none absolute bottom-0 right-0 h-96 w-96 rounded-full bg-brand-300/20 blur-3xl"></div>
-
-            <div class="relative z-10">
-                <a href="/">
-                    <x-application-logo class="justify-center" />
-                </a>
-            </div>
-
-            <div class="relative z-10 w-full sm:max-w-md mt-6 px-6 py-6 bg-white/95 backdrop-blur shadow-2xl shadow-brand-950/30 overflow-hidden sm:rounded-2xl border border-white/40">
-                {{ $slot }}
-            </div>
+        <div class="mb-6">
+            <a href="/" class="flex items-center gap-2.5 group">
+                <div class="h-11 w-11 rounded-2xl bg-white text-brand-600 flex items-center justify-center text-xl font-bold shadow-lg group-hover:scale-105 transition-transform duration-200">
+                    <i class="fa-solid fa-cloud-bolt"></i>
+                </div>
+                <span class="font-extrabold text-2xl text-white tracking-tight">SkyFlow</span>
+            </a>
         </div>
-    </body>
+        <div class="w-full max-w-[420px] bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/20 backdrop-blur-xs">
+            {{ $slot }}
+        </div>
+
+        <!-- Rodapé -->
+        <p class="mt-8 text-center text-xs text-brand-100 font-medium opacity-80">
+            &copy; {{ date('Y') }} SkyFlow. Todos os direitos reservados.
+        </p>
+    </div>
+
+</body>
 </html>

@@ -12,35 +12,28 @@ class KanbanController extends Controller
 {
     public function index()
     {
-        // Busca as colunas do usuário logado
-        $columns = KanbanColumn::where('user_id', Auth::id())
-                    ->orderBy('order')
-                    ->get();
+        $user = Auth::user();
+        $userId = $user->id;
 
-        // Se o usuário não tiver colunas, cria as 3 básicas automaticamente com ícones seguros
-        if ($columns->isEmpty()) {
-            $defaultColumns = [
-                ['name' => 'A Fazer', 'color' => '#f59e0b', 'slug' => 'todo', 'icon' => 'fa-list-ul'],
-                ['name' => 'Em Andamento', 'color' => '#3b82f6', 'slug' => 'in_progress', 'icon' => 'fa-fire'],
-                ['name' => 'Concluído', 'color' => '#10b981', 'slug' => 'done', 'icon' => 'fa-check-double'],
-            ];
+        $columns = \App\Models\KanbanColumn::where('user_id', $userId)
+            ->orWhereNull('user_id')
+            ->orderBy('id')
+            ->get();
 
-            foreach ($defaultColumns as $index => $col) {
-                KanbanColumn::create([
-                    'user_id' => Auth::id(),
-                    'name'    => $col['name'],
-                    'slug'    => $col['slug'],
-                    'color'   => $col['color'],
-                    'icon'    => $col['icon'], // Adicionado para evitar erro em produção!
-                    'order'   => $index,
-                ]);
-            }
-
-            $columns = KanbanColumn::where('user_id', Auth::id())->orderBy('order')->get();
-        }
-
-        // Busca as tarefas do usuário logado
-        $todos = Todo::where('user_id', Auth::id())->get();
+        $todos = \App\Models\Todo::where(function ($query) use ($userId, $user) {
+            $query->where('user_id', $userId)
+                  ->orWhereHas('assignedUsers', function ($q) use ($userId) {
+                      $q->where('users.id', $userId);
+                  });
+        })
+            ->get()
+            ->map(function ($todo) {
+                // Normaliza o status caso esteja vazio no banco
+                if (empty($todo->status)) {
+                    $todo->status = $todo->is_completed ? 'concluido' : 'a-fazer';
+                }
+                return $todo;
+            });
 
         return view('kanban.index', compact('columns', 'todos'));
     }
@@ -81,21 +74,27 @@ class KanbanController extends Controller
 
     public function move(Request $request)
     {
-        try {
-            $todo = Todo::findOrFail($request->id);
+        $request->validate([
+            'id'     => 'required|exists:todos,id',
+            'status' => 'required|string|max:255',
+        ]);
 
-            if ($todo->user_id !== Auth::id()) {
-                return response()->json(['success' => false], 403);
-            }
+        $todo = \App\Models\Todo::findOrFail($request->id);
 
-            $todo->update([
-                'status' => $request->status
-            ]);
+        $todo->status = $request->status;
 
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false], 500);
+        if (in_array($request->status, ['concluido', 'done', 'completo'])) {
+            $todo->is_completed = true;
+        } else {
+            $todo->is_completed = false;
         }
+
+        $todo->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status atualizado com sucesso!'
+        ]);
     }
 
     public function deleteColumn($columnKey)
