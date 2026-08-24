@@ -29,6 +29,7 @@ class User extends Authenticatable
         'role',
         'theme_color',
         'view_mode',
+        'theme_color',
     );
 
     /**
@@ -69,7 +70,7 @@ class User extends Authenticatable
     }
     public function getAvatarUrlAttribute(): string
     {
-        
+
         if (!empty($this->avatar)) {
             return Storage::url($this->avatar);
         }
@@ -81,7 +82,7 @@ class User extends Authenticatable
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF&bold=true';
     }
     public function team()
-{
-    return $this->belongsTo(Team::class);
-}
+    {
+        return $this->belongsTo(Team::class);
+    }
 }
