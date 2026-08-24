@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-
+use App\Mail\TeamInviteMail;
+use Illuminate\Support\Facades\Mail;
 class TeamController extends Controller
 {
     public function index()
@@ -49,6 +50,12 @@ class TeamController extends Controller
         // Mail::to($user->email)->send(new InviteMail($user, $password));
 
         // Para testes, vamos mostrar a senha gerada na notificação da tela:
-        return back()->with('alert-success', "{$user->name} adicionado! A senha de acesso gerada foi: {$password}");
+        // return back()->with('alert-success', "{$user->name} adicionado! A senha de acesso gerada foi: {$password}");
+        // Para testes, vamos mostrar a senha gerada na notificação da tela:
+        // 🚀 Dispara o e-mail real!
+        Mail::to($user->email)->send(new TeamInviteMail($user, $password));
+
+        // Retorna a mensagem limpa
+        return back()->with('alert-success', "{$user->name} foi adicionado(a) e o convite enviado por e-mail com sucesso!");
     }
 }
