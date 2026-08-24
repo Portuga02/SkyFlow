@@ -2,12 +2,13 @@
     @php
         $user = Auth::user();
 
-        // 1. Lógica do Avatar
-        $avatarUrl = !empty($user->avatar_path)
-            ? asset('storage/' . $user->avatar_path)
-            : 'https://api.dicebear.com/7.x/notionists/svg?seed=' .
-                urlencode($user->name) .
-                '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
+        // 1. Lógica do Avatar (Direto do Banco / Base64 / URL Externa)
+        $dicebearFallback =
+            'https://api.dicebear.com/7.x/notionists/svg?seed=' .
+            urlencode($user->name) .
+            '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
+
+        $avatarUrl = !empty($user->avatar_path) ? $user->avatar_path : $dicebearFallback;
 
         // 2. Lógica de Saudação e Primeiro Nome
         $hora = now()->format('H');
@@ -49,10 +50,11 @@
                         </div>
                     </div>
 
-                    <!-- Avatar do Usuário -->
+                    <!-- Avatar do Usuário (Com Fallback Seguro) -->
                     <div class="flex-shrink-0">
                         <img src="{{ $avatarUrl }}" alt="{{ $user->name }}"
-                            class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-white/30 shadow-lg bg-white transition hover:scale-105">
+                            class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-white/30 shadow-lg bg-white transition hover:scale-105"
+                            onerror="this.src='{{ $dicebearFallback }}'">
                     </div>
                 </div>
 
@@ -192,15 +194,19 @@
                                             <div class="flex -space-x-2 overflow-hidden flex-shrink-0 mt-1">
                                                 @foreach ($todo->assignedUsers->take(3) as $assignee)
                                                     @php
+                                                        $assigneeFallback =
+                                                            'https://api.dicebear.com/7.x/notionists/svg?seed=' .
+                                                            urlencode($assignee->name) .
+                                                            '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
+
                                                         $assigneeAvatar = !empty($assignee->avatar_path)
-                                                            ? asset('storage/' . $assignee->avatar_path)
-                                                            : 'https://api.dicebear.com/7.x/notionists/svg?seed=' .
-                                                                urlencode($assignee->name) .
-                                                                '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
+                                                            ? $assignee->avatar_path
+                                                            : $assigneeFallback;
                                                     @endphp
                                                     <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover bg-white"
                                                         src="{{ $assigneeAvatar }}" alt="{{ $assignee->name }}"
-                                                        title="{{ $assignee->name }}">
+                                                        title="{{ $assignee->name }}"
+                                                        onerror="this.src='{{ $assigneeFallback }}'">
                                                 @endforeach
                                                 @if ($todo->assignedUsers->count() > 3)
                                                     <div
@@ -256,6 +262,8 @@
                             <p class="text-sm text-gray-500 text-center py-4">Nenhuma categoria ativa no momento.</p>
                         @endif
                     </div>
+
+                    <!-- Anotações Recentes -->
                     <div class="bg-white rounded-2xl shadow-sm border border-brand-50 p-6">
                         <h3 class="font-extrabold text-lg text-brand-950 mb-4 flex items-center gap-2">
                             <i class="fa-solid fa-thumbtack text-amber-500"></i> Anotações Recentes
@@ -285,12 +293,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
             const lat = -8.0543;
             const lon = -34.8813;
 
             fetch(
-                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=America%2FRecife`)
+                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=America%2FRecife`
+                    )
                 .then(res => res.json())
                 .then(data => {
                     if (!data || !data.current) return;
