@@ -298,7 +298,7 @@
 
             fetch(
                     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=America%2FRecife`
-                    )
+                )
                 .then(res => res.json())
                 .then(data => {
                     if (!data || !data.current) return;
