@@ -15,12 +15,51 @@
         </div>
      <?php $__env->endSlot(); ?>
 
+    <?php
+        // 1. Preparação das Categorias
+        $palette = ['text-amber-500', 'text-emerald-500', 'text-sky-500', 'text-indigo-500', 'text-rose-500', 'text-purple-500', 'text-teal-500'];
+        $rawCategories = \App\Models\Category::orderBy('name')->get();
+        $formattedCategories = [];
+        $formattedCategories[] = [
+            'id' => '',
+            'name' => 'Nenhuma',
+            'icon' => 'fa-solid fa-layer-group',
+            'color' => 'text-gray-400'
+        ];
+        foreach ($rawCategories as $i => $cat) {
+            $formattedCategories[] = [
+                'id' => (string) $cat->id,
+                'name' => $cat->name,
+                'icon' => $cat->icon ?? 'fa-solid fa-tag',
+                'color' => $palette[$i % count($palette)]
+            ];
+        }
+
+        // 2. Preparação dos Usuários (Com Iniciais como Fallback Nativo)
+        $rawUsers = $users ?? \App\Models\User::orderBy('name')->get();
+        $formattedUsers = [];
+        foreach ($rawUsers as $u) {
+            // Pega a primeira letra do primeiro e último nome (Ex: Sávio Gomes -> SG)
+            $words = explode(' ', trim($u->name));
+            $initials = mb_strtoupper(mb_substr($words[0], 0, 1));
+            if (count($words) > 1) {
+                $initials .= mb_strtoupper(mb_substr(end($words), 0, 1));
+            }
+
+            $formattedUsers[] = [
+                'id' => $u->id,
+                'name' => $u->name,
+                'initials' => $initials,
+                'avatar' => !empty($u->avatar_path) ? asset('storage/' . $u->avatar_path) : null,
+            ];
+        }
+    ?>
+
     <div class="py-10">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
 
             <?php if(session('alert-success')): ?>
-                <div
-                    class="mb-6 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800 shadow-sm">
+                <div class="mb-6 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800 shadow-sm">
                     <i class="fa-solid fa-circle-check text-emerald-500"></i>
                     <span class="text-sm font-medium"><?php echo e(session('alert-success')); ?></span>
                 </div>
@@ -40,6 +79,7 @@
                 <form method="POST" action="<?php echo e(route('todos.store')); ?>" class="p-6 space-y-5">
                     <?php echo csrf_field(); ?>
 
+                    <!-- Título -->
                     <div>
                         <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
@@ -62,14 +102,14 @@
 <?php endif; ?>
                         <?php if (isset($component)) { $__componentOriginal18c21970322f9e5c938bc954620c12bb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal18c21970322f9e5c938bc954620c12bb = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['id' => 'title','class' => 'block w-full','type' => 'text','name' => 'title','placeholder' => ''.e(__('Ex: Enviar relatório semanal')).'','value' => ''.e(old('title')).'','required' => true,'autofocus' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.text-input','data' => ['id' => 'title','class' => 'block w-full mt-1','type' => 'text','name' => 'title','placeholder' => ''.e(__('Ex: Enviar relatório semanal')).'','value' => ''.e(old('title')).'','required' => true,'autofocus' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('text-input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['id' => 'title','class' => 'block w-full','type' => 'text','name' => 'title','placeholder' => ''.e(__('Ex: Enviar relatório semanal')).'','value' => ''.e(old('title')).'','required' => true,'autofocus' => true]); ?>
+<?php $component->withAttributes(['id' => 'title','class' => 'block w-full mt-1','type' => 'text','name' => 'title','placeholder' => ''.e(__('Ex: Enviar relatório semanal')).'','value' => ''.e(old('title')).'','required' => true,'autofocus' => true]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal18c21970322f9e5c938bc954620c12bb)): ?>
@@ -82,6 +122,7 @@
 <?php endif; ?>
                     </div>
 
+                    <!-- Descrição -->
                     <div>
                         <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
@@ -103,17 +144,20 @@
 <?php unset($__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581); ?>
 <?php endif; ?>
                         <textarea id="description" name="description" rows="4" placeholder="<?php echo e(__('Detalhe a atividade...')); ?>"
-                            class="block p-3 w-full text-sm text-gray-900 bg-white rounded-lg border border-brand-200 focus:ring-brand-500 focus:border-brand-500"><?php echo e(old('description')); ?></textarea>
+                            class="block p-3 w-full text-sm text-gray-900 bg-white rounded-lg border border-brand-200 focus:ring-brand-500 focus:border-brand-500 mt-1"><?php echo e(old('description')); ?></textarea>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <!-- Dropdown de Prioridades -->
+                    <!-- Grid: Prioridade e Prazo -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <!-- Dropdown de Prioridade -->
                         <div x-data="{
                             open: false,
                             selected: '<?php echo e(old('priority', 'high')); ?>',
                             options: {
                                 'highest': { label: 'Mais Alta (Highest)', icon: 'fa-solid fa-angles-up', color: 'text-rose-600' },
                                 'high': { label: 'Alta (High)', icon: 'fa-solid fa-angle-up', color: 'text-rose-500' },
+                                'medium': { label: 'Média (Medium)', icon: 'fa-solid fa-minus', color: 'text-amber-500' },
                                 'low': { label: 'Baixa (Low)', icon: 'fa-solid fa-angle-down', color: 'text-sky-500' },
                                 'lowest': { label: 'Mais Baixa (Lowest)', icon: 'fa-solid fa-angles-down', color: 'text-blue-600' }
                             }
@@ -141,7 +185,7 @@
                             <input type="hidden" name="priority" :value="selected">
 
                             <button @click="open = !open" @click.outside="open = false" type="button"
-                                class="w-full flex items-center justify-between px-3 py-2 mt-1 bg-white border border-brand-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition shadow-sm">
+                                class="w-full flex items-center justify-between px-3 py-2 mt-1 bg-white border border-brand-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition shadow-xs">
                                 <span class="flex items-center gap-2">
                                     <i :class="options[selected].icon + ' ' + options[selected].color"></i>
                                     <span x-text="options[selected].label" class="text-brand-950 font-medium"></span>
@@ -158,14 +202,13 @@
                                         :class="selected === key ? 'bg-brand-50' : ''">
                                         <i :class="option.icon + ' ' + option.color" class="w-4 text-center"></i>
                                         <span x-text="option.label" class="text-sm font-medium text-brand-950"></span>
-                                        <i x-show="selected === key"
-                                            class="fa-solid fa-check ml-auto text-brand-600 text-xs"></i>
+                                        <i x-show="selected === key" class="fa-solid fa-check ml-auto text-brand-600 text-xs"></i>
                                     </div>
                                 </template>
                             </div>
                         </div>
 
-                        <!-- Data e Hora -->
+                        <!-- Prazo e Hora -->
                         <div>
                             <?php if (isset($component)) { $__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale3da9d84bb64e4bc2eeebaafabfb2581 = $attributes; } ?>
@@ -209,25 +252,14 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-
-                        <!-- Dropdown de Categoria Colorida -->
+                    <!-- Grid: Categoria e Responsáveis -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <!-- Dropdown de Categorias -->
                         <div x-data="{
                             open: false,
                             selected: '<?php echo e(old('category_id', '')); ?>',
-                            cats: [
-                                { id: '', name: 'Nenhuma', icon: 'fa-solid fa-layer-group', color: 'text-gray-400' },
-                                <?php $__currentLoopData = \App\Models\Category::orderBy('name')->get(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        { 
-                                            id: '<?php echo e($cat->id); ?>', 
-                                            name: '<?php echo e(addslashes($cat->name)); ?>', 
-                                            icon: '<?php echo e($cat->icon ?? 'fa-solid fa-tag'); ?>', 
-                                            color: '<?php
-                                                $colors = ["text-amber-500", "text-emerald-500", "text-sky-500", "text-indigo-500", "text-rose-500", "text-purple-500", "text-teal-500"];
-                                                echo $colors[$index % count($colors)];
-                                            ?>' 
-                                        }, <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            ],
+                            cats: <?php echo \Illuminate\Support\Js::from($formattedCategories)->toHtml() ?>,
                             getSelectedName() {
                                 let found = this.cats.find(c => c.id == this.selected);
                                 return found ? found.name : 'Nenhuma';
@@ -260,7 +292,7 @@
                             <input type="hidden" name="category_id" :value="selected">
 
                             <button @click="open = !open" @click.outside="open = false" type="button"
-                                class="w-full flex items-center justify-between px-3 py-2 mt-1 bg-white border border-brand-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition shadow-sm">
+                                class="w-full flex items-center justify-between px-3 py-2 mt-1 bg-white border border-brand-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition shadow-xs">
                                 <span class="flex items-center gap-2">
                                     <i :class="getSelectedIcon()" class="text-base"></i>
                                     <span x-text="getSelectedName()" class="text-brand-950 font-medium truncate"></span>
@@ -277,29 +309,17 @@
                                         :class="selected == cat.id ? 'bg-brand-50' : ''">
                                         <i :class="cat.icon + ' ' + cat.color" class="w-5 text-center text-base"></i>
                                         <span x-text="cat.name" class="text-sm font-medium text-brand-950"></span>
-                                        <i x-show="selected == cat.id"
-                                            class="fa-solid fa-check ml-auto text-brand-600 text-xs"></i>
+                                        <i x-show="selected == cat.id" class="fa-solid fa-check ml-auto text-brand-600 text-xs"></i>
                                     </div>
                                 </template>
                             </div>
                         </div>
+
+                        <!-- Dropdown de Responsáveis da Equipe (Iniciais como Fallback) -->
                         <div x-data="{
                             open: false,
-                            selected: <?php echo e(json_encode(old('assigned_to', []))); ?>,
-                            users: [
-                                <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                {
-                    id: <?php echo e($user->id); ?>,
-                    name: '<?php echo e(addslashes($user->name)); ?>',
-                    avatar: '<?php
-                        if (!empty($user->avatar_path)) {
-                            echo asset('storage/' . $user->avatar_path);
-                        } else {
-                            echo 'https://api.dicebear.com/7.x/notionists/svg?seed=' . urlencode($user->name) . '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
-                        }
-                    ?>'
-                }, <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            ],
+                            selected: <?php echo \Illuminate\Support\Js::from(old('assigned_to', []))->toHtml() ?>,
+                            users: <?php echo \Illuminate\Support\Js::from($formattedUsers)->toHtml() ?>,
                             toggle(id) {
                                 if (this.selected.includes(id)) {
                                     this.selected = this.selected.filter(item => item !== id);
@@ -332,14 +352,12 @@
 <?php unset($__componentOriginale3da9d84bb64e4bc2eeebaafabfb2581); ?>
 <?php endif; ?>
 
-                            <!-- Inputs Hidden para envio do Array no Laravel -->
                             <template x-for="id in selected" :key="id">
                                 <input type="hidden" name="assigned_to[]" :value="id">
                             </template>
 
-                            <!-- Botão Principal -->
                             <button @click="open = !open" @click.outside="open = false" type="button"
-                                class="w-full flex items-center justify-between px-3 py-2 mt-1 bg-white border border-brand-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition shadow-sm min-h-[42px]">
+                                class="w-full flex items-center justify-between px-3 py-2 mt-1 bg-white border border-brand-200 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm transition shadow-xs min-h-[42px]">
 
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <template x-if="selected.length === 0">
@@ -352,13 +370,20 @@
                                     <template x-if="selected.length > 0">
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <template x-for="id in selected" :key="id">
-                                                <span
-                                                    class="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold px-2 py-0.5 rounded-full shadow-xs">
-                                                    <img :src="getUser(id)?.avatar"
-                                                        class="w-4 h-4 rounded-full object-cover bg-white">
+                                                <span class="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold px-2 py-0.5 rounded-full shadow-xs">
+                                                    
+                                                    <!-- Avatar ou Letra no Chip do Botão -->
+                                                    <span class="relative flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-indigo-200 text-[8px] font-bold text-indigo-800">
+                                                        <span x-text="getUser(id)?.initials"></span>
+                                                        <template x-if="getUser(id)?.avatar">
+                                                            <img :src="getUser(id)?.avatar"
+                                                                 onerror="this.style.display='none'"
+                                                                 class="absolute inset-0 h-4 w-4 rounded-full object-cover">
+                                                        </template>
+                                                    </span>
+
                                                     <span x-text="getUser(id)?.name"></span>
-                                                    <i @click.stop="toggle(id)"
-                                                        class="fa-solid fa-xmark text-[10px] hover:text-indigo-900 cursor-pointer ml-0.5"></i>
+                                                    <i @click.stop="toggle(id)" class="fa-solid fa-xmark text-[10px] hover:text-indigo-900 cursor-pointer ml-0.5"></i>
                                                 </span>
                                             </template>
                                         </div>
@@ -369,7 +394,6 @@
                                     :class="open ? 'rotate-180' : ''"></i>
                             </button>
 
-                            <!-- Menu Suspenso -->
                             <div x-show="open" x-transition x-cloak
                                 class="absolute z-50 w-full mt-1 bg-white border border-brand-100 rounded-lg shadow-xl overflow-y-auto max-h-56 divide-y divide-gray-50">
                                 <template x-for="user in users" :key="user.id">
@@ -378,20 +402,26 @@
                                         :class="selected.includes(user.id) ? 'bg-indigo-50/40' : ''">
 
                                         <div class="flex items-center gap-3">
-                                            <!-- Foto real ou Ilustração de Personagem -->
-                                            <img :src="user.avatar"
-                                                class="w-8 h-8 rounded-full object-cover border border-indigo-100 shadow-xs bg-slate-50"
-                                                :alt="user.name">
-                                            <span x-text="user.name"
-                                                class="text-sm font-medium text-brand-950"></span>
+                                            
+                                            <!-- Avatar ou Letra no Dropdown -->
+                                            <div class="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-100 border border-indigo-200 text-indigo-700 font-bold text-xs shadow-xs">
+                                                <span x-text="user.initials"></span>
+                                                
+                                                <template x-if="user.avatar">
+                                                    <img :src="user.avatar"
+                                                         onerror="this.style.display='none'"
+                                                         class="absolute inset-0 h-8 w-8 rounded-full object-cover bg-white"
+                                                         :alt="user.name">
+                                                </template>
+                                            </div>
+
+                                            <span x-text="user.name" class="text-sm font-medium text-brand-950"></span>
                                         </div>
 
                                         <!-- Checkbox visual -->
                                         <div class="w-5 h-5 rounded-md border flex items-center justify-center transition"
-                                            :class="selected.includes(user.id) ? 'bg-indigo-600 border-indigo-600 text-white' :
-                                                'border-gray-300 bg-white'">
-                                            <i x-show="selected.includes(user.id)"
-                                                class="fa-solid fa-check text-[10px]"></i>
+                                            :class="selected.includes(user.id) ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-gray-300 bg-white'">
+                                            <i x-show="selected.includes(user.id)" class="fa-solid fa-check text-[10px]"></i>
                                         </div>
                                     </div>
                                 </template>
@@ -400,7 +430,8 @@
 
                     </div>
 
-                    <div class="flex justify-end gap-3 pt-2">
+                    <!-- Botões de Ação -->
+                    <div class="flex justify-end gap-3 pt-4 border-t border-brand-50">
                         <a href="<?php echo e(route('todos.index')); ?>"
                             class="inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 transition">
                             <?php echo e(__('Cancelar')); ?>
@@ -425,5 +456,4 @@
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php /**PATH C:\Workspace\SkyFlow\resources\views/auth/create-todo.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\Workspace\SkyFlow\resources\views/auth/create-todo.blade.php ENDPATH**/ ?>

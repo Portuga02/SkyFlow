@@ -28,7 +28,43 @@
             <div id="kanban-board" class="flex items-start gap-6 min-w-max">
 
                 <!-- LOOP DINÂMICO DE COLUNAS -->
-                @foreach ($columns as $column)
+                @foreach ($columns as $index => $column)
+                    @php
+                        $columnSlug = $column->slug ?? \Illuminate\Support\Str::slug($column->name);
+
+                        // Filtra as tarefas correspondentes a esta coluna
+                        $columnTodos = $todos->filter(function ($item) use ($column, $columnSlug, $index) {
+                            // Se a tarefa já aponta diretamente para o ID da coluna
+                            if (isset($item->kanban_column_id) && $item->kanban_column_id == $column->id) {
+                                return true;
+                            }
+
+                            // Verificação por slug/status direto
+                            if ($item->status === $columnSlug) {
+                                return true;
+                            }
+
+                            // Mapeamento de colunas de conclusão (Última coluna ou com nomes conclusivos)
+                            if (
+                                in_array($columnSlug, ['concluido', 'done', 'finalizado', 'mergeado']) &&
+                                ($item->is_completed || in_array($item->status, ['done', 'concluido']))
+                            ) {
+                                return true;
+                            }
+
+                            // Mapeamento de colunas iniciais (Primeira coluna recebe tarefas pendentes/antigas)
+                            if (
+                                $index === 0 &&
+                                !$item->is_completed &&
+                                (empty($item->status) || in_array($item->status, ['todo', 'a-fazer', 'pending']))
+                            ) {
+                                return true;
+                            }
+
+                            return false;
+                        });
+                    @endphp
+
                     <div class="kanban-column-container flex-1 min-w-[320px] max-w-[380px] flex flex-col bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all"
                         data-column-id="{{ $column->id }}">
 
@@ -47,7 +83,7 @@
                             <div class="flex items-center gap-2">
                                 <span
                                     class="column-badge inline-flex items-center justify-center h-6 min-w-[24px] px-1.5 rounded-full text-white text-xs font-bold shadow-xs"
-                                    style="background-color: {{ $column->color }}">0</span>
+                                    style="background-color: {{ $column->color }}">{{ $columnTodos->count() }}</span>
 
                                 <button type="button" onclick="deleteColumn({{ $column->id }})"
                                     class="text-gray-400 hover:text-rose-500 transition p-1" title="Excluir Coluna">
@@ -58,17 +94,10 @@
 
                         <!-- Corpo da Coluna -->
                         <div class="kanban-tasks flex-1 min-h-[300px] h-fit p-3 space-y-3"
-                            style="background-color: {{ $column->color }}06;" data-status="{{ $column->slug }}">
+                            style="background-color: {{ $column->color }}06;" data-status="{{ $columnSlug }}"
+                            data-column-id="{{ $column->id }}">
 
-                            @foreach ($todos->filter(function ($item) use ($column) {
-        if ($column->slug === 'a-fazer' || $column->slug === 'todo') {
-            return in_array($item->status, ['a-fazer', 'todo']) || (!$item->is_completed && empty($item->status));
-        }
-        if ($column->slug === 'concluido' || $column->slug === 'done') {
-            return in_array($item->status, ['concluido', 'done']) || ($item->is_completed && empty($item->status));
-        }
-        return $item->status === $column->slug;
-    }) as $todo)
+                            @foreach ($columnTodos as $todo)
                                 @php
                                     $isOverdue = false;
                                     if ($todo->due_date && !$todo->is_completed) {
@@ -83,7 +112,8 @@
 
                                     <div class="flex items-start justify-between gap-2">
                                         <p class="font-bold text-sm text-brand-950 mb-1 leading-snug">
-                                            {{ $todo->title }}</p>
+                                            {{ $todo->title }}
+                                        </p>
                                         @if ($isOverdue)
                                             <span
                                                 class="inline-flex items-center gap-1 text-[10px] font-extrabold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full shrink-0 animate-pulse">
@@ -94,7 +124,8 @@
 
                                     @if ($todo->description)
                                         <p class="text-xs text-gray-500 mb-3 line-clamp-2 leading-relaxed">
-                                            {{ $todo->description }}</p>
+                                            {{ $todo->description }}
+                                        </p>
                                     @endif
 
                                     <div
@@ -239,16 +270,17 @@
                     onEnd: function(evt) {
                         const cardId = evt.item.dataset.id;
                         const newStatus = evt.to.dataset.status;
+                        const columnId = evt.to.dataset.columnId;
 
                         if (cardId && newStatus) {
-                            updateCardStatus(cardId, newStatus);
+                            updateCardStatus(cardId, newStatus, columnId);
                         }
                     }
                 });
             });
         });
 
-        async function updateCardStatus(cardId, newStatus) {
+        async function updateCardStatus(cardId, newStatus, columnId) {
             try {
                 const response = await fetch('/kanban/move', {
                     method: 'POST',
@@ -259,7 +291,8 @@
                     },
                     body: JSON.stringify({
                         id: cardId,
-                        status: newStatus
+                        status: newStatus,
+                        kanban_column_id: columnId
                     })
                 });
 
@@ -318,6 +351,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         name,

@@ -10,13 +10,13 @@ return new class extends Migration
     {
         Schema::create('kanban_columns', function (Blueprint $table) {
             $table->id();
-            // Atrela a coluna ao usuário logado (cada um tem seu próprio quadro!)
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete(); 
-            
-            $table->string('name'); // O nome que aparece na tela (Ex: Em Revisão)
-            $table->string('slug'); // O identificador interno (Ex: em-revisao) - vai bater com o 'status' do Todo
-            $table->string('color')->default('#f59e0b'); // A cor que você escolheu no modal
-            $table->integer('order')->default(0); // Para poder reordenar as colunas no futuro
+
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();             
+            $table->string('name'); 
+            $table->string('slug'); 
+            $table->string('color')->default('#f59e0b');
+            $table->string('team_id');
+            $table->integer('order')->default(0);
             $table->string('icon')->default('fa-layer-group');
             
             $table->timestamps();

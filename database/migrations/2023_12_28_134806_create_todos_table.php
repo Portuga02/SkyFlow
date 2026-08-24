@@ -6,26 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
-            // $table->unsignedBigInteger('id_todo')->nullable();;
+            
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('team_id')->nullable();
+            
             $table->string('title');
-            // $table->string('titular_name');
             $table->text('description');
             $table->tinyInteger('is_completed')->nullable();
+            $table->integer('order')->default(0);
+            $table->unsignedBigInteger('kanban_column_id')->nullable();
+            
             $table->timestamps();
-            // $table->foreign('id_todo')->references('id')->on('users');
         });
     }
     
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('todos');
