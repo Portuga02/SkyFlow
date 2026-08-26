@@ -17,7 +17,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
-
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -26,7 +26,9 @@
         }
 
         :root {
-            --brand-primary: {{ Auth::user()->theme_color ?? '#0071c4' }};
+            --brand-primary:
+                {{ Auth::user()->theme_color ?? '#0071c4' }}
+            ;
         }
 
         /* Efeito de hover dinâmico baseado na cor do usuário */
@@ -85,7 +87,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+                navigator.serviceWorker.register('/service-worker.js').catch(() => { });
             });
         }
     </script>
