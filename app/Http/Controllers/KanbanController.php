@@ -79,14 +79,11 @@ class KanbanController extends Controller
             $baseSlug = Str::slug($request->name);
             $slug = $baseSlug;
 
-            // Evita duplicação de slugs para o mesmo usuário
             $count = 1;
             while (\App\Models\KanbanColumn::where('user_id', Auth::id())->where('slug', $slug)->exists()) {
                 $slug = $baseSlug . '-' . $count;
                 $count++;
             }
-
-            // O Laravel vai preencher o user_id automaticamente pelo relacionamento
             $column = $request->user()->kanbanColumns()->create([
                 'name'    => $request->name,
                 'slug'    => $slug,
@@ -105,33 +102,33 @@ class KanbanController extends Controller
 
     public function move(Request $request)
     {
-        $request->validate([
+        $request->validate(array(
             'id'               => 'required|exists:todos,id',
             'status'           => 'required|string|max:255',
-            'kanban_column_id' => 'nullable|exists:kanban_columns,id', // <-- Validar a coluna
-        ]);
+            'kanban_column_id' => 'nullable|exists:kanban_columns,id',
+        ));
 
         $todo = \App\Models\Todo::findOrFail($request->id);
 
         $todo->status = $request->status;
 
-        // <-- Salvar a coluna atrelada quando o card for arrastado!
         if ($request->has('kanban_column_id')) {
             $todo->kanban_column_id = $request->kanban_column_id;
         }
 
-        if (in_array($request->status, ['concluido', 'done', 'completo'])) {
-            $todo->is_completed = true;
+        // Mantém a sincronia exata com os nomes das colunas que significam "fim da linha"
+        if (in_array($request->status, array('concluido', 'done', 'finalizado', 'mergeado', 'completo'))) {
+            $todo->is_completed = 1;
         } else {
-            $todo->is_completed = false;
+            $todo->is_completed = 0;
         }
 
         $todo->save();
 
-        return response()->json([
+        return response()->json(array(
             'success' => true,
             'message' => 'Status atualizado com sucesso!'
-        ]);
+        ));
     }
 
     public function deleteColumn($columnKey)

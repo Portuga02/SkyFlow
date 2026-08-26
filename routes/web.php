@@ -20,18 +20,22 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     $user = Auth::user();
 
-    // Estatísticas dos cards
-    $stats = [
+    // Estatísticas dos cards (Agora pega o 0 e o NULL)
+    $stats = array(
         'total'     => $user->todos()->count(),
-        'pending'   => $user->todos()->where('status', '!=', 'done')->count(),
-        'completed' => $user->todos()->where('status', 'done')->count(),
-    ];
+        'pending'   => $user->todos()->where(function ($query) {
+            $query->where('is_completed', 0)->orWhereNull('is_completed');
+        })->count(),
+        'completed' => $user->todos()->where('is_completed', 1)->count(),
+    );
 
     // Tarefas Urgentes (Fogo no parquinho!)
     $urgentTodos = $user->todos()
-        ->where('status', '!=', 'done')
-        ->whereIn('priority', ['high', 'highest']) // Pega as altas
-        ->orderByRaw('due_date IS NULL, due_date ASC') // Ordena por data
+        ->where(function ($query) {
+            $query->where('is_completed', 0)->orWhereNull('is_completed');
+        })
+        ->whereIn('priority', array('high', 'highest'))
+        ->orderByRaw('due_date IS NULL, due_date ASC')
         ->take(5)
         ->get();
 
@@ -41,17 +45,19 @@ Route::get('/dashboard', function () {
         ->take(3)
         ->get();
 
-    // Para o gráfico de categorias (ex: SkyCast Pro, SkyMaps, etc)
+    // Para o gráfico de categorias
     $categories = \App\Models\Category::where('user_id', $user->id)
-        ->withCount(['todos' => function ($query) {
-            $query->where('status', '!=', 'done');
-        }])
+        ->withCount(array('todos' => function ($query) {
+            $query->where(function ($q) {
+                $q->where('is_completed', 0)->orWhereNull('is_completed');
+            });
+        }))
         ->orderByDesc('todos_count')
         ->take(4)
         ->get();
 
     return view('dashboard', compact('stats', 'urgentTodos', 'recentNotes', 'categories'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(array('auth', 'verified'))->name('dashboard');
 
 Route::middleware('auth')->group(function () {
 Route::get('/team', [TeamController::class, 'index'])->name('team.index');

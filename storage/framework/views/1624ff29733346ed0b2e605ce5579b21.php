@@ -13,7 +13,9 @@
             <div>
                 <h2 class="font-extrabold text-2xl text-brand-950 leading-tight"><?php echo e(__('Kanban')); ?></h2>
                 <p class="text-sm text-brand-600 mt-1">
-                    <?php echo e(__('Arraste as tarefas entre colunas ou reordene as colunas segurando no cabeçalho.')); ?></p>
+                    <?php echo e(__('Arraste as tarefas entre colunas ou reordene as colunas segurando no cabeçalho.')); ?>
+
+                </p>
             </div>
             <div class="flex items-center gap-2">
                 <button onclick="openNewColumnModal()"
@@ -43,30 +45,25 @@
                     <?php
                         $columnSlug = $column->slug ?? \Illuminate\Support\Str::slug($column->name);
 
-                        // Filtra as tarefas correspondentes a esta coluna
                         $columnTodos = $todos->filter(function ($item) use ($column, $columnSlug, $index) {
-                            // Se a tarefa já aponta diretamente para o ID da coluna
-                            if (isset($item->kanban_column_id) && $item->kanban_column_id == $column->id) {
-                                return true;
+
+                            // 1. REGRA DE SUPREMACIA: Se a tarefa foi concluída pelo Dashboard, vai direto para a coluna Concluído!
+                            if ($item->is_completed) {
+                                return in_array($columnSlug, ['concluido', 'done', 'finalizado', 'mergeado', 'completo']);
                             }
 
-                            // Verificação por slug/status direto
+                            // 2. REGRA DE OURO: Se NÃO está concluída, respeita a coluna onde o card foi deixado no Kanban
+                            if (!empty($item->kanban_column_id)) {
+                                return $item->kanban_column_id == $column->id;
+                            }
+
+                            // 3. Fallbacks (para tarefas antigas que vieram da lista e ainda não têm ID de coluna)
                             if ($item->status === $columnSlug) {
                                 return true;
                             }
 
-                            // Mapeamento de colunas de conclusão (Última coluna ou com nomes conclusivos)
-                            if (
-                                in_array($columnSlug, ['concluido', 'done', 'finalizado', 'mergeado']) &&
-                                ($item->is_completed || in_array($item->status, ['done', 'concluido']))
-                            ) {
-                                return true;
-                            }
-
-                            // Mapeamento de colunas iniciais (Primeira coluna recebe tarefas pendentes/antigas)
                             if (
                                 $index === 0 &&
-                                !$item->is_completed &&
                                 (empty($item->status) || in_array($item->status, ['todo', 'a-fazer', 'pending']))
                             ) {
                                 return true;
@@ -142,8 +139,7 @@
                                         </p>
                                     <?php endif; ?>
 
-                                    <div
-                                        class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-50">
+                                    <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-50">
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             <?php if($todo->priority === 'highest' || $todo->priority === 'high'): ?>
                                                 <span
@@ -166,8 +162,7 @@
                                             <?php endif; ?>
                                         </div>
 
-                                        <a href="<?php echo e(route('todos.show', $todo->id)); ?>"
-                                            style="color: <?php echo e($column->color); ?>"
+                                        <a href="<?php echo e(route('todos.show', $todo->id)); ?>" style="color: <?php echo e($column->color); ?>"
                                             class="hover:opacity-75 transition p-1">
                                             <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                                         </a>
@@ -234,8 +229,7 @@
                     <div
                         class="grid grid-cols-5 sm:grid-cols-10 gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl max-h-40 overflow-y-auto custom-scrollbar">
                         <template x-for="icon in icons" :key="icon">
-                            <button type="button" @click="selectedIcon = icon"
-                                :class="selectedIcon === icon ?
+                            <button type="button" @click="selectedIcon = icon" :class="selectedIcon === icon ?
                                     'bg-brand-100 border-brand-500 text-brand-700 shadow-md scale-105' :
                                     'bg-white border-gray-200 text-gray-500 hover:bg-gray-100'"
                                 class="h-9 w-9 flex items-center justify-center rounded-lg border transition-all">
@@ -284,7 +278,7 @@
                     group: 'kanban-cards',
                     animation: 200,
                     ghostClass: 'opacity-40',
-                    onEnd: function(evt) {
+                    onEnd: function (evt) {
                         const cardId = evt.item.dataset.id;
                         const newStatus = evt.to.dataset.status;
                         const columnId = evt.to.dataset.columnId;
@@ -364,18 +358,18 @@
             if (!name) return;
 
             fetch('/kanban/column/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name,
-                        color,
-                        icon
-                    })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name,
+                    color,
+                    icon
                 })
+            })
                 .then(r => r.json())
                 .then(data => {
                     if (data.success) {
@@ -397,13 +391,13 @@
             }
 
             fetch(`/kanban/column/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                    }
-                })
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                }
+            })
                 .then(r => r.json())
                 .then(data => {
                     if (data.success) {
@@ -418,7 +412,7 @@
                 });
         }
 
-        document.getElementById('newColumnModal').addEventListener('click', function(e) {
+        document.getElementById('newColumnModal').addEventListener('click', function (e) {
             if (e.target === this) closeNewColumnModal();
         });
     </script>
@@ -451,5 +445,4 @@
 <?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
 <?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
 <?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php /**PATH C:\Workspace\SkyFlow\resources\views/kanban/index.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\Workspace\SkyFlow\resources\views/kanban/index.blade.php ENDPATH**/ ?>

@@ -29188,3 +29188,19 @@ LINE 1: update \"todos\" set \"status\" = $1, \"kanban_column_id\" = $2, \"...
 #56 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('...')
 #57 {main}
 "} 
+[2026-08-26 14:15:11] local.ERROR: Command "optmize" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"optmize\" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:785)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(321): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(218): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 

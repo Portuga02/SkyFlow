@@ -1,24 +1,36 @@
-<x-app-layout>
-    <x-slot name="header">
+<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
+<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('app-layout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     <?php $__env->slot('header', null, []); ?> 
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h2 class="font-extrabold text-2xl text-brand-950 leading-tight">{{ __('Kanban') }}</h2>
+                <h2 class="font-extrabold text-2xl text-brand-950 leading-tight"><?php echo e(__('Kanban')); ?></h2>
                 <p class="text-sm text-brand-600 mt-1">
-                    {{ __('Arraste as tarefas entre colunas ou reordene as colunas segurando no cabeçalho.') }}
+                    <?php echo e(__('Arraste as tarefas entre colunas ou reordene as colunas segurando no cabeçalho.')); ?>
+
                 </p>
             </div>
             <div class="flex items-center gap-2">
                 <button onclick="openNewColumnModal()"
                     class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 text-sm font-semibold rounded-lg transition">
-                    <i class="fa-solid fa-circle-plus"></i> {{ __('Nova Coluna') }}
+                    <i class="fa-solid fa-circle-plus"></i> <?php echo e(__('Nova Coluna')); ?>
+
                 </button>
-                <a href="{{ route('todos.index') }}"
+                <a href="<?php echo e(route('todos.index')); ?>"
                     class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-50 hover:bg-brand-100 text-brand-600 text-sm font-semibold rounded-lg transition">
-                    <i class="fa-solid fa-list"></i> {{ __('Voltar para Lista') }}
+                    <i class="fa-solid fa-list"></i> <?php echo e(__('Voltar para Lista')); ?>
+
                 </a>
             </div>
         </div>
-    </x-slot>
+     <?php $__env->endSlot(); ?>
 
     <!-- Import SortableJS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
@@ -29,8 +41,8 @@
             <div id="kanban-board" class="flex items-start gap-6 min-w-max">
 
                 <!-- LOOP DINÂMICO DE COLUNAS -->
-                @foreach ($columns as $index => $column)
-                    @php
+                <?php $__currentLoopData = $columns; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $column): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php
                         $columnSlug = $column->slug ?? \Illuminate\Support\Str::slug($column->name);
 
                         $columnTodos = $todos->filter(function ($item) use ($column, $columnSlug, $index) {
@@ -59,29 +71,30 @@
 
                             return false;
                         });
-                    @endphp
+                    ?>
 
                     <div class="kanban-column-container flex-1 min-w-[320px] max-w-[380px] flex flex-col bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all"
-                        data-column-id="{{ $column->id }}">
+                        data-column-id="<?php echo e($column->id); ?>">
 
                         <!-- Cabeçalho Dinâmico -->
                         <div class="column-header cursor-grab active:cursor-grabbing p-4 border-b select-none flex items-center justify-between"
-                            style="background-color: {{ $column->color }}15; border-color: {{ $column->color }}40;">
+                            style="background-color: <?php echo e($column->color); ?>15; border-color: <?php echo e($column->color); ?>40;">
                             <div class="flex items-center gap-3">
                                 <div class="h-8 w-8 rounded-lg flex items-center justify-center text-white shadow-xs"
-                                    style="background-color: {{ $column->color }}">
-                                    <i class="fa-solid {{ $column->icon ?? 'fa-layer-group' }} text-sm"></i>
+                                    style="background-color: <?php echo e($column->color); ?>">
+                                    <i class="fa-solid <?php echo e($column->icon ?? 'fa-layer-group'); ?> text-sm"></i>
                                 </div>
-                                <h3 class="font-bold text-brand-950 text-sm truncate max-w-[140px]">{{ $column->name }}
+                                <h3 class="font-bold text-brand-950 text-sm truncate max-w-[140px]"><?php echo e($column->name); ?>
+
                                 </h3>
                             </div>
 
                             <div class="flex items-center gap-2">
                                 <span
                                     class="column-badge inline-flex items-center justify-center h-6 min-w-[24px] px-1.5 rounded-full text-white text-xs font-bold shadow-xs"
-                                    style="background-color: {{ $column->color }}">{{ $columnTodos->count() }}</span>
+                                    style="background-color: <?php echo e($column->color); ?>"><?php echo e($columnTodos->count()); ?></span>
 
-                                <button type="button" onclick="deleteColumn({{ $column->id }})"
+                                <button type="button" onclick="deleteColumn(<?php echo e($column->id); ?>)"
                                     class="text-gray-400 hover:text-rose-500 transition p-1" title="Excluir Coluna">
                                     <i class="fa-solid fa-trash-can text-sm"></i>
                                 </button>
@@ -90,73 +103,76 @@
 
                         <!-- Corpo da Coluna -->
                         <div class="kanban-tasks flex-1 min-h-[300px] h-fit p-3 space-y-3"
-                            style="background-color: {{ $column->color }}06;" data-status="{{ $columnSlug }}"
-                            data-column-id="{{ $column->id }}">
+                            style="background-color: <?php echo e($column->color); ?>06;" data-status="<?php echo e($columnSlug); ?>"
+                            data-column-id="<?php echo e($column->id); ?>">
 
-                            @foreach ($columnTodos as $todo)
-                                @php
+                            <?php $__currentLoopData = $columnTodos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $todo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     $isOverdue = false;
                                     if ($todo->due_date && !$todo->is_completed) {
                                         $isOverdue = \Carbon\Carbon::parse($todo->due_date)->isPast();
                                     }
-                                @endphp
+                                ?>
 
                                 <!-- Card da Tarefa -->
-                                <div class="kanban-card bg-white rounded-xl border-l-4 p-4 shadow-sm hover:shadow-md transition cursor-grab active:cursor-grabbing {{ $isOverdue ? 'ring-1 ring-rose-200' : '' }}"
-                                    style="border-left-color: {{ $isOverdue ? '#f43f5e' : $column->color }};"
-                                    data-id="{{ $todo->id }}">
+                                <div class="kanban-card bg-white rounded-xl border-l-4 p-4 shadow-sm hover:shadow-md transition cursor-grab active:cursor-grabbing <?php echo e($isOverdue ? 'ring-1 ring-rose-200' : ''); ?>"
+                                    style="border-left-color: <?php echo e($isOverdue ? '#f43f5e' : $column->color); ?>;"
+                                    data-id="<?php echo e($todo->id); ?>">
 
                                     <div class="flex items-start justify-between gap-2">
                                         <p class="font-bold text-sm text-brand-950 mb-1 leading-snug">
-                                            {{ $todo->title }}
+                                            <?php echo e($todo->title); ?>
+
                                         </p>
-                                        @if ($isOverdue)
+                                        <?php if($isOverdue): ?>
                                             <span
                                                 class="inline-flex items-center gap-1 text-[10px] font-extrabold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full shrink-0 animate-pulse">
                                                 <i class="fa-solid fa-clock"></i> Atrasada
                                             </span>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
 
-                                    @if ($todo->description)
+                                    <?php if($todo->description): ?>
                                         <p class="text-xs text-gray-500 mb-3 line-clamp-2 leading-relaxed">
-                                            {{ $todo->description }}
+                                            <?php echo e($todo->description); ?>
+
                                         </p>
-                                    @endif
+                                    <?php endif; ?>
 
                                     <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-50">
                                         <div class="flex items-center gap-1.5 flex-wrap">
-                                            @if ($todo->priority === 'highest' || $todo->priority === 'high')
+                                            <?php if($todo->priority === 'highest' || $todo->priority === 'high'): ?>
                                                 <span
                                                     class="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md">Alta</span>
-                                            @elseif ($todo->priority === 'medium')
+                                            <?php elseif($todo->priority === 'medium'): ?>
                                                 <span
                                                     class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">Média</span>
-                                            @else
+                                            <?php else: ?>
                                                 <span
                                                     class="text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">Baixa</span>
-                                            @endif
+                                            <?php endif; ?>
 
-                                            @if ($todo->due_date)
+                                            <?php if($todo->due_date): ?>
                                                 <span
-                                                    class="text-[10px] font-medium {{ $isOverdue ? 'text-rose-600 font-bold' : 'text-gray-400' }} flex items-center gap-1">
+                                                    class="text-[10px] font-medium <?php echo e($isOverdue ? 'text-rose-600 font-bold' : 'text-gray-400'); ?> flex items-center gap-1">
                                                     <i class="fa-regular fa-calendar"></i>
-                                                    {{ \Carbon\Carbon::parse($todo->due_date)->format('d/m') }}
+                                                    <?php echo e(\Carbon\Carbon::parse($todo->due_date)->format('d/m')); ?>
+
                                                 </span>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
 
-                                        <a href="{{ route('todos.show', $todo->id) }}" style="color: {{ $column->color }}"
+                                        <a href="<?php echo e(route('todos.show', $todo->id)); ?>" style="color: <?php echo e($column->color); ?>"
                                             class="hover:opacity-75 transition p-1">
                                             <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                                         </a>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                         </div>
                     </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </div>
         </div>
@@ -166,19 +182,19 @@
     <div id="newColumnModal"
         class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 border border-brand-100">
-            <h3 class="text-2xl font-bold text-brand-950 mb-2">{{ __('Criar Nova Coluna') }}</h3>
-            <p class="text-sm text-gray-600 mb-6">{{ __('Personalize seu quadro Kanban com novas colunas.') }}</p>
+            <h3 class="text-2xl font-bold text-brand-950 mb-2"><?php echo e(__('Criar Nova Coluna')); ?></h3>
+            <p class="text-sm text-gray-600 mb-6"><?php echo e(__('Personalize seu quadro Kanban com novas colunas.')); ?></p>
 
             <form id="newColumnForm" onsubmit="createNewColumn(event)" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-semibold text-brand-950 mb-2">{{ __('Nome da Coluna') }}</label>
+                    <label class="block text-sm font-semibold text-brand-950 mb-2"><?php echo e(__('Nome da Coluna')); ?></label>
                     <input type="text" id="columnName" placeholder="Ex: Em Revisão, Bloqueado..."
                         class="w-full px-4 py-2.5 rounded-lg border border-brand-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none text-sm"
                         required>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-brand-950 mb-3">{{ __('Cor') }}</label>
+                    <label class="block text-sm font-semibold text-brand-950 mb-3"><?php echo e(__('Cor')); ?></label>
                     <div class="flex items-center gap-3">
                         <input type="color" id="columnColor" value="#f59e0b"
                             class="h-10 w-20 rounded-lg cursor-pointer border-2 border-brand-200">
@@ -208,7 +224,7 @@
                     ]
                 }" class="pt-2">
 
-                    <label class="block text-sm font-semibold text-brand-950 mb-2">{{ __('Ícone da Coluna') }}</label>
+                    <label class="block text-sm font-semibold text-brand-950 mb-2"><?php echo e(__('Ícone da Coluna')); ?></label>
 
                     <div
                         class="grid grid-cols-5 sm:grid-cols-10 gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl max-h-40 overflow-y-auto custom-scrollbar">
@@ -228,11 +244,13 @@
                 <div class="flex gap-3 justify-end pt-4">
                     <button type="button" onclick="closeNewColumnModal()"
                         class="px-5 py-2.5 rounded-lg font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 transition text-sm">
-                        {{ __('Cancelar') }}
+                        <?php echo e(__('Cancelar')); ?>
+
                     </button>
                     <button type="submit"
                         class="px-5 py-2.5 rounded-lg font-semibold text-white bg-brand-600 hover:bg-brand-700 transition shadow-md text-sm">
-                        {{ __('Criar Coluna') }}
+                        <?php echo e(__('Criar Coluna')); ?>
+
                     </button>
                 </div>
             </form>
@@ -418,4 +436,13 @@
             background: #94a3b8;
         }
     </style>
-</x-app-layout>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
+<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
+<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
+<?php endif; ?><?php /**PATH C:\Workspace\SkyFlow\resources\views\kanban\index.blade.php ENDPATH**/ ?>
