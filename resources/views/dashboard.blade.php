@@ -17,7 +17,7 @@
         $primeiroNome = explode(' ', trim($user->name))[0];
     @endphp
 
-    <div class="py-8 bg-slate-50 min-h-screen">
+    <div class="py-8 bg-slate-50 dark:bg-slate-900 min-h-screen transition-colors duration-300">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <!-- BANNER DE BOAS-VINDAS -->
@@ -60,48 +60,48 @@
             <!-- AÇÕES RÁPIDAS -->
             <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
                 <a href="{{ route('todos.create') }}"
-                    class="flex items-center gap-2 px-5 py-3 bg-white rounded-xl shadow-sm border border-brand-100 text-brand-950 font-semibold hover:bg-brand-50 hover:border-brand-300 transition whitespace-nowrap">
-                    <i class="fa-solid fa-circle-plus text-brand-600"></i> Nova Tarefa
+                    class="flex items-center gap-2 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-brand-100 dark:border-slate-700 text-brand-950 dark:text-slate-200 font-semibold hover:bg-brand-50 dark:hover:bg-slate-700 transition whitespace-nowrap">
+                    <i class="fa-solid fa-circle-plus text-brand-600 dark:text-brand-400"></i> Nova Tarefa
                 </a>
                 <a href="{{ route('kanban.index') }}"
-                    class="flex items-center gap-2 px-5 py-3 bg-white rounded-xl shadow-sm border border-brand-100 text-brand-950 font-semibold hover:bg-brand-50 hover:border-brand-300 transition whitespace-nowrap">
+                    class="flex items-center gap-2 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-brand-100 dark:border-slate-700 text-brand-950 dark:text-slate-200 font-semibold hover:bg-brand-50 dark:hover:bg-slate-700 transition whitespace-nowrap">
                     <i class="fa-solid fa-table-columns text-amber-500"></i> Abrir Kanban
                 </a>
                 <button onclick="createQuickNote()"
-                    class="flex items-center gap-2 px-5 py-3 bg-white rounded-xl shadow-sm border border-brand-100 text-brand-950 font-semibold hover:bg-brand-50 hover:border-brand-300 transition whitespace-nowrap">
+                    class="flex items-center gap-2 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-brand-100 dark:border-slate-700 text-brand-950 dark:text-slate-200 font-semibold hover:bg-brand-50 dark:hover:bg-slate-700 transition whitespace-nowrap">
                     <i class="fa-solid fa-note-sticky text-emerald-500"></i> Nota Rápida
                 </button>
             </div>
 
             <!-- ESTATÍSTICAS (CARDS) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-brand-50 flex items-center gap-4 hover:shadow-md transition">
-                    <div class="h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-brand-50 dark:border-slate-700 flex items-center gap-4 hover:shadow-md transition">
+                    <div class="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl">
                         <i class="fa-solid fa-list-check"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-bold text-gray-400 uppercase">{{ __('Total de Tarefas') }}</p>
-                        <h3 class="text-2xl font-black text-brand-950">{{ $stats['total'] ?? 0 }}</h3>
+                        <p class="text-sm font-bold text-gray-400 dark:text-slate-400 uppercase">{{ __('Total de Tarefas') }}</p>
+                        <h3 class="text-2xl font-black text-brand-950 dark:text-slate-100">{{ $stats['total'] ?? 0 }}</h3>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-brand-50 flex items-center gap-4 hover:shadow-md transition">
-                    <div class="h-12 w-12 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center text-xl">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-brand-50 dark:border-slate-700 flex items-center gap-4 hover:shadow-md transition">
+                    <div class="h-12 w-12 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-500 dark:text-amber-400 flex items-center justify-center text-xl">
                         <i class="fa-solid fa-hourglass-half"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-bold text-gray-400 uppercase">{{ __('Pendentes') }}</p>
-                        <h3 class="text-2xl font-black text-brand-950">{{ $stats['pending'] ?? 0 }}</h3>
+                        <p class="text-sm font-bold text-gray-400 dark:text-slate-400 uppercase">{{ __('Pendentes') }}</p>
+                        <h3 class="text-2xl font-black text-brand-950 dark:text-slate-100">{{ $stats['pending'] ?? 0 }}</h3>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-brand-50 flex items-center gap-4 hover:shadow-md transition">
-                    <div class="h-12 w-12 rounded-full bg-emerald-100 text-emerald-500 flex items-center justify-center text-xl">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-brand-50 dark:border-slate-700 flex items-center gap-4 hover:shadow-md transition">
+                    <div class="h-12 w-12 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-500 dark:text-emerald-400 flex items-center justify-center text-xl">
                         <i class="fa-solid fa-check-double"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-bold text-gray-400 uppercase">{{ __('Concluídas') }}</p>
-                        <h3 class="text-2xl font-black text-brand-950">{{ $stats['completed'] ?? 0 }}</h3>
+                        <p class="text-sm font-bold text-gray-400 dark:text-slate-400 uppercase">{{ __('Concluídas') }}</p>
+                        <h3 class="text-2xl font-black text-brand-950 dark:text-slate-100">{{ $stats['completed'] ?? 0 }}</h3>
                     </div>
                 </div>
             </div>
@@ -110,45 +110,45 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 <!-- LADO ESQUERDO: Tarefas Urgentes -->
-                <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-brand-50 overflow-hidden flex flex-col">
-                    <div class="p-6 border-b border-brand-50 flex justify-between items-center bg-slate-50/50">
-                        <h3 class="font-extrabold text-lg text-brand-950 flex items-center gap-2">
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-brand-50 dark:border-slate-700 overflow-hidden flex flex-col transition-colors duration-300">
+                    <div class="p-6 border-b border-brand-50 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+                        <h3 class="font-extrabold text-lg text-brand-950 dark:text-slate-100 flex items-center gap-2">
                             <i class="fa-solid fa-fire text-rose-500"></i> Fogo no Parquinho (Urgentes)
                         </h3>
-                        <a href="{{ route('todos.index') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-800 transition">Ver todas</a>
+                        <a href="{{ route('todos.index') }}" class="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-800 dark:hover:text-brand-300 transition">Ver todas</a>
                     </div>
 
                     <div class="p-6 flex-1">
                         @if (!isset($urgentTodos) || $urgentTodos->isEmpty())
                             <div class="h-full flex flex-col items-center justify-center text-center space-y-3 py-10">
-                                <div class="h-16 w-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 text-2xl">
+                                <div class="h-16 w-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-full flex items-center justify-center text-emerald-500 text-2xl">
                                     <i class="fa-solid fa-mug-hot"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-brand-950">Tudo sob controle!</h4>
-                                    <p class="text-sm text-gray-500">Não há tarefas de alta prioridade pendentes no momento.</p>
+                                    <h4 class="font-bold text-brand-950 dark:text-slate-200">Tudo sob controle!</h4>
+                                    <p class="text-sm text-gray-500 dark:text-slate-400">Não há tarefas de alta prioridade pendentes no momento.</p>
                                 </div>
                             </div>
                         @else
                             <div class="space-y-4">
                                 @foreach ($urgentTodos as $todo)
-                                    <div class="group flex items-start gap-4 p-4 rounded-xl border border-brand-50 hover:border-brand-200 hover:shadow-md transition bg-white">
+                                    <div class="group flex items-start gap-4 p-4 rounded-xl border border-brand-50 dark:border-slate-600 hover:border-brand-200 dark:hover:border-slate-500 hover:shadow-md transition bg-white dark:bg-slate-700/40">
                                         <!-- Botão AJAX -->
                                         <button onclick="markAsDone({{ $todo->id }})" title="Marcar como Concluída"
                                             class="focus:outline-none group/btn mt-1 flex-shrink-0 cursor-pointer">
-                                            <i class="fa-regular fa-circle text-gray-300 text-xl group-hover/btn:hidden"></i>
+                                            <i class="fa-regular fa-circle text-gray-300 dark:text-slate-500 text-xl group-hover/btn:hidden"></i>
                                             <i class="fa-solid fa-circle-check text-emerald-500 text-xl hidden group-hover/btn:block transition transform group-hover/btn:scale-110"></i>
                                         </button>
 
                                         <div class="flex-1 min-w-0">
                                             <a href="{{ route('todos.show', $todo->id) }}"
-                                                class="block font-bold text-brand-950 truncate hover:text-brand-600 transition">
+                                                class="block font-bold text-brand-950 dark:text-slate-200 truncate hover:text-brand-600 dark:hover:text-brand-400 transition">
                                                 {{ $todo->title }}
                                             </a>
 
                                             <div class="flex items-center gap-3 mt-2 flex-wrap">
                                                 @if ($todo->due_date)
-                                                    <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-50 text-rose-600 flex items-center gap-1 border border-rose-100">
+                                                    <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 flex items-center gap-1 border border-rose-100 dark:border-rose-800">
                                                         <i class="fa-regular fa-calendar"></i>
                                                         {{ \Carbon\Carbon::parse($todo->due_date)->isToday() ? 'Hoje às ' . \Carbon\Carbon::parse($todo->due_date)->format('H:i') : \Carbon\Carbon::parse($todo->due_date)->format('d/m/Y') }}
                                                     </span>
@@ -172,14 +172,14 @@
                                                         $assigneeFallback = 'https://api.dicebear.com/7.x/notionists/svg?seed=' . urlencode($assignee->name) . '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
                                                         $assigneeAvatar = !empty($assignee->avatar_path) ? $assignee->avatar_path : $assigneeFallback;
                                                     @endphp
-                                                    <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover bg-white"
+                                                    <img class="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-slate-800 object-cover bg-white"
                                                         src="{{ $assigneeAvatar }}" 
                                                         alt="{{ $assignee->name }}"
                                                         title="{{ $assignee->name }}"
                                                         onerror="this.onerror=null; this.src='{{ $assigneeFallback }}';">
                                                 @endforeach
                                                 @if ($todo->assignedUsers->count() > 3)
-                                                    <div class="inline-flex h-8 w-8 items-center justify-center rounded-full ring-2 ring-white bg-gray-100 text-xs font-bold text-gray-600">
+                                                    <div class="inline-flex h-8 w-8 items-center justify-center rounded-full ring-2 ring-white dark:ring-slate-800 bg-gray-100 dark:bg-slate-600 text-xs font-bold text-gray-600 dark:text-slate-300">
                                                         +{{ $todo->assignedUsers->count() - 3 }}
                                                     </div>
                                                 @endif
@@ -196,8 +196,8 @@
                 <div class="space-y-6">
 
                     <!-- Foco por Projetos -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-brand-50 p-6">
-                        <h3 class="font-extrabold text-lg text-brand-950 mb-4 flex items-center gap-2">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-brand-50 dark:border-slate-700 p-6 transition-colors duration-300">
+                        <h3 class="font-extrabold text-lg text-brand-950 dark:text-slate-100 mb-4 flex items-center gap-2">
                             <i class="fa-solid fa-chart-pie text-blue-500"></i> Foco Atual
                         </h3>
 
@@ -206,13 +206,13 @@
                                 @foreach ($categories as $category)
                                     <div>
                                         <div class="flex justify-between text-sm font-bold mb-1">
-                                            <span class="text-brand-950 flex items-center gap-1.5">
+                                            <span class="text-brand-950 dark:text-slate-200 flex items-center gap-1.5">
                                                 <i class="{{ $category->icon ?? 'fa-solid fa-folder' }} text-slate-400 text-xs"></i>
                                                 {{ $category->name }}
                                             </span>
-                                            <span class="text-gray-500">{{ $category->todos_count }} <span class="hidden sm:inline">pendentes</span></span>
+                                            <span class="text-gray-500 dark:text-slate-400">{{ $category->todos_count }} <span class="hidden sm:inline">pendentes</span></span>
                                         </div>
-                                        <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                        <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden">
                                             @php
                                                 $pendingCount = $stats['pending'] ?? 0;
                                                 $percent = $pendingCount > 0 ? ($category->todos_count / $pendingCount) * 100 : 0;
@@ -225,30 +225,30 @@
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-sm text-gray-500 text-center py-4">Nenhuma categoria ativa no momento.</p>
+                            <p class="text-sm text-gray-500 dark:text-slate-400 text-center py-4">Nenhuma categoria ativa no momento.</p>
                         @endif
                     </div>
 
                     <!-- Anotações Recentes -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-brand-50 p-6">
-                        <h3 class="font-extrabold text-lg text-brand-950 mb-4 flex items-center gap-2">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-brand-50 dark:border-slate-700 p-6 transition-colors duration-300">
+                        <h3 class="font-extrabold text-lg text-brand-950 dark:text-slate-100 mb-4 flex items-center gap-2">
                             <i class="fa-solid fa-thumbtack text-amber-500"></i> Anotações Recentes
                         </h3>
 
                         @if (isset($recentNotes) && $recentNotes->count() > 0)
                             <div class="space-y-3">
                                 @foreach ($recentNotes as $note)
-                                    <div class="bg-amber-50 border-l-4 border-amber-400 p-3 rounded-r-lg shadow-sm hover:shadow transition cursor-pointer"
+                                    <div class="bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-400 dark:border-amber-600 p-3 rounded-r-lg shadow-sm hover:shadow transition cursor-pointer"
                                         onclick="window.location.href='/notes'">
-                                        <h4 class="font-bold text-sm text-amber-900 truncate">{{ $note->title }}</h4>
-                                        <p class="text-xs text-amber-900/80 leading-relaxed line-clamp-3">
+                                        <h4 class="font-bold text-sm text-amber-900 dark:text-amber-200 truncate">{{ $note->title }}</h4>
+                                        <p class="text-xs text-amber-900/80 dark:text-amber-100/70 leading-relaxed line-clamp-3">
                                             {{ Str::limit(strip_tags($note->content), 120) }}
                                         </p>
                                     </div>
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-sm text-gray-500 text-center py-4">O bloco de notas está vazio.</p>
+                            <p class="text-sm text-gray-500 dark:text-slate-400 text-center py-4">O bloco de notas está vazio.</p>
                         @endif
                     </div>
 

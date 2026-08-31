@@ -17,7 +17,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -43,10 +43,19 @@
             font-weight: 700;
         }
     </style>
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
 
-<body class="font-figtree antialiased" x-data="{ mobileOpen: false }">
-    <div class="min-h-screen bg-brand-50">
+<body class="font-figtree antialiased dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300"
+    x-data="{ mobileOpen: false }">
+
+    <div class="min-h-screen bg-brand-50 dark:bg-slate-900 transition-colors duration-300">
 
         <!-- Sidebar Overlay Mobile -->
         <div x-show="mobileOpen" @click="mobileOpen = false" class="fixed inset-0 bg-black/50 z-30 md:hidden"
@@ -58,16 +67,19 @@
         <!-- Main Content -->
         <main class="md:ml-64">
             <!-- Mobile Header Button -->
-            <div class="md:hidden bg-white border-b border-brand-100 px-4 py-3 flex items-center gap-3">
-                <button @click="mobileOpen = true" class="text-brand-600 hover:text-brand-700">
+            <div
+                class="md:hidden bg-white dark:bg-slate-800 border-b border-brand-100 dark:border-slate-700 px-4 py-3 flex items-center gap-3 transition-colors duration-300">
+                <button @click="mobileOpen = true"
+                    class="text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
-                <span class="font-bold text-brand-950">SkyFlow</span>
+                <span class="font-bold text-brand-950 dark:text-slate-100">SkyFlow</span>
             </div>
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white border-b border-brand-100">
+                <header
+                    class="bg-white dark:bg-slate-800 border-b border-brand-100 dark:border-slate-700 transition-colors duration-300">
                     <div class="px-4 sm:px-6 lg:px-8 py-6">
                         {{ $header }}
                     </div>

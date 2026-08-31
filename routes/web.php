@@ -16,11 +16,9 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-
 Route::get('/dashboard', function () {
     $user = Auth::user();
 
-    // Estatísticas dos cards (Agora pega o 0 e o NULL)
     $stats = array(
         'total'     => $user->todos()->count(),
         'pending'   => $user->todos()->where(function ($query) {
@@ -29,7 +27,6 @@ Route::get('/dashboard', function () {
         'completed' => $user->todos()->where('is_completed', 1)->count(),
     );
 
-    // Tarefas Urgentes (Fogo no parquinho!)
     $urgentTodos = $user->todos()
         ->where(function ($query) {
             $query->where('is_completed', 0)->orWhereNull('is_completed');
@@ -39,13 +36,11 @@ Route::get('/dashboard', function () {
         ->take(5)
         ->get();
 
-    // Últimas Anotações
     $recentNotes = \App\Models\Note::where('user_id', $user->id)
         ->latest()
         ->take(3)
         ->get();
 
-    // Para o gráfico de categorias
     $categories = \App\Models\Category::where('user_id', $user->id)
         ->withCount(array('todos' => function ($query) {
             $query->where(function ($q) {
@@ -60,79 +55,83 @@ Route::get('/dashboard', function () {
 })->middleware(array('auth', 'verified'))->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-Route::get('/team', [TeamController::class, 'index'])->name('team.index');
-    Route::post('/team', [TeamController::class, 'store'])->name('team.store');
-    // 👤 Rotas do Profile (Breeze)
-    Route::controller(ProfileController::class)->prefix('profile')->name('profile.')->group(function () {
+    // 👥 Equipe
+    Route::get('/equipe', [TeamController::class, 'index'])->name('team.index');
+    Route::post('/equipe', [TeamController::class, 'store'])->name('team.store');
+    
+    // 👤 Perfil
+    Route::controller(ProfileController::class)->prefix('perfil')->name('profile.')->group(function () {
         Route::get('/', 'edit')->name('edit');
         Route::patch('/', 'update')->name('update');
         Route::post('/avatar', 'uploadAvatar')->name('avatar');
-        Route::post('/theme', 'updateTheme')->name('theme');
+        Route::post('/tema', 'updateTheme')->name('theme');
         Route::delete('/', 'destroy')->name('destroy');
     });
 
-    // 🚀 Rotas do SkyFlow (Tarefas) - Padrão REST puro!
-    Route::controller(TodoController::class)->prefix('todos')->name('todos.')->group(function () {
+    // 🚀 Tarefas (SkyFlow REST)
+    Route::controller(TodoController::class)->prefix('tarefas')->name('todos.')->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
+        Route::get('/criar', 'create')->name('create');
         Route::post('/', 'store')->name('store');
         Route::get('/{todo}', 'show')->name('show');
-        Route::get('/{todo}/edit', 'edit')->name('edit');
+        Route::get('/{todo}/editar', 'edit')->name('edit');
         Route::put('/{todo}', 'update')->name('update');
-        Route::patch('/{todo}/toggle', 'toggle')->name('toggle');
+        Route::patch('/{todo}/alternar', 'toggle')->name('toggle');
         Route::delete('/{todo}', 'destroy')->name('destroy');
 
-        // 🗂️ Checklist
         Route::post('/{todo}/checklist', 'checklistStore')->name('checklist.store');
-        Route::patch('/{todo}/checklist/{index}/toggle', 'checklistToggle')->name('checklist.toggle');
+        Route::patch('/{todo}/checklist/{index}/alternar', 'checklistToggle')->name('checklist.toggle');
         Route::delete('/{todo}/checklist/{index}', 'checklistDestroy')->name('checklist.destroy');
 
-        // 💬 Comentários
-        Route::post('/{todo}/comments', 'commentStore')->name('comments.store');
+        Route::post('/{todo}/comentarios', 'commentStore')->name('comments.store');
 
-        // 📎 Anexos
-        Route::post('/{todo}/attachments', 'attachmentStore')->name('attachments.store');
-        Route::delete('/{todo}/attachments/{index}', 'attachmentDestroy')->name('attachments.destroy');
+        Route::post('/{todo}/anexos', 'attachmentStore')->name('attachments.store');
+        Route::delete('/{todo}/anexos/{index}', 'attachmentDestroy')->name('attachments.destroy');
 
-        // 🏷️ Etiquetas
-        Route::post('/{todo}/labels', 'labelStore')->name('labels.store');
-        Route::delete('/{todo}/labels/{index}', 'labelDestroy')->name('labels.destroy');
+        Route::post('/{todo}/etiquetas', 'labelStore')->name('labels.store');
+        Route::delete('/{todo}/etiquetas/{index}', 'labelDestroy')->name('labels.destroy');
     });
 
-   
-    Route::controller(CategoryController::class)->prefix('categories')->name('categories.')->group(function () {
+    //  Categorias
+    Route::controller(CategoryController::class)->prefix('categorias')->name('categories.')->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/create', 'create')->name('create');
+        Route::get('/criar', 'create')->name('create');
         Route::post('/', 'store')->name('store');
-        Route::get('/{category}/edit', 'edit')->name('edit');
+        Route::get('/{category}/editar', 'edit')->name('edit');
         Route::put('/{category}', 'update')->name('update');
         Route::delete('/{category}', 'destroy')->name('destroy');
     });
-    Route::controller(NoteController::class)->prefix('notes')->name('notes.')->group(function () {
+
+    // 📝 Anotações
+    Route::controller(NoteController::class)->prefix('anotacoes')->name('notes.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/', 'store')->name('store');
         Route::patch('/{note}', 'update')->name('update');
         Route::delete('/{note}', 'destroy')->name('destroy');
     });
-    Route::controller(CalendarController::class)->prefix('calendar')->name('calendar.')->group(function () {
+
+    // 📅 Calendário
+    Route::controller(CalendarController::class)->prefix('calendario')->name('calendar.')->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/events', 'events')->name('events');
-        Route::patch('/reschedule', 'reschedule')->name('reschedule');
+        Route::get('/eventos', 'events')->name('events');
+        Route::patch('/reagendar', 'reschedule')->name('reschedule');
     });
 
-   Route::controller(KanbanController::class)->prefix('kanban')->name('kanban.')->group(function () {
-        Route::get('/', 'index')->name('index'); 
-        Route::get('/columns', 'columns')->name('columns'); 
-        Route::post('/move', 'move')->name('move');
-
-        Route::post('/column/create', 'storeColumn')->name('column.store');
-
-        Route::delete('/column/{columnKey}', 'deleteColumn')->name('column.delete');
+    // 📋 Kanban
+    Route::controller(KanbanController::class)->prefix('kanban')->name('kanban.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/colunas', 'columns')->name('columns');
+        Route::post('/mover', 'move')->name('move');
+        Route::post('/coluna/criar', 'storeColumn')->name('column.store');
+        Route::delete('/coluna/{columnKey}', 'deleteColumn')->name('column.delete');
+        
+        // Rota que faltava para a Criação Rápida
+        Route::post('/tarefa/criacao-rapida', 'quickCreate')->name('task.quick-create');
     });
 
-    Route::post('/todos/view-toggle', [TodoController::class, 'toggleViewMode'])->name('todos.view-toggle');
-
-    Route::get('/search', [SearchController::class, 'global'])->name('search.global');
+    // ⚙️ Utilitários
+    Route::post('/tarefas/alternar-visualizacao', [TodoController::class, 'toggleViewMode'])->name('todos.view-toggle');
+    Route::get('/busca', [SearchController::class, 'global'])->name('search.global');
 });
 
 require __DIR__ . '/auth.php';

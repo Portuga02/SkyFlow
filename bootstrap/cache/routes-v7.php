@@ -33,7 +33,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::TI3UT8HGPDznUeTY',
+            '_route' => 'generated::Zi6v0gpTKkyOy3H8',
           ),
           1 => NULL,
           2 => 
@@ -53,7 +53,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::fGRcLT9URi657e1U',
+            '_route' => 'generated::QjvdxhE8ow065YD7',
           ),
           1 => NULL,
           2 => 
@@ -87,7 +87,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/team' => 
+      '/equipe' => 
       array (
         0 => 
         array (
@@ -123,7 +123,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/profile' => 
+      '/perfil' => 
       array (
         0 => 
         array (
@@ -175,7 +175,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/profile/avatar' => 
+      '/perfil/avatar' => 
       array (
         0 => 
         array (
@@ -194,7 +194,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/profile/theme' => 
+      '/perfil/tema' => 
       array (
         0 => 
         array (
@@ -213,7 +213,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/todos' => 
+      '/tarefas' => 
       array (
         0 => 
         array (
@@ -249,7 +249,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/todos/create' => 
+      '/tarefas/criar' => 
       array (
         0 => 
         array (
@@ -269,7 +269,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/categories' => 
+      '/categorias' => 
       array (
         0 => 
         array (
@@ -305,7 +305,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/categories/create' => 
+      '/categorias/criar' => 
       array (
         0 => 
         array (
@@ -325,7 +325,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/notes' => 
+      '/anotacoes' => 
       array (
         0 => 
         array (
@@ -361,7 +361,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/calendar' => 
+      '/calendario' => 
       array (
         0 => 
         array (
@@ -381,7 +381,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/calendar/events' => 
+      '/calendario/eventos' => 
       array (
         0 => 
         array (
@@ -401,7 +401,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/calendar/reschedule' => 
+      '/calendario/reagendar' => 
       array (
         0 => 
         array (
@@ -440,7 +440,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/kanban/columns' => 
+      '/kanban/colunas' => 
       array (
         0 => 
         array (
@@ -460,7 +460,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/kanban/move' => 
+      '/kanban/mover' => 
       array (
         0 => 
         array (
@@ -479,7 +479,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/kanban/column/create' => 
+      '/kanban/coluna/criar' => 
       array (
         0 => 
         array (
@@ -498,7 +498,26 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      '/search' => 
+      '/kanban/tarefa/criacao-rapida' => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'kanban.task.quick-create',
+          ),
+          1 => NULL,
+          2 => 
+          array (
+            'POST' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      '/busca' => 
       array (
         0 => 
         array (
@@ -541,7 +560,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::lFsIZCaDPEv3ygUQ',
+            '_route' => 'generated::X6JbvrhhPuK4It26',
           ),
           1 => NULL,
           2 => 
@@ -577,7 +596,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::sQPF8CHusUwt7edL',
+            '_route' => 'generated::Ab3NtaTXRTnyIOk2',
           ),
           1 => NULL,
           2 => 
@@ -707,7 +726,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::DuAmiiatSFBlmC2r',
+            '_route' => 'generated::hKNcpR8O7nmQLKKC',
           ),
           1 => NULL,
           2 => 
@@ -761,11 +780,11 @@ app('router')->setCompiledRoutes(
     ),
     2 => 
     array (
-      0 => '{^(?|/todos/(?|([^/]++)(?|(*:28)|/(?|edit(*:43)|toggle(*:56)|c(?|hecklist(?|(*:78)|/([^/]++)(?|/toggle(*:104)|(*:112)))|omments(*:129))|attachments(?|(*:152)|/([^/]++)(*:169))|labels(?|(*:187)|/([^/]++)(*:204)))|(*:214))|view\\-toggle(*:235))|/categories/([^/]++)(?|/edit(*:272)|(*:280))|/notes/([^/]++)(?|(*:307))|/kanban/column/([^/]++)(*:339)|/reset\\-password/([^/]++)(*:372)|/verify\\-email/([^/]++)/([^/]++)(*:412))/?$}sDu',
+      0 => '{^(?|/tarefas/(?|([^/]++)(?|(*:30)|/(?|e(?|ditar(*:50)|tiquetas(?|(*:68)|/([^/]++)(*:84)))|a(?|lternar(*:104)|nexos(?|(*:120)|/([^/]++)(*:137)))|c(?|hecklist(?|(*:162)|/([^/]++)(?|/alternar(*:191)|(*:199)))|omentarios(*:219)))|(*:229))|alternar\\-visualizacao(*:260))|/categorias/([^/]++)(?|/editar(*:299)|(*:307))|/anotacoes/([^/]++)(?|(*:338))|/kanban/coluna/([^/]++)(*:370)|/reset\\-password/([^/]++)(*:403)|/verify\\-email/([^/]++)/([^/]++)(*:443))/?$}sDu',
     ),
     3 => 
     array (
-      28 => 
+      30 => 
       array (
         0 => 
         array (
@@ -788,7 +807,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      43 => 
+      50 => 
       array (
         0 => 
         array (
@@ -811,164 +830,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      56 => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            '_route' => 'todos.toggle',
-          ),
-          1 => 
-          array (
-            0 => 'todo',
-          ),
-          2 => 
-          array (
-            'PATCH' => 0,
-          ),
-          3 => NULL,
-          4 => false,
-          5 => false,
-          6 => NULL,
-        ),
-      ),
-      78 => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            '_route' => 'todos.checklist.store',
-          ),
-          1 => 
-          array (
-            0 => 'todo',
-          ),
-          2 => 
-          array (
-            'POST' => 0,
-          ),
-          3 => NULL,
-          4 => false,
-          5 => false,
-          6 => NULL,
-        ),
-      ),
-      104 => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            '_route' => 'todos.checklist.toggle',
-          ),
-          1 => 
-          array (
-            0 => 'todo',
-            1 => 'index',
-          ),
-          2 => 
-          array (
-            'PATCH' => 0,
-          ),
-          3 => NULL,
-          4 => false,
-          5 => false,
-          6 => NULL,
-        ),
-      ),
-      112 => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            '_route' => 'todos.checklist.destroy',
-          ),
-          1 => 
-          array (
-            0 => 'todo',
-            1 => 'index',
-          ),
-          2 => 
-          array (
-            'DELETE' => 0,
-          ),
-          3 => NULL,
-          4 => false,
-          5 => true,
-          6 => NULL,
-        ),
-      ),
-      129 => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            '_route' => 'todos.comments.store',
-          ),
-          1 => 
-          array (
-            0 => 'todo',
-          ),
-          2 => 
-          array (
-            'POST' => 0,
-          ),
-          3 => NULL,
-          4 => false,
-          5 => false,
-          6 => NULL,
-        ),
-      ),
-      152 => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            '_route' => 'todos.attachments.store',
-          ),
-          1 => 
-          array (
-            0 => 'todo',
-          ),
-          2 => 
-          array (
-            'POST' => 0,
-          ),
-          3 => NULL,
-          4 => false,
-          5 => false,
-          6 => NULL,
-        ),
-      ),
-      169 => 
-      array (
-        0 => 
-        array (
-          0 => 
-          array (
-            '_route' => 'todos.attachments.destroy',
-          ),
-          1 => 
-          array (
-            0 => 'todo',
-            1 => 'index',
-          ),
-          2 => 
-          array (
-            'DELETE' => 0,
-          ),
-          3 => NULL,
-          4 => false,
-          5 => true,
-          6 => NULL,
-        ),
-      ),
-      187 => 
+      68 => 
       array (
         0 => 
         array (
@@ -990,7 +852,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      204 => 
+      84 => 
       array (
         0 => 
         array (
@@ -1013,7 +875,164 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      214 => 
+      104 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'todos.toggle',
+          ),
+          1 => 
+          array (
+            0 => 'todo',
+          ),
+          2 => 
+          array (
+            'PATCH' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      120 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'todos.attachments.store',
+          ),
+          1 => 
+          array (
+            0 => 'todo',
+          ),
+          2 => 
+          array (
+            'POST' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      137 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'todos.attachments.destroy',
+          ),
+          1 => 
+          array (
+            0 => 'todo',
+            1 => 'index',
+          ),
+          2 => 
+          array (
+            'DELETE' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => true,
+          6 => NULL,
+        ),
+      ),
+      162 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'todos.checklist.store',
+          ),
+          1 => 
+          array (
+            0 => 'todo',
+          ),
+          2 => 
+          array (
+            'POST' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      191 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'todos.checklist.toggle',
+          ),
+          1 => 
+          array (
+            0 => 'todo',
+            1 => 'index',
+          ),
+          2 => 
+          array (
+            'PATCH' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      199 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'todos.checklist.destroy',
+          ),
+          1 => 
+          array (
+            0 => 'todo',
+            1 => 'index',
+          ),
+          2 => 
+          array (
+            'DELETE' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => true,
+          6 => NULL,
+        ),
+      ),
+      219 => 
+      array (
+        0 => 
+        array (
+          0 => 
+          array (
+            '_route' => 'todos.comments.store',
+          ),
+          1 => 
+          array (
+            0 => 'todo',
+          ),
+          2 => 
+          array (
+            'POST' => 0,
+          ),
+          3 => NULL,
+          4 => false,
+          5 => false,
+          6 => NULL,
+        ),
+      ),
+      229 => 
       array (
         0 => 
         array (
@@ -1054,7 +1073,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      235 => 
+      260 => 
       array (
         0 => 
         array (
@@ -1075,7 +1094,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      272 => 
+      299 => 
       array (
         0 => 
         array (
@@ -1098,7 +1117,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      280 => 
+      307 => 
       array (
         0 => 
         array (
@@ -1139,7 +1158,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      307 => 
+      338 => 
       array (
         0 => 
         array (
@@ -1180,7 +1199,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      339 => 
+      370 => 
       array (
         0 => 
         array (
@@ -1202,7 +1221,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      372 => 
+      403 => 
       array (
         0 => 
         array (
@@ -1225,7 +1244,7 @@ app('router')->setCompiledRoutes(
           6 => NULL,
         ),
       ),
-      412 => 
+      443 => 
       array (
         0 => 
         array (
@@ -1301,7 +1320,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::TI3UT8HGPDznUeTY' => 
+    'generated::Zi6v0gpTKkyOy3H8' => 
     array (
       'methods' => 
       array (
@@ -1318,13 +1337,13 @@ app('router')->setCompiledRoutes(
         ),
         'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:77:"function (\\Illuminate\\Http\\Request $request) {
     return $request->user();
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005900000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000000000050c0000000000000000";}}',
         'namespace' => NULL,
         'prefix' => 'api',
         'where' => 
         array (
         ),
-        'as' => 'generated::TI3UT8HGPDznUeTY',
+        'as' => 'generated::Zi6v0gpTKkyOy3H8',
       ),
       'fallback' => false,
       'defaults' => 
@@ -1340,7 +1359,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::fGRcLT9URi657e1U' => 
+    'generated::QjvdxhE8ow065YD7' => 
     array (
       'methods' => 
       array (
@@ -1356,13 +1375,13 @@ app('router')->setCompiledRoutes(
         ),
         'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:47:"function () {
     return \\view(\'auth.login\');
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005920000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"000000000000050e0000000000000000";}}',
         'namespace' => NULL,
         'prefix' => '',
         'where' => 
         array (
         ),
-        'as' => 'generated::fGRcLT9URi657e1U',
+        'as' => 'generated::QjvdxhE8ow065YD7',
       ),
       'fallback' => false,
       'defaults' => 
@@ -1394,10 +1413,9 @@ app('router')->setCompiledRoutes(
           1 => 'auth',
           2 => 'verified',
         ),
-        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:1408:"function () {
+        'uses' => 'O:55:"Laravel\\SerializableClosure\\UnsignedSerializableClosure":1:{s:12:"serializable";O:46:"Laravel\\SerializableClosure\\Serializers\\Native":5:{s:3:"use";a:0:{}s:8:"function";s:1241:"function () {
     $user = \\Illuminate\\Support\\Facades\\Auth::user();
 
-    // Estatísticas dos cards (Agora pega o 0 e o NULL)
     $stats = array(
         \'total\'     => $user->todos()->count(),
         \'pending\'   => $user->todos()->where(function ($query) {
@@ -1406,7 +1424,6 @@ app('router')->setCompiledRoutes(
         \'completed\' => $user->todos()->where(\'is_completed\', 1)->count(),
     );
 
-    // Tarefas Urgentes (Fogo no parquinho!)
     $urgentTodos = $user->todos()
         ->where(function ($query) {
             $query->where(\'is_completed\', 0)->orWhereNull(\'is_completed\');
@@ -1416,13 +1433,11 @@ app('router')->setCompiledRoutes(
         ->take(5)
         ->get();
 
-    // Últimas Anotações
     $recentNotes = \\App\\Models\\Note::where(\'user_id\', $user->id)
         ->latest()
         ->take(3)
         ->get();
 
-    // Para o gráfico de categorias
     $categories = \\App\\Models\\Category::where(\'user_id\', $user->id)
         ->withCount(array(\'todos\' => function ($query) {
             $query->where(function ($q) {
@@ -1434,7 +1449,7 @@ app('router')->setCompiledRoutes(
         ->get();
 
     return \\view(\'dashboard\', \\compact(\'stats\', \'urgentTodos\', \'recentNotes\', \'categories\'));
-}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005940000000000000000";}}',
+}";s:5:"scope";s:37:"Illuminate\\Routing\\RouteFileRegistrar";s:4:"this";N;s:4:"self";s:32:"00000000000005100000000000000000";}}',
         'namespace' => NULL,
         'prefix' => '',
         'where' => 
@@ -1463,7 +1478,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'team',
+      'uri' => 'equipe',
       'action' => 
       array (
         'middleware' => 
@@ -1500,7 +1515,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'team',
+      'uri' => 'equipe',
       'action' => 
       array (
         'middleware' => 
@@ -1538,7 +1553,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'profile',
+      'uri' => 'perfil',
       'action' => 
       array (
         'middleware' => 
@@ -1550,7 +1565,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\ProfileController@edit',
         'as' => 'profile.edit',
         'namespace' => NULL,
-        'prefix' => '/profile',
+        'prefix' => '/perfil',
         'where' => 
         array (
         ),
@@ -1575,7 +1590,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'PATCH',
       ),
-      'uri' => 'profile',
+      'uri' => 'perfil',
       'action' => 
       array (
         'middleware' => 
@@ -1587,7 +1602,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\ProfileController@update',
         'as' => 'profile.update',
         'namespace' => NULL,
-        'prefix' => '/profile',
+        'prefix' => '/perfil',
         'where' => 
         array (
         ),
@@ -1612,7 +1627,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'profile/avatar',
+      'uri' => 'perfil/avatar',
       'action' => 
       array (
         'middleware' => 
@@ -1624,7 +1639,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\ProfileController@uploadAvatar',
         'as' => 'profile.avatar',
         'namespace' => NULL,
-        'prefix' => '/profile',
+        'prefix' => '/perfil',
         'where' => 
         array (
         ),
@@ -1649,7 +1664,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'profile/theme',
+      'uri' => 'perfil/tema',
       'action' => 
       array (
         'middleware' => 
@@ -1661,7 +1676,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\ProfileController@updateTheme',
         'as' => 'profile.theme',
         'namespace' => NULL,
-        'prefix' => '/profile',
+        'prefix' => '/perfil',
         'where' => 
         array (
         ),
@@ -1686,7 +1701,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'DELETE',
       ),
-      'uri' => 'profile',
+      'uri' => 'perfil',
       'action' => 
       array (
         'middleware' => 
@@ -1698,7 +1713,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\ProfileController@destroy',
         'as' => 'profile.destroy',
         'namespace' => NULL,
-        'prefix' => '/profile',
+        'prefix' => '/perfil',
         'where' => 
         array (
         ),
@@ -1724,7 +1739,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'todos',
+      'uri' => 'tarefas',
       'action' => 
       array (
         'middleware' => 
@@ -1736,7 +1751,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@index',
         'as' => 'todos.index',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -1762,7 +1777,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'todos/create',
+      'uri' => 'tarefas/criar',
       'action' => 
       array (
         'middleware' => 
@@ -1774,7 +1789,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@create',
         'as' => 'todos.create',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -1799,7 +1814,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'todos',
+      'uri' => 'tarefas',
       'action' => 
       array (
         'middleware' => 
@@ -1811,7 +1826,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@store',
         'as' => 'todos.store',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -1837,7 +1852,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'todos/{todo}',
+      'uri' => 'tarefas/{todo}',
       'action' => 
       array (
         'middleware' => 
@@ -1849,7 +1864,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@show',
         'as' => 'todos.show',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -1875,7 +1890,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'todos/{todo}/edit',
+      'uri' => 'tarefas/{todo}/editar',
       'action' => 
       array (
         'middleware' => 
@@ -1887,7 +1902,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@edit',
         'as' => 'todos.edit',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -1912,7 +1927,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'PUT',
       ),
-      'uri' => 'todos/{todo}',
+      'uri' => 'tarefas/{todo}',
       'action' => 
       array (
         'middleware' => 
@@ -1924,7 +1939,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@update',
         'as' => 'todos.update',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -1949,7 +1964,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'PATCH',
       ),
-      'uri' => 'todos/{todo}/toggle',
+      'uri' => 'tarefas/{todo}/alternar',
       'action' => 
       array (
         'middleware' => 
@@ -1961,7 +1976,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@toggle',
         'as' => 'todos.toggle',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -1986,7 +2001,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'DELETE',
       ),
-      'uri' => 'todos/{todo}',
+      'uri' => 'tarefas/{todo}',
       'action' => 
       array (
         'middleware' => 
@@ -1998,7 +2013,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@destroy',
         'as' => 'todos.destroy',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -2023,7 +2038,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'todos/{todo}/checklist',
+      'uri' => 'tarefas/{todo}/checklist',
       'action' => 
       array (
         'middleware' => 
@@ -2035,7 +2050,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@checklistStore',
         'as' => 'todos.checklist.store',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -2060,7 +2075,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'PATCH',
       ),
-      'uri' => 'todos/{todo}/checklist/{index}/toggle',
+      'uri' => 'tarefas/{todo}/checklist/{index}/alternar',
       'action' => 
       array (
         'middleware' => 
@@ -2072,7 +2087,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@checklistToggle',
         'as' => 'todos.checklist.toggle',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -2097,7 +2112,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'DELETE',
       ),
-      'uri' => 'todos/{todo}/checklist/{index}',
+      'uri' => 'tarefas/{todo}/checklist/{index}',
       'action' => 
       array (
         'middleware' => 
@@ -2109,7 +2124,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@checklistDestroy',
         'as' => 'todos.checklist.destroy',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -2134,7 +2149,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'todos/{todo}/comments',
+      'uri' => 'tarefas/{todo}/comentarios',
       'action' => 
       array (
         'middleware' => 
@@ -2146,7 +2161,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@commentStore',
         'as' => 'todos.comments.store',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -2171,7 +2186,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'todos/{todo}/attachments',
+      'uri' => 'tarefas/{todo}/anexos',
       'action' => 
       array (
         'middleware' => 
@@ -2183,7 +2198,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@attachmentStore',
         'as' => 'todos.attachments.store',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -2208,7 +2223,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'DELETE',
       ),
-      'uri' => 'todos/{todo}/attachments/{index}',
+      'uri' => 'tarefas/{todo}/anexos/{index}',
       'action' => 
       array (
         'middleware' => 
@@ -2220,7 +2235,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@attachmentDestroy',
         'as' => 'todos.attachments.destroy',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -2245,7 +2260,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'todos/{todo}/labels',
+      'uri' => 'tarefas/{todo}/etiquetas',
       'action' => 
       array (
         'middleware' => 
@@ -2257,7 +2272,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@labelStore',
         'as' => 'todos.labels.store',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -2282,7 +2297,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'DELETE',
       ),
-      'uri' => 'todos/{todo}/labels/{index}',
+      'uri' => 'tarefas/{todo}/etiquetas/{index}',
       'action' => 
       array (
         'middleware' => 
@@ -2294,7 +2309,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\TodoController@labelDestroy',
         'as' => 'todos.labels.destroy',
         'namespace' => NULL,
-        'prefix' => '/todos',
+        'prefix' => '/tarefas',
         'where' => 
         array (
         ),
@@ -2320,7 +2335,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'categories',
+      'uri' => 'categorias',
       'action' => 
       array (
         'middleware' => 
@@ -2332,7 +2347,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\CategoryController@index',
         'as' => 'categories.index',
         'namespace' => NULL,
-        'prefix' => '/categories',
+        'prefix' => '/categorias',
         'where' => 
         array (
         ),
@@ -2358,7 +2373,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'categories/create',
+      'uri' => 'categorias/criar',
       'action' => 
       array (
         'middleware' => 
@@ -2370,7 +2385,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\CategoryController@create',
         'as' => 'categories.create',
         'namespace' => NULL,
-        'prefix' => '/categories',
+        'prefix' => '/categorias',
         'where' => 
         array (
         ),
@@ -2395,7 +2410,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'categories',
+      'uri' => 'categorias',
       'action' => 
       array (
         'middleware' => 
@@ -2407,7 +2422,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\CategoryController@store',
         'as' => 'categories.store',
         'namespace' => NULL,
-        'prefix' => '/categories',
+        'prefix' => '/categorias',
         'where' => 
         array (
         ),
@@ -2433,7 +2448,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'categories/{category}/edit',
+      'uri' => 'categorias/{category}/editar',
       'action' => 
       array (
         'middleware' => 
@@ -2445,7 +2460,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\CategoryController@edit',
         'as' => 'categories.edit',
         'namespace' => NULL,
-        'prefix' => '/categories',
+        'prefix' => '/categorias',
         'where' => 
         array (
         ),
@@ -2470,7 +2485,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'PUT',
       ),
-      'uri' => 'categories/{category}',
+      'uri' => 'categorias/{category}',
       'action' => 
       array (
         'middleware' => 
@@ -2482,7 +2497,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\CategoryController@update',
         'as' => 'categories.update',
         'namespace' => NULL,
-        'prefix' => '/categories',
+        'prefix' => '/categorias',
         'where' => 
         array (
         ),
@@ -2507,7 +2522,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'DELETE',
       ),
-      'uri' => 'categories/{category}',
+      'uri' => 'categorias/{category}',
       'action' => 
       array (
         'middleware' => 
@@ -2519,7 +2534,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\CategoryController@destroy',
         'as' => 'categories.destroy',
         'namespace' => NULL,
-        'prefix' => '/categories',
+        'prefix' => '/categorias',
         'where' => 
         array (
         ),
@@ -2545,7 +2560,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'notes',
+      'uri' => 'anotacoes',
       'action' => 
       array (
         'middleware' => 
@@ -2557,7 +2572,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\NoteController@index',
         'as' => 'notes.index',
         'namespace' => NULL,
-        'prefix' => '/notes',
+        'prefix' => '/anotacoes',
         'where' => 
         array (
         ),
@@ -2582,7 +2597,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'notes',
+      'uri' => 'anotacoes',
       'action' => 
       array (
         'middleware' => 
@@ -2594,7 +2609,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\NoteController@store',
         'as' => 'notes.store',
         'namespace' => NULL,
-        'prefix' => '/notes',
+        'prefix' => '/anotacoes',
         'where' => 
         array (
         ),
@@ -2619,7 +2634,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'PATCH',
       ),
-      'uri' => 'notes/{note}',
+      'uri' => 'anotacoes/{note}',
       'action' => 
       array (
         'middleware' => 
@@ -2631,7 +2646,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\NoteController@update',
         'as' => 'notes.update',
         'namespace' => NULL,
-        'prefix' => '/notes',
+        'prefix' => '/anotacoes',
         'where' => 
         array (
         ),
@@ -2656,7 +2671,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'DELETE',
       ),
-      'uri' => 'notes/{note}',
+      'uri' => 'anotacoes/{note}',
       'action' => 
       array (
         'middleware' => 
@@ -2668,7 +2683,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\NoteController@destroy',
         'as' => 'notes.destroy',
         'namespace' => NULL,
-        'prefix' => '/notes',
+        'prefix' => '/anotacoes',
         'where' => 
         array (
         ),
@@ -2694,7 +2709,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'calendar',
+      'uri' => 'calendario',
       'action' => 
       array (
         'middleware' => 
@@ -2706,7 +2721,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\CalendarController@index',
         'as' => 'calendar.index',
         'namespace' => NULL,
-        'prefix' => '/calendar',
+        'prefix' => '/calendario',
         'where' => 
         array (
         ),
@@ -2732,7 +2747,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'calendar/events',
+      'uri' => 'calendario/eventos',
       'action' => 
       array (
         'middleware' => 
@@ -2744,7 +2759,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\CalendarController@events',
         'as' => 'calendar.events',
         'namespace' => NULL,
-        'prefix' => '/calendar',
+        'prefix' => '/calendario',
         'where' => 
         array (
         ),
@@ -2769,7 +2784,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'PATCH',
       ),
-      'uri' => 'calendar/reschedule',
+      'uri' => 'calendario/reagendar',
       'action' => 
       array (
         'middleware' => 
@@ -2781,7 +2796,7 @@ app('router')->setCompiledRoutes(
         'controller' => 'App\\Http\\Controllers\\CalendarController@reschedule',
         'as' => 'calendar.reschedule',
         'namespace' => NULL,
-        'prefix' => '/calendar',
+        'prefix' => '/calendario',
         'where' => 
         array (
         ),
@@ -2845,7 +2860,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'kanban/columns',
+      'uri' => 'kanban/colunas',
       'action' => 
       array (
         'middleware' => 
@@ -2882,7 +2897,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'kanban/move',
+      'uri' => 'kanban/mover',
       'action' => 
       array (
         'middleware' => 
@@ -2919,7 +2934,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'POST',
       ),
-      'uri' => 'kanban/column/create',
+      'uri' => 'kanban/coluna/criar',
       'action' => 
       array (
         'middleware' => 
@@ -2956,7 +2971,7 @@ app('router')->setCompiledRoutes(
       array (
         0 => 'DELETE',
       ),
-      'uri' => 'kanban/column/{columnKey}',
+      'uri' => 'kanban/coluna/{columnKey}',
       'action' => 
       array (
         'middleware' => 
@@ -2987,13 +3002,50 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
+    'kanban.task.quick-create' => 
+    array (
+      'methods' => 
+      array (
+        0 => 'POST',
+      ),
+      'uri' => 'kanban/tarefa/criacao-rapida',
+      'action' => 
+      array (
+        'middleware' => 
+        array (
+          0 => 'web',
+          1 => 'auth',
+        ),
+        'uses' => 'App\\Http\\Controllers\\KanbanController@quickCreate',
+        'controller' => 'App\\Http\\Controllers\\KanbanController@quickCreate',
+        'as' => 'kanban.task.quick-create',
+        'namespace' => NULL,
+        'prefix' => '/kanban',
+        'where' => 
+        array (
+        ),
+      ),
+      'fallback' => false,
+      'defaults' => 
+      array (
+      ),
+      'wheres' => 
+      array (
+      ),
+      'bindingFields' => 
+      array (
+      ),
+      'lockSeconds' => NULL,
+      'waitSeconds' => NULL,
+      'withTrashed' => false,
+    ),
     'todos.view-toggle' => 
     array (
       'methods' => 
       array (
         0 => 'POST',
       ),
-      'uri' => 'todos/view-toggle',
+      'uri' => 'tarefas/alternar-visualizacao',
       'action' => 
       array (
         'middleware' => 
@@ -3031,7 +3083,7 @@ app('router')->setCompiledRoutes(
         0 => 'GET',
         1 => 'HEAD',
       ),
-      'uri' => 'search',
+      'uri' => 'busca',
       'action' => 
       array (
         'middleware' => 
@@ -3100,7 +3152,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::lFsIZCaDPEv3ygUQ' => 
+    'generated::X6JbvrhhPuK4It26' => 
     array (
       'methods' => 
       array (
@@ -3121,7 +3173,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::lFsIZCaDPEv3ygUQ',
+        'as' => 'generated::X6JbvrhhPuK4It26',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3175,7 +3227,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::sQPF8CHusUwt7edL' => 
+    'generated::Ab3NtaTXRTnyIOk2' => 
     array (
       'methods' => 
       array (
@@ -3196,7 +3248,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::sQPF8CHusUwt7edL',
+        'as' => 'generated::Ab3NtaTXRTnyIOk2',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3516,7 +3568,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::DuAmiiatSFBlmC2r' => 
+    'generated::hKNcpR8O7nmQLKKC' => 
     array (
       'methods' => 
       array (
@@ -3537,7 +3589,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::DuAmiiatSFBlmC2r',
+        'as' => 'generated::hKNcpR8O7nmQLKKC',
       ),
       'fallback' => false,
       'defaults' => 

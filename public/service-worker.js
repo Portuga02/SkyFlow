@@ -24,6 +24,9 @@ self.addEventListener('activate', (event) => {
 // Estratégia "network first" simples: tenta a rede, cai pro cache se offline.
 // Não faz cache de páginas autenticadas/dinâmicas (GET simples de assets estáticos apenas).
 self.addEventListener('fetch', (event) => {
+    if (!event.request.url.startsWith('http')) {
+        return; 
+    }
     if (event.request.method !== 'GET') return;
 
     const url = new URL(event.request.url);

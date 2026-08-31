@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('team_id')->nullable();
             
             $table->string('title');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->tinyInteger('is_completed')->nullable();
             $table->integer('order')->default(0);
             $table->unsignedBigInteger('kanban_column_id')->nullable();

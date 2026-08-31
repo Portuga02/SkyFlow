@@ -146,4 +146,28 @@ class KanbanController extends Controller
             ], 500);
         }
     }
+    public function quickCreate(Request $request)
+    {
+
+        $request->validate([
+
+            'title' => 'required|string|max:255',
+
+            'kanban_column_id' => 'required',
+            'status' => 'required|string'
+        ]);
+        $todo = \App\Models\Todo::create([
+            'title' => $request->title,
+            'description' => '',
+            'kanban_column_id' => $request->kanban_column_id,
+            'status' => $request->status,
+            'priority' => 'medium',
+            'user_id' => auth()->id(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'todo' => $todo
+        ]);
+    }
 }

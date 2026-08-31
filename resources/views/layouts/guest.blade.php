@@ -1,39 +1,26 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'SkyFlow') }}</title>
-<link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    <!-- Fonts & Icons -->
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
+    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased text-slate-900 bg-gradient-to-b from-brand-600 to-brand-900 min-h-screen">
- 
-    <div class="min-h-screen flex flex-col justify-center items-center px-4 py-8 sm:px-6">
+<body class="font-figtree antialiased bg-[#0b0e17] text-slate-100 min-h-screen flex flex-col justify-center items-center p-4 relative overflow-hidden selection:bg-brand-500 selection:text-white">
 
-        <div class="mb-6">
-            <a href="/" class="flex items-center gap-2.5 group">
-                <div class="h-11 w-11 rounded-2xl bg-white text-brand-600 flex items-center justify-center text-xl font-bold shadow-lg group-hover:scale-105 transition-transform duration-200">
-                    <i class="fa-solid fa-cloud-bolt"></i>
-                </div>
-                <span class="font-extrabold text-2xl text-white tracking-tight">SkyFlow</span>
-            </a>
-        </div>
-        <div class="w-full max-w-[420px] bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/20 backdrop-blur-xs">
-            {{ $slot }}
-        </div>
+    <!-- Efeito de Iluminação Central (Glow Backdrop) -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-brand-600/15 rounded-full blur-[120px] pointer-events-none"></div>
 
-        <!-- Rodapé -->
-        <p class="mt-8 text-center text-xs text-brand-100 font-medium opacity-80">
-            &copy; {{ date('Y') }} SkyFlow. Todos os direitos reservados.
-        </p>
+    <div class="w-full max-w-[420px] relative z-10">
+        {{ $slot }}
     </div>
 
 </body>

@@ -1,39 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo à equipe</title>
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #f8fafc; padding: 20px; margin: 0;">
-    <div style="max-w: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0b0e17; padding: 40px 15px; margin: 0; color: #f8fafc;">
+    
+    <!-- Container Central -->
+    <div style="max-width: 560px; margin: 0 auto; background-color: #111625; border: 1px solid #1e293b; border-radius: 20px; padding: 40px 32px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);">
         
-        <!-- Altere para o logo do SkyFlow se desejar -->
-        <h2 style="color: #1e293b; margin-top: 0;">Bem-vindo(a) à equipe, {{ explode(' ', $user->name)[0] }}! 🚀</h2>
-        
-        <p style="color: #475569; line-height: 1.6; font-size: 16px;">
-            Você acaba de ser adicionado(a) ao nosso workspace para gerenciarmos nossos projetos juntos.
-        </p>
-
-        <p style="color: #475569; line-height: 1.6; font-size: 16px;">
-            Aqui estão suas credenciais de acesso exclusivas:
-        </p>
-
-        <div style="background-color: #f1f5f9; border-left: 4px solid #2563eb; padding: 15px; border-radius: 6px; margin: 25px 0;">
-            <p style="margin: 0 0 10px 0; color: #334155;"><strong>E-mail:</strong> <br>{{ $user->email }}</p>
-            <p style="margin: 0; color: #334155;"><strong>Senha temporária:</strong> <br><span style="background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-family: monospace; letter-spacing: 1px;">{{ $password }}</span></p>
+        <!-- Header / Logo -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div style="display: inline-block; width: 48px; height: 48px; line-height: 48px; border-radius: 14px; background: linear-gradient(135deg, #0284c7, #38bdf8); color: #ffffff; font-size: 22px; font-weight: bold; margin-bottom: 12px;">
+                ⚡
+            </div>
+            <h1 style="color: #ffffff; font-size: 22px; font-weight: 800; margin: 0; letter-spacing: -0.5px;">SkyFlow</h1>
         </div>
 
-        <p style="color: #475569; line-height: 1.6; font-size: 14px;">
-            Recomendamos que você altere sua senha assim que fizer o primeiro login no sistema.
+        <h2 style="color: #ffffff; font-size: 18px; font-weight: 700; margin: 0 0 12px 0;">
+            Bem-vindo(a) à equipe, {{ explode(' ', $user->name)[0] }}! 🚀
+        </h2>
+        
+        <p style="color: #94a3b8; line-height: 1.6; font-size: 14px; margin: 0 0 16px 0;">
+            Você foi adicionado(a) ao nosso workspace para organizarmos projetos, tarefas e fluxos de trabalho de forma colaborativa.
         </p>
 
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="{{ url('/login') }}" style="display: inline-block; padding: 14px 28px; background-color: #2563eb; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">Acessar o Sistema</a>
+        <p style="color: #94a3b8; line-height: 1.6; font-size: 14px; margin: 0 0 24px 0;">
+            Abaixo estão as suas credenciais temporárias para o primeiro acesso:
+        </p>
+
+        <!-- Bloco de Credenciais -->
+        <div style="background-color: #181f33; border: 1px solid #334155; border-left: 4px solid #0284c7; padding: 18px; border-radius: 12px; margin-bottom: 24px;">
+            <div style="margin-bottom: 12px;">
+                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; font-weight: 700; display: block; margin-bottom: 2px;">E-mail</span>
+                <span style="color: #f1f5f9; font-size: 14px; font-weight: 600;">{{ $user->email }}</span>
+            </div>
+            <div>
+                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; font-weight: 700; display: block; margin-bottom: 4px;">Senha Temporária</span>
+                <code style="background-color: #0b0e17; border: 1px solid #334155; color: #38bdf8; padding: 4px 10px; border-radius: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 14px; font-weight: bold; letter-spacing: 1px; display: inline-block;">{{ $password }}</code>
+            </div>
         </div>
-        
+
+        <p style="color: #64748b; line-height: 1.5; font-size: 12px; margin: 0 0 30px 0;">
+            * Por motivos de segurança, recomendamos que você atualize sua senha após realizar o primeiro login.
+        </p>
+
+        <!-- Botão CTA -->
+        <div style="text-align: center; margin-bottom: 10px;">
+            <a href="{{ url('/login') }}" style="display: inline-block; width: 100%; box-sizing: border-box; padding: 14px 24px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 14px; letter-spacing: 0.5px;">
+                ACESSAR PAINEL
+            </a>
+        </div>
     </div>
     
-    <div style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 12px;">
-        Este é um e-mail automático, por favor não responda.
+    <!-- Rodapé -->
+    <div style="text-align: center; margin-top: 24px; color: #475569; font-size: 11px;">
+        &copy; {{ date('Y') }} SkyFlow. Este é um e-mail automático, favor não responder.
     </div>
 </body>
 </html>
