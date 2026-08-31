@@ -117,7 +117,7 @@ class TodoController extends Controller
                 'is_completed' => 'required|boolean',
                 'assigned_to'  => 'nullable|array',
                 // TRAVA DE SEGURANÇA NA EDIÇÃO
-                'assigned_to.*' => 'exists:users,id,team_id,' . Auth::user()->team_id,
+                'assigned_to.*' => 'exists:users,id,team_id,' . (Auth::user()->team_id ?: 'NULL'),
             ));
 
         $todo->update([

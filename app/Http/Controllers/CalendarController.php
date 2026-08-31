@@ -9,8 +9,16 @@ class CalendarController extends Controller
 {
     public function index()
     {
-        return view('calendar.index');
+        // Pega todas as tarefas do usuário logado (que tenham data) e carrega as categorias
+        $todos = Todo::where('user_id', auth()->id())
+                     ->whereNotNull('due_date')
+                     ->with('category') // Carrega a cor e nome da categoria
+                     ->get();
+
+        // Envia as tarefas para a view do calendário
+        return view('calendar.index', compact('todos'));
     }
+
 
     public function events()
     {
@@ -40,15 +48,22 @@ class CalendarController extends Controller
         return response()->json($events);
     }
 
-    public function reschedule()
+    public function reschedule(\Illuminate\Http\Request $request)
     {
-        request()->validate(['id' => 'required|exists:todos,id', 'date' => 'required|date']);
+        // Valida se mandou o ID e a data certa
+        $request->validate([
+            'id'       => 'required|exists:todos,id',
+            'due_date' => 'required|date'
+        ]);
 
-        $todo = Todo::findOrFail(request('id'));
-        abort_if($todo->user_id !== Auth::id(), 403);
+        // Acha a tarefa garantindo que é do usuário logado e atualiza só a data
+        \App\Models\Todo::where('id', $request->id)
+            ->where('user_id', auth()->id())
+            ->update([
+                'due_date' => $request->due_date
+            ]);
 
-        $todo->update(['due_date' => request('date')]);
-
-        return response()->json(['status' => 'ok']);
+        return response()->json(['success' => true]);
     }
+
 }

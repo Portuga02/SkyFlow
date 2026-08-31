@@ -69,34 +69,27 @@ class KanbanController extends Controller
 
     public function storeColumn(Request $request)
     {
+        // Tenta criar e, se der erro, o catch devolve pro JavaScript avisar na tela
         try {
-            $request->validate([
-                'name'  => 'required|string|max:255',
-                'color' => 'required|string',
-                'icon'  => 'nullable|string'
-            ]);
-
-            $baseSlug = Str::slug($request->name);
-            $slug = $baseSlug;
-
-            $count = 1;
-            while (\App\Models\KanbanColumn::where('user_id', Auth::id())->where('slug', $slug)->exists()) {
-                $slug = $baseSlug . '-' . $count;
-                $count++;
-            }
-            $column = $request->user()->kanbanColumns()->create([
+            $column = KanbanColumn::create([
+                'user_id' => auth()->id(),
+                // Se você usa times/equipes, coloque o ID aqui. Se não, deixe null:
+                'team_id' => auth()->user()->team_id ?? null,
                 'name'    => $request->name,
-                'slug'    => $slug,
+                'slug'    => Str::slug($request->name), // Ex: "Em Revisão" vira "em-revisao"
                 'color'   => $request->color,
                 'icon'    => $request->icon ?? 'fa-layer-group',
-                'team_id' => $request->user()->team_id ?? 1,
-                'order'   => $request->user()->kanbanColumns()->count()
+                'order'   => KanbanColumn::where('user_id', auth()->id())->max('order') + 1,
             ]);
 
             return response()->json(['success' => true, 'column' => $column]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+            // Isso força o erro a aparecer no alerta do seu navegador!
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro no PHP: ' . $e->getMessage()
+            ], 500);
         }
     }
 
@@ -169,5 +162,27 @@ class KanbanController extends Controller
             'success' => true,
             'todo' => $todo
         ]);
+    }
+    public function reorderColumns(\Illuminate\Http\Request $request)
+    {
+        try {
+            $request->validate([
+                'columns'   => 'required|array',
+                'columns.*' => 'integer|exists:kanban_columns,id',
+            ]);
+
+            foreach ($request->columns as $index => $id) {
+                \App\Models\KanbanColumn::where('id', $id)
+                    ->where('user_id', auth()->id())
+                    ->update(['order' => $index]);
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao reordenar colunas: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

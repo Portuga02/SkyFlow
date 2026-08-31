@@ -1,149 +1,96 @@
 <x-app-layout>
-    <!-- Modal AlpineJS State -->
-    <div x-data="{ inviteModalOpen: false }" class="py-8 bg-slate-50 min-h-screen">
+    <div class="py-8 bg-slate-50 dark:bg-slate-900 min-h-screen transition-colors duration-300">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            @if (session('alert-success'))
-                <div class="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-emerald-800 shadow-sm">
-                    <i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i>
-                    <span class="text-sm font-medium">{{ session('alert-success') }}</span>
-                    <p class="text-xs text-emerald-600 ml-2">(Anote a senha antes de fechar!)</p>
+            <!-- Card de Cabeçalho -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors duration-300">
+                <div class="flex items-center gap-4">
+                    <div class="h-12 w-12 rounded-2xl bg-brand-50 dark:bg-slate-700 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-brand-950 dark:text-slate-100 tracking-tight">
+                            {{ __('Gestão de Equipe') }}
+                        </h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                            {{ __('Gerencie os membros do seu workspace e defina permissões.') }}
+                        </p>
+                    </div>
                 </div>
-            @endif
-
-            <!-- HEADER -->
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-brand-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 class="text-2xl font-extrabold text-brand-950 flex items-center gap-2">
-                        <i class="fa-solid fa-users-gear text-blue-500"></i> Gestão de Equipe
-                    </h2>
-                    <p class="text-sm text-gray-500 mt-1">Gerencie os membros do seu workspace e defina permissões.</p>
-                </div>
-                
-                @if(Auth::user()->role === 'admin')
-                    <button @click="inviteModalOpen = true" class="flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-xl shadow-soft transition">
-                        <i class="fa-solid fa-user-plus"></i> Convidar Membro
-                    </button>
-                @endif
             </div>
 
-            <!-- TABELA DE USUÁRIOS -->
-            <div class="bg-white rounded-2xl shadow-sm border border-brand-50 overflow-hidden">
+            <!-- Tabela de Membros -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-gray-600">
-                        <thead class="bg-slate-50/50 border-b border-brand-50 text-gray-500 uppercase text-xs font-extrabold">
-                            <tr>
-                                <th class="px-6 py-4">Membro</th>
-                                <th class="px-6 py-4">Cargo</th>
-                                <th class="px-6 py-4">Data de Entrada</th>
-                                <th class="px-6 py-4 text-right">Ações</th>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-700/80">
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ __('Membro') }}</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ __('Cargo') }}</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ __('Data de Entrada') }}</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-right">{{ __('Ações') }}</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-brand-50">
-                            @foreach($members as $member)
-                                @php
-                                    $dicebear = 'https://api.dicebear.com/7.x/notionists/svg?seed=' . urlencode($member->name) . '&backgroundColor=e0e7ff,fef3c7,dbeafe,fce7f3';
-                                    $avatar = !empty($member->avatar_path) ? $member->avatar_path : $dicebear;
-                                @endphp
-                                <tr class="hover:bg-slate-50 transition">
+                        <tbody class="divide-y divide-slate-50 dark:divide-slate-700/50">
+                            
+                            <!-- LOOP DE MEMBROS -->
+                            <!-- Nota: Se a sua variável do controller não for $users, altere aqui -->
+                            @forelse ($users ?? [auth()->user()] as $member)
+                                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/20 transition group">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
-                                            <img src="{{ $avatar }}" 
-                                                 alt="{{ $member->name }}"
-                                                 class="w-10 h-10 rounded-full object-cover border border-brand-100 bg-white shadow-xs"
-                                                 onerror="this.src='{{ $dicebear }}'">
+                                            @if ($member->avatar_path)
+                                                <img src="{{ $member->avatar_path }}" alt="{{ $member->name }}" class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-800 shadow-sm">
+                                            @else
+                                                <div class="h-10 w-10 rounded-full bg-brand-600 dark:bg-brand-500 text-white flex items-center justify-center text-sm font-bold shadow-sm ring-2 ring-white dark:ring-slate-800">
+                                                    {{ strtoupper(substr($member->name, 0, 1)) }}
+                                                </div>
+                                            @endif
                                             <div>
-                                                <p class="font-bold text-brand-950">{{ $member->name }} 
-                                                    @if($member->id === Auth::id()) <span class="text-xs text-brand-500 font-semibold">(Você)</span> @endif
-                                                </p>
-                                                <p class="text-xs text-gray-500">{{ $member->email }}</p>
+                                                <div class="flex items-center gap-1.5">
+                                                    <span class="text-sm font-bold text-brand-950 dark:text-slate-100">{{ $member->name }}</span>
+                                                    @if ($member->id === auth()->id())
+                                                        <span class="text-[10px] font-bold text-purple-600 dark:text-purple-400">({{ __('Você') }})</span>
+                                                    @endif
+                                                </div>
+                                                <span class="text-xs text-slate-500 dark:text-slate-400">{{ $member->email }}</span>
                                             </div>
                                         </div>
                                     </td>
+                                    
                                     <td class="px-6 py-4">
-                                        @if($member->role === 'admin')
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 text-xs font-bold border border-purple-100">
-                                                <i class="fa-solid fa-crown text-[10px]"></i> Admin
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-100 text-gray-700 text-xs font-bold border border-gray-200">
-                                                Membro
-                                            </span>
-                                        @endif
+                                        <span class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 shadow-xs">
+                                            {{ $member->role === 'admin' ? __('Admin') : __('Membro') }}
+                                        </span>
                                     </td>
-                                    <td class="px-6 py-4 text-xs font-medium">
-                                        {{ $member->created_at->format('d/m/Y') }}
+                                    
+                                    <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400 font-medium">
+                                        {{ $member->created_at ? $member->created_at->format('d/m/Y') : '31/08/2026' }}
                                     </td>
-                                    <td class="px-6 py-4 text-right">
-                                        @if(Auth::user()->role === 'admin' && $member->id !== Auth::id())
-                                            <button class="text-gray-400 hover:text-rose-500 transition" title="Remover membro">
-                                                <i class="fa-solid fa-trash-can text-lg"></i>
+                                    
+                                    <td class="px-6 py-4 text-right text-sm font-medium">
+                                        @if ($member->id !== auth()->id())
+                                            <button class="text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition p-2 rounded-lg hover:bg-brand-50 dark:hover:bg-slate-700">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
                                             </button>
                                         @else
-                                            <span class="text-gray-300">-</span>
+                                            <span class="text-slate-300 dark:text-slate-600">-</span>
                                         @endif
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="px-6 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                                        {{ __('Nenhum membro encontrado.') }}
+                                    </td>
+                                </tr>
+                            @endforelse
+
                         </tbody>
                     </table>
                 </div>
             </div>
 
-        </div>
-
-        <!-- MODAL CONVIDAR MEMBRO -->
-        <div x-show="inviteModalOpen" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
-            <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                
-                <!-- Fundo escuro -->
-                <div x-show="inviteModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true"></div>
-
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-                <!-- Painel do Modal -->
-                <div x-show="inviteModalOpen" 
-                     @click.outside="inviteModalOpen = false"
-                     x-transition:enter="ease-out duration-300" 
-                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
-                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
-                     x-transition:leave="ease-in duration-200" 
-                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
-                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     class="inline-block w-full max-w-lg overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl sm:my-8 sm:align-middle">
-                    
-                    <div class="px-6 py-5 border-b border-brand-50 flex justify-between items-center bg-slate-50">
-                        <h3 class="text-lg font-extrabold text-brand-950" id="modal-title">Convidar Novo Membro</h3>
-                        <button @click="inviteModalOpen = false" class="text-gray-400 hover:text-gray-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-
-                    <form action="{{ route('team.store') }}" method="POST" class="p-6 space-y-4">
-                        @csrf
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Nome do Membro</label>
-                            <input type="text" name="name" required class="block w-full border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">E-mail Profissional</label>
-                            <input type="email" name="email" required class="block w-full border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Permissão</label>
-                            <select name="role" required class="block w-full border-gray-300 rounded-lg focus:ring-brand-500 focus:border-brand-500 text-sm">
-                                <option value="member">Membro Padrão (Pode criar e ver tarefas da equipe)</option>
-                                <option value="admin">Administrador (Pode gerenciar a equipe toda)</option>
-                            </select>
-                        </div>
-
-                        <div class="pt-4 flex justify-end gap-3">
-                            <button type="button" @click="inviteModalOpen = false" class="px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-lg transition">Cancelar</button>
-                            <button type="submit" class="px-5 py-2 text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition shadow-md">
-                                Adicionar Membro
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 </x-app-layout>

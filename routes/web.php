@@ -12,10 +12,12 @@ use App\Models\Todo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// 🚪 Login
 Route::get('/', function () {
     return view('auth.login');
 });
 
+// 📊 Dashboard
 Route::get('/dashboard', function () {
     $user = Auth::user();
 
@@ -54,7 +56,9 @@ Route::get('/dashboard', function () {
     return view('dashboard', compact('stats', 'urgentTodos', 'recentNotes', 'categories'));
 })->middleware(array('auth', 'verified'))->name('dashboard');
 
+//  Rotas Autenticadas
 Route::middleware('auth')->group(function () {
+    
     // 👥 Equipe
     Route::get('/equipe', [TeamController::class, 'index'])->name('team.index');
     Route::post('/equipe', [TeamController::class, 'store'])->name('team.store');
@@ -68,7 +72,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/', 'destroy')->name('destroy');
     });
 
-    // 🚀 Tarefas (SkyFlow REST)
+    //  Tarefas (SkyFlow REST)
     Route::controller(TodoController::class)->prefix('tarefas')->name('todos.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/criar', 'create')->name('create');
@@ -92,7 +96,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{todo}/etiquetas/{index}', 'labelDestroy')->name('labels.destroy');
     });
 
-    //  Categorias
+    // 🏷️ Categorias
     Route::controller(CategoryController::class)->prefix('categorias')->name('categories.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/criar', 'create')->name('create');
@@ -123,9 +127,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/colunas', 'columns')->name('columns');
         Route::post('/mover', 'move')->name('move');
         Route::post('/coluna/criar', 'storeColumn')->name('column.store');
+        Route::post('/colunas/reorder', 'reorderColumns')->name('columns.reorder');
         Route::delete('/coluna/{columnKey}', 'deleteColumn')->name('column.delete');
-        
-        // Rota que faltava para a Criação Rápida
+        // Criação Rápida
         Route::post('/tarefa/criacao-rapida', 'quickCreate')->name('task.quick-create');
     });
 

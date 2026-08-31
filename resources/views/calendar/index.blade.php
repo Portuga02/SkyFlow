@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <!-- Toggle de Visualização: Mês / Semana / Dia -->
+                    <!-- Toggle de Visualização -->
                     <div class="flex items-center bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">
                         <button @click="viewMode = 'month'"
                             :class="viewMode === 'month' ? 'bg-white dark:bg-slate-800 text-brand-600 dark:text-brand-400 shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'"
@@ -70,7 +70,6 @@
             <!-- Grade do Calendário -->
             <div class="bg-white dark:bg-slate-800/90 backdrop-blur-md rounded-3xl border border-brand-50 dark:border-slate-700 shadow-card overflow-hidden transition-colors duration-300">
                 
-                <!-- Cabeçalho (Mês ou Semana) -->
                 <template x-if="viewMode !== 'day'">
                     <div class="grid grid-cols-7 border-b border-slate-100 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-900/40 text-center py-3">
                         <template x-for="dayName in ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']" :key="dayName">
@@ -115,7 +114,7 @@
                                         <div 
                                             draggable="true"
                                             @dragstart="handleDragStart(todo)"
-                                            @click.stop="window.location.href = `/todos/${todo.id}`"
+                                            @click.stop="window.location.href = `/tarefas/${todo.id}`"
                                             :class="{
                                                 'opacity-50 line-through': todo.is_completed,
                                                 'border-l-rose-500': todo.priority === 'high' || todo.priority === 'highest',
@@ -162,7 +161,7 @@
                                         <div 
                                             draggable="true"
                                             @dragstart="handleDragStart(todo)"
-                                            @click.stop="window.location.href = `/todos/${todo.id}`"
+                                            @click.stop="window.location.href = `/tarefas/${todo.id}`"
                                             :class="{
                                                 'opacity-50 line-through': todo.is_completed,
                                                 'border-l-rose-500': todo.priority === 'high' || todo.priority === 'highest',
@@ -201,7 +200,7 @@
                         <div class="mt-6 space-y-3 max-w-2xl">
                             <template x-for="todo in getTodosForDate(currentDateStr)" :key="todo.id">
                                 <div 
-                                    @click="window.location.href = `/todos/${todo.id}`"
+                                    @click="window.location.href = `/tarefas/${todo.id}`"
                                     :class="{
                                         'opacity-50 line-through': todo.is_completed,
                                         'border-l-rose-500': todo.priority === 'high' || todo.priority === 'highest',
@@ -234,7 +233,7 @@
             </div>
         </div>
 
-        <!-- Modal de Criação Rápida -->
+        <!-- Modal de Criação Rápida Seguro via AJAX -->
         <div x-show="quickModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" x-transition>
             <div @click.outside="quickModalOpen = false" class="w-full max-w-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 shadow-2xl space-y-4">
                 <div class="flex items-center justify-between">
@@ -246,7 +245,7 @@
                     </button>
                 </div>
 
-                <form method="POST" action="{{ route('todos.store') }}" class="space-y-4">
+                <form method="POST" action="{{ route('todos.store') }}" class="space-y-4" @submit.prevent="submitQuickTask">
                     @csrf
                     <input type="hidden" name="due_date" :value="quickDateFormatted">
 
@@ -259,7 +258,8 @@
                         <div>
                             <x-input-label for="quick_priority" class="dark:text-slate-200">{{ __('Prioridade') }}</x-input-label>
                             <select id="quick_priority" name="priority" class="block w-full mt-1 rounded-xl border-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 text-sm focus:border-brand-500 focus:ring-brand-500">
-                                <option value="high">🔴 Alta</option>
+                                <option value="highest">🔴 Urgente</option>
+                                <option value="high">🟠 Alta</option>
                                 <option value="medium" selected>🟡 Média</option>
                                 <option value="low">🔵 Baixa</option>
                             </select>
@@ -288,11 +288,11 @@
         </div>
     </div>
 
-    <!-- Script de Gestão do Calendário (Mês, Semana, Dia e Drag & Drop) -->
+    <!-- Script de Gestão do Calendário -->
     <script>
         function calendarComponent(initialTodos) {
             return {
-                viewMode: 'month', // 'month', 'week', 'day'
+                viewMode: 'month',
                 currentDate: new Date(),
                 todos: initialTodos,
                 draggedTodo: null,
@@ -405,51 +405,92 @@
                 },
 
                 getTodosForDate(dateString) {
-                    return this.todos.filter(t => t.due_date && t.due_date.slice(0, 10) === dateString);
+                    return this.todos.filter(t => {
+                        if (!t.due_date) return false;
+                        // Extrai a parte da data de forma segura, ignorando horas
+                        return String(t.due_date).substring(0, 10) === dateString;
+                    });
                 },
 
                 handleDragStart(todo) {
                     this.draggedTodo = todo;
                 },
 
-                async handleDrop(newDateString) {
+              async handleDrop(newDateString) {
                     this.dragOverDate = null;
                     if (!this.draggedTodo) return;
 
                     const todoId = this.draggedTodo.id;
                     const oldDate = this.draggedTodo.due_date;
+                    
+                    // Coloca meio-dia como padrão para não sumir no fuso horário
                     const updatedDueDate = `${newDateString} 12:00:00`;
 
+                    // Atualiza na tela na hora para o usuário não esperar
                     this.draggedTodo.due_date = updatedDueDate;
 
                     try {
-                        const response = await fetch(`/todos/${todoId}`, {
-                            method: 'POST',
+                        // Bate na rota exclusiva de reagendamento!
+                        const response = await fetch('{{ route("calendar.reschedule") }}', {
+                            method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'X-HTTP-Method-Override': 'PUT',
                                 'Accept': 'application/json'
                             },
                             body: JSON.stringify({
-                                title: this.draggedTodo.title,
+                                id: todoId,
                                 due_date: updatedDueDate
                             })
                         });
 
-                        if (!response.ok) {
+                        const data = await response.json();
+
+                        if (!response.ok || !data.success) {
+                            // Se der ruim, desfaz a alteração visual
                             this.draggedTodo.due_date = oldDate;
+                            console.error("Erro na validação:", data);
                         }
                     } catch (error) {
                         this.draggedTodo.due_date = oldDate;
+                        console.error("Erro de conexão:", error);
                     } finally {
                         this.draggedTodo = null;
                     }
                 },
-
                 openQuickCreate(dateString) {
-                    this.quickDateFormatted = `${dateString}T09:00`;
+                    // Substitui a letra T por um espaço em branco para não quebrar o banco de dados
+                    this.quickDateFormatted = `${dateString} 09:00:00`;
                     this.quickModalOpen = true;
+                },
+
+                // Função Mágica para interceptar o envio e manter você no calendário
+                submitQuickTask(e) {
+                    const form = e.target;
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Salvando...';
+                    submitBtn.disabled = true;
+
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        // Força um recarregamento da página atual para puxar a nova tarefa visualmente
+                        window.location.reload();
+                    })
+                    .catch(err => {
+                        alert('Erro ao criar a tarefa. Verifique a conexão.');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    });
                 }
             };
         }

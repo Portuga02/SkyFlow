@@ -93,8 +93,9 @@
 
                     <ul class="p-5 space-y-3">
                         @foreach ($todoList as $todosLists)
+                            <!-- AQUI ESTÁ A CORREÇÃO MÁGICA: Adicionei 'highest' e o fallback de segurança '?? #f59e0b' -->
                             <li x-show="filter === 'all' || (filter === 'pending' && {{ $todosLists->is_completed ? 'false' : 'true' }}) || (filter === 'done' && {{ $todosLists->is_completed ? 'true' : 'false' }})"
-                                style="border-left-width: 4px; border-left-color: {{ ['low' => '#10b981', 'medium' => '#f59e0b', 'high' => '#f43f5e'][$todosLists->priority ?? 'medium'] }};"
+                                style="border-left-width: 4px; border-left-color: {{ ['low' => '#10b981', 'medium' => '#f59e0b', 'high' => '#f43f5e', 'highest' => '#be123c'][$todosLists->priority ?? 'medium'] ?? '#f59e0b' }};"
                                 class="group animate-fade-in flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border {{ $todosLists->is_completed ? 'border-emerald-100 dark:border-emerald-900/30 bg-emerald-50/40 dark:bg-emerald-900/10' : 'border-brand-100 dark:border-slate-700 bg-white dark:bg-slate-800/50' }} p-4 hover:shadow-card-hover transition">
 
                                 <form method="POST" action="{{ route('todos.toggle', $todosLists->id) }}" class="shrink-0">

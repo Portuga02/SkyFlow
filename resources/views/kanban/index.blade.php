@@ -23,61 +23,58 @@
     <!-- Import SortableJS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
-    <div class="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+  <div class="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-900 min-h-screen transition-colors duration-300">
         <div class="overflow-x-auto pb-6 custom-scrollbar">
             <!-- CONTAINER DAS COLUNAS (ARRASTÁVEL) -->
             <div id="kanban-board" class="flex items-start gap-6 min-w-max">
+
+                @php
+                    $defaultColumnId = $columns->sortBy('id')->first()->id ?? null;
+                @endphp
 
                 <!-- LOOP DINÂMICO DE COLUNAS -->
                 @foreach ($columns as $index => $column)
                     @php
                         $columnSlug = $column->slug ?? \Illuminate\Support\Str::slug($column->name);
 
-                        $columnTodos = $todos->filter(function ($item) use ($column, $columnSlug, $index) {
+                        $columnTodos = $todos->filter(function ($item) use ($column, $columnSlug, $defaultColumnId) {
                             if ($item->is_completed) {
                                 return in_array($columnSlug, ['concluido', 'done', 'finalizado', 'mergeado', 'completo']);
                             }
-
                             if (!empty($item->kanban_column_id)) {
                                 return $item->kanban_column_id == $column->id;
                             }
-
                             if ($item->status === $columnSlug) {
                                 return true;
                             }
-
-                            if (
-                                $index === 0 &&
-                                (empty($item->status) || in_array($item->status, ['todo', 'a-fazer', 'pending']))
-                            ) {
+                            if ($column->id === $defaultColumnId && (empty($item->status) || in_array($item->status, ['todo', 'a-fazer', 'pending']))) {
                                 return true;
                             }
-
                             return false;
                         });
                     @endphp
 
-                    <div class="kanban-column-container flex-1 min-w-[320px] max-w-[380px] flex flex-col bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all"
+                    <!-- Container da Coluna -->
+                    <div class="kanban-column-container flex-1 min-w-[320px] max-w-[380px] flex flex-col bg-white dark:bg-slate-800/80 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/60 overflow-hidden transition-all"
                         data-column-id="{{ $column->id }}">
 
                         <!-- Cabeçalho Dinâmico -->
-                        <div class="column-header cursor-grab active:cursor-grabbing p-4 border-b select-none flex items-center justify-between"
-                            style="background-color: {{ $column->color }}15; border-color: {{ $column->color }}40;">
+                        <div class="column-header cursor-grab active:cursor-grabbing p-4 border-b border-slate-100 dark:border-slate-700/60 select-none flex items-center justify-between"
+                            style="background-color: {{ $column->color }}15;">
                             <div class="flex items-center gap-3">
                                 <div class="h-8 w-8 rounded-lg flex items-center justify-center text-white shadow-xs"
                                     style="background-color: {{ $column->color }}">
                                     <i class="fa-solid {{ $column->icon ?? 'fa-layer-group' }} text-sm"></i>
                                 </div>
-                                <h3 class="font-bold text-brand-950 text-sm truncate max-w-[140px]">{{ $column->name }}</h3>
+                                <h3 class="font-bold text-brand-950 dark:text-slate-100 text-sm truncate max-w-[140px]">{{ $column->name }}</h3>
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <span
-                                    class="column-badge inline-flex items-center justify-center h-6 min-w-[24px] px-1.5 rounded-full text-white text-xs font-bold shadow-xs"
+                                <span class="column-badge inline-flex items-center justify-center h-6 min-w-[24px] px-1.5 rounded-full text-white text-xs font-bold shadow-xs"
                                     style="background-color: {{ $column->color }}">{{ $columnTodos->count() }}</span>
 
                                 <button type="button" onclick="deleteColumn({{ $column->id }})"
-                                    class="text-gray-400 hover:text-rose-500 transition p-1" title="Excluir Coluna">
+                                    class="text-gray-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 transition p-1" title="Excluir Coluna">
                                     <i class="fa-solid fa-trash-can text-sm"></i>
                                 </button>
                             </div>
@@ -99,39 +96,39 @@
                                 @endphp
 
                                 <!-- Card da Tarefa -->
-                                <div class="kanban-card bg-white rounded-xl border-l-4 p-4 shadow-sm hover:shadow-md transition cursor-grab active:cursor-grabbing {{ $isOverdue ? 'ring-1 ring-rose-200' : '' }}"
+                                <div class="kanban-card bg-white dark:bg-slate-900 rounded-xl border-l-4 p-4 shadow-sm hover:shadow-md dark:hover:shadow-slate-900/50 transition cursor-grab active:cursor-grabbing {{ $isOverdue ? 'ring-1 ring-rose-200 dark:ring-rose-900/50' : '' }}"
                                     style="border-left-color: {{ $isOverdue ? '#f43f5e' : $column->color }};"
                                     data-id="{{ $todo->id }}">
 
                                     <div class="flex items-start justify-between gap-2">
-                                        <p class="font-bold text-sm text-brand-950 mb-1 leading-snug">
+                                        <p class="font-bold text-sm text-brand-950 dark:text-slate-100 mb-1 leading-snug">
                                             {{ $todo->title }}
                                         </p>
                                         @if ($isOverdue)
-                                            <span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full shrink-0 animate-pulse">
+                                            <span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 px-2 py-0.5 rounded-full shrink-0 animate-pulse">
                                                 <i class="fa-solid fa-clock"></i> Atrasada
                                             </span>
                                         @endif
                                     </div>
 
                                     @if ($todo->description)
-                                        <p class="text-xs text-gray-500 mb-3 line-clamp-2 leading-relaxed">
+                                        <p class="text-xs text-gray-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed">
                                             {{ $todo->description }}
                                         </p>
                                     @endif
 
-                                    <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-50">
+                                    <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-50 dark:border-slate-800">
                                         <div class="flex items-center gap-1.5 flex-wrap">
                                             @if ($todo->priority === 'highest' || $todo->priority === 'high')
-                                                <span class="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md">Alta</span>
+                                                <span class="text-[10px] font-bold text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 px-2 py-0.5 rounded-md">Alta</span>
                                             @elseif ($todo->priority === 'medium')
-                                                <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">Média</span>
+                                                <span class="text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 px-2 py-0.5 rounded-md">Média</span>
                                             @else
-                                                <span class="text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">Baixa</span>
+                                                <span class="text-[10px] font-bold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 px-2 py-0.5 rounded-md">Baixa</span>
                                             @endif
 
                                             @if ($todo->due_date)
-                                                <span class="text-[10px] font-medium {{ $isOverdue ? 'text-rose-600 font-bold' : 'text-gray-400' }} flex items-center gap-1">
+                                                <span class="text-[10px] font-medium {{ $isOverdue ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-gray-400 dark:text-slate-500' }} flex items-center gap-1">
                                                     <i class="fa-regular fa-calendar"></i>
                                                     {{ \Carbon\Carbon::parse($todo->due_date)->format('d/m') }}
                                                 </span>
@@ -146,34 +143,31 @@
                                     </div>
                                 </div>
                             @endforeach
-
                         </div>
 
-                        <!-- Botão de Criação Rápida (Estilo Trello) -->
+                        <!-- Botão de Criação Rápida -->
                         <div x-data="{ adding: false, title: '', loading: false }" 
-                             class="p-3 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl">
+                             class="p-3 border-t border-slate-100 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-800/50 rounded-b-2xl">
                             
-                            <!-- Botão Inicial -->
                             <button x-show="!adding" 
                                     @click="adding = true; $nextTick(() => $refs.taskInput.focus())"
-                                    class="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">
+                                    class="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-gray-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-slate-700 rounded-lg transition-colors">
                                 <i class="fa-solid fa-plus text-xs"></i> {{ __('Adicionar cartão') }}
                             </button>
 
-                            <!-- Formulário Rápido -->
                             <div x-show="adding" x-cloak class="space-y-2" @click.outside="adding = false; title = ''">
-                               <textarea x-ref="taskInput" x-model="title"
-    @keydown.enter.prevent="
-        if(title.trim() === '') return;
-        loading = true;
-        quickCreateTask(title, {{ $column->id }}, '{{ $columnSlug }}')
-            .then(() => { adding = false; title = ''; loading = false; })
-            .catch(() => { loading = false; })
-    "
-    @keydown.escape="adding = false; title = ''"
-    placeholder="O que precisa ser feito?"
-    class="w-full text-sm text-slate-900 bg-white placeholder:text-slate-400 rounded-lg border-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm resize-none p-2.5 min-h-[60px]"
-    rows="2"></textarea>
+                                <textarea x-ref="taskInput" x-model="title"
+                                    @keydown.enter.prevent="
+                                        if(title.trim() === '') return;
+                                        loading = true;
+                                        quickCreateTask(title, {{ $column->id }}, '{{ $columnSlug }}')
+                                            .then(() => { adding = false; title = ''; loading = false; })
+                                            .catch(() => { loading = false; })
+                                    "
+                                    @keydown.escape="adding = false; title = ''"
+                                    placeholder="O que precisa ser feito?"
+                                    class="w-full text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 placeholder:text-slate-400 dark:placeholder:text-slate-500 rounded-lg border-gray-200 dark:border-slate-700 focus:border-brand-500 focus:ring-brand-500 shadow-sm resize-none p-2.5 min-h-[60px]"
+                                    rows="2"></textarea>
 
                                 <div class="flex items-center gap-2">
                                     <button type="button" :disabled="loading"
@@ -189,17 +183,15 @@
                                         <i x-show="loading" class="fa-solid fa-spinner animate-spin"></i>
                                     </button>
                                     <button type="button" @click="adding = false; title = ''" 
-                                        class="px-2 py-1.5 text-gray-400 hover:text-gray-600 rounded-lg transition-colors">
+                                        class="px-2 py-1.5 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 rounded-lg transition-colors">
                                         <i class="fa-solid fa-xmark text-base"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <!-- Fim do Botão de Criação Rápida -->
 
                     </div>
                 @endforeach
-
             </div>
         </div>
     </div>
@@ -212,12 +204,12 @@
             <p class="text-sm text-gray-600 mb-6">{{ __('Personalize seu quadro Kanban com novas colunas.') }}</p>
 
             <form id="newColumnForm" onsubmit="createNewColumn(event)" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-semibold text-brand-950 mb-2">{{ __('Nome da Coluna') }}</label>
-                    <input type="text" id="columnName" placeholder="Ex: Em Revisão, Bloqueado..."
-                        class="w-full px-4 py-2.5 rounded-lg border border-brand-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none text-sm"
-                        required>
-                </div>
+             <div>
+    <label class="block text-sm font-semibold text-brand-950 mb-2">{{ __('Nome da Coluna') }}</label>
+    <input type="text" id="columnName" placeholder="Ex: Em Revisão, Bloqueado..."
+        class="w-full px-4 py-2.5 rounded-lg border border-brand-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none text-sm text-slate-900 bg-white placeholder-slate-400"
+        required>
+</div>
 
                 <div>
                     <label class="block text-sm font-semibold text-brand-950 mb-3">{{ __('Cor') }}</label>
@@ -286,7 +278,28 @@
                 animation: 250,
                 handle: '.column-header',
                 ghostClass: 'opacity-30',
-                dragClass: 'shadow-2xl'
+                dragClass: 'shadow-2xl',
+                onEnd: function () {
+                    const columnElements = board.querySelectorAll('.kanban-column-container');
+                    const newOrder = Array.from(columnElements).map(col => col.dataset.columnId);
+
+                    fetch('{{ route('kanban.columns.reorder') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ columns: newOrder })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (!data.success) {
+                            alert('Houve um erro ao salvar a nova ordem das colunas.');
+                        }
+                    })
+                    .catch(err => console.error('Erro de conexão ao reordenar:', err));
+                }
             });
         }
 
@@ -323,7 +336,7 @@
     // Funções Globais
     async function updateCardStatus(cardId, newStatus, columnId) {
         try {
-            const response = await fetch('/kanban/mover', {
+            const response = await fetch('{{ route('kanban.move') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -347,7 +360,7 @@
 
     async function quickCreateTask(title, columnId, status) {
         try {
-            const response = await fetch('/kanban/tarefa/criacao-rapida', {
+            const response = await fetch('{{ route('kanban.task.quick-create') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -393,6 +406,7 @@
         document.getElementById('columnColor').value = color;
     }
 
+    // Função corrigida e sem duplicatas
     function createNewColumn(e) {
         e.preventDefault();
         const name = document.getElementById('columnName').value.trim();
@@ -401,7 +415,13 @@
 
         if (!name) return;
 
-        fetch('/kanban/coluna/criar', {
+        // Feedback de carregamento
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Criando...';
+        submitBtn.disabled = true;
+
+        fetch('{{ route('kanban.column.store') }}',{ 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -410,12 +430,24 @@
             },
             body: JSON.stringify({ name, color, icon })
         })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
+        .then(async (response) => {
+            const data = await response.json(); 
+            
+            if (response.ok && data.success) {
                 closeNewColumnModal();
                 setTimeout(() => location.reload(), 200);
+            } else {
+                console.error("Erro do servidor:", data);
+                alert('Erro do backend: ' + (data.message || data.error || 'Verifique os dados.'));
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
+        })
+        .catch(err => {
+            console.error("Erro fatal na requisição:", err);
+            alert('Erro de conexão ou Rota não encontrada! Abra o console (F12) para ver os detalhes.');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
         });
     }
 

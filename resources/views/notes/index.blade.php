@@ -2,491 +2,507 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h2 class="font-extrabold text-2xl text-white leading-tight">{{ __('Kanban') }}</h2>
-                <p class="text-sm text-slate-400 mt-1">
-                    {{ __('Arraste as tarefas entre colunas ou reordene as colunas segurando no cabeçalho.') }}
+                <h2 class="font-extrabold text-2xl text-slate-800 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-thumbtack text-amber-500"></i> {{ __('Bloco de Notas') }}
+                </h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    {{ __('Suas ideias, rascunhos e links rápidos.') }}
                 </p>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="openNewColumnModal()"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-xl shadow-sm transition">
-                    <i class="fa-solid fa-circle-plus"></i> {{ __('Nova Coluna') }}
-                </button>
-                <a href="{{ route('todos.index') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-sm font-semibold rounded-xl shadow-sm transition">
-                    <i class="fa-solid fa-list"></i> {{ __('Voltar para Lista') }}
-                </a>
-            </div>
+            <!-- Botão dispara o Modal de Criação (Sem <form> ao redor) -->
+            <button type="button" @click="$dispatch('open-create')"
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95 flex-shrink-0">
+                <i class="fa-solid fa-plus"></i> {{ __('Nova Nota') }}
+            </button>
         </div>
     </x-slot>
 
-    <!-- Import SortableJS CDN -->
+    <!-- Import SortableJS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
-    <div class="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-        <div class="overflow-x-auto pb-6 custom-scrollbar">
-            <!-- CONTAINER DAS COLUNAS (ARRASTÁVEL) -->
-            <div id="kanban-board" class="flex items-start gap-6 min-w-max">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 min-h-screen">
 
-                <!-- LOOP DINÂMICO DE COLUNAS -->
-                @foreach ($columns as $index => $column)
-                    @php
-                        $columnSlug = $column->slug ?? \Illuminate\Support\Str::slug($column->name);
+        @if ($notes->isEmpty())
+            <div
+                class="flex flex-col items-center justify-center py-20 px-4 text-center bg-white rounded-3xl border border-dashed border-slate-300 shadow-sm">
+                <div class="h-24 w-24 bg-amber-50 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                    <i class="fa-regular fa-note-sticky text-5xl text-amber-400 transform -rotate-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">{{ __('Nenhuma nota encontrada') }}</h3>
+                <p class="text-slate-500 mb-8 max-w-md">
+                    {{ __('O seu quadro de ideias está vazio. Clique no botão abaixo para criar seu primeiro post-it colorido.') }}
+                </p>
+                <button type="button" @click="$dispatch('open-create')"
+                    class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md transition-all">
+                    Criar Primeira Nota
+                </button>
+            </div>
+        @else
+            <!-- Grid de Notas -->
+            <div id="notes-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-                        $columnTodos = $todos->filter(function ($item) use ($column, $columnSlug, $index) {
-                            if ($item->is_completed) {
-                                return in_array($columnSlug, ['concluido', 'done', 'finalizado', 'mergeado', 'completo']);
-                            }
+                @foreach ($notes as $note)
+                    <div class="h-72 flex flex-col rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 border border-black/5 overflow-hidden transition-all group relative"
+                        style="background-color: {{ $note->color ?? '#fef08a' }};" @click="open{{ $note->id }} = true"
+                        x-data="{ open{{ $note->id }}: false }">
 
-                            if (!empty($item->kanban_column_id)) {
-                                return $item->kanban_column_id == $column->id;
-                            }
+                        <div class="drag-handle absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing p-1 text-black/30 hover:text-black/60 z-10"
+                            title="Arraste para reordenar">
+                            <i class="fa-solid fa-grip-vertical text-lg"></i>
+                        </div>
 
-                            if ($item->status === $columnSlug) {
-                                return true;
-                            }
+                        <div class="absolute top-3 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-black/10 shadow-inner">
+                        </div>
 
-                            if (
-                                $index === 0 &&
-                                (empty($item->status) || in_array($item->status, ['todo', 'a-fazer', 'pending']))
-                            ) {
-                                return true;
-                            }
+                        <div class="p-5 flex flex-col h-full relative" x-show="!open{{ $note->id }}">
+                            <button type="button" @click.stop="
+                                            navigator.clipboard.writeText($refs.noteContent.innerText); 
+                                            $el.innerHTML = '<i class=\'fa-solid fa-check\'></i>'; 
+                                            $el.classList.add('bg-emerald-500', 'text-white');
+                                            setTimeout(() => { 
+                                                $el.innerHTML = '<i class=\'fa-regular fa-copy\'></i>'; 
+                                                $el.classList.remove('bg-emerald-500', 'text-white');
+                                            }, 2000)
+                                        "
+                                class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 text-slate-600 hover:text-slate-900 bg-white/40 hover:bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-sm z-10"
+                                title="Copiar texto">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
 
-                            return false;
-                        });
-                    @endphp
+                            <h3 class="font-extrabold text-lg text-slate-900 mt-2 mb-3 pr-8 leading-tight truncate">
+                                {{ $note->title ?: 'Sem título' }}
+                            </h3>
 
-                    <div class="kanban-column-container flex-1 min-w-[320px] max-w-[380px] flex flex-col bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all"
-                        data-column-id="{{ $column->id }}">
-
-                        <!-- Cabeçalho Dinâmico -->
-                        <div class="column-header cursor-grab active:cursor-grabbing p-4 border-b select-none flex items-center justify-between"
-                            style="background-color: {{ $column->color }}15; border-color: {{ $column->color }}40;">
-                            <div class="flex items-center gap-3">
-                                <div class="h-8 w-8 rounded-lg flex items-center justify-center text-white shadow-xs"
-                                    style="background-color: {{ $column->color }}">
-                                    <i class="fa-solid {{ $column->icon ?? 'fa-layer-group' }} text-sm"></i>
-                                </div>
-                                <h3 class="font-bold text-brand-950 text-sm truncate max-w-[140px]">{{ $column->name }}</h3>
+                            <div x-ref="noteContent"
+                                class="text-sm text-slate-800 flex-1 prose-sm prose-slate max-w-none line-clamp-5 overflow-hidden">
+                                {!! $note->content ?: '<span class="text-black/40 italic">Clique para escrever...</span>' !!}
                             </div>
 
-                            <div class="flex items-center gap-2">
-                                <span
-                                    class="column-badge inline-flex items-center justify-center h-6 min-w-[24px] px-1.5 rounded-full text-white text-xs font-bold shadow-xs"
-                                    style="background-color: {{ $column->color }}">{{ $columnTodos->count() }}</span>
+                            <div
+                                class="mt-auto pt-4 border-t border-black/10 flex items-center justify-between text-xs font-semibold text-black/40">
+                                <span><i class="fa-regular fa-calendar mr-1"></i>
+                                    {{ $note->created_at->format('d/m/Y') }}</span>
+                            </div>
 
-                                <button type="button" onclick="deleteColumn({{ $column->id }})"
-                                    class="text-gray-400 hover:text-rose-500 transition p-1" title="Excluir Coluna">
-                                    <i class="fa-solid fa-trash-can text-sm"></i>
+                            <div
+                                class="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/20 to-transparent flex gap-2 z-10">
+                                <button @click.stop="open{{ $note->id }} = true"
+                                    class="flex-1 py-2 text-xs font-bold bg-white/70 hover:bg-white backdrop-blur-md rounded-xl text-slate-800 transition shadow-sm flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-pen-to-square"></i> Editar
                                 </button>
+
+                                <form method="POST" action="{{ route('notes.destroy', $note->id) }}" class="flex-1" @click.stop
+                                    onsubmit="return confirm('Tem certeza que deseja apagar esta anotação?');">
+                                    @csrf @method('DELETE')
+                                    <button type="submit"
+                                        class="w-full py-2 text-xs font-bold bg-rose-500/80 hover:bg-rose-500 backdrop-blur-md rounded-xl text-white transition shadow-sm flex items-center justify-center gap-1">
+                                        <i class="fa-solid fa-trash-can"></i> Apagar
+                                    </button>
+                                </form>
                             </div>
                         </div>
 
-                        <!-- Corpo da Coluna -->
-                        <div class="kanban-tasks flex-1 min-h-[300px] h-fit p-3 space-y-3"
-                            style="background-color: {{ $column->color }}06;" 
-                            data-status="{{ $columnSlug }}"
-                            data-column-id="{{ $column->id }}"
-                            data-color="{{ $column->color }}">
+                        <!-- MODAL DE EDIÇÃO -->
+                        <template x-teleport="body">
+                            <div x-show="open{{ $note->id }}" x-cloak
+                                class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0 transform scale-95"
+                                x-transition:enter-end="opacity-100 transform scale-100"
+                                x-transition:leave="transition ease-in duration-200"
+                                x-transition:leave-start="opacity-100 transform scale-100"
+                                x-transition:leave-end="opacity-0 transform scale-95">
 
-                            @foreach ($columnTodos as $todo)
-                                @php
-                                    $isOverdue = false;
-                                    if ($todo->due_date && !$todo->is_completed) {
-                                        $isOverdue = \Carbon\Carbon::parse($todo->due_date)->isPast();
-                                    }
-                                @endphp
+                                <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+                                    @click="open{{ $note->id }} = false"></div>
 
-                                <!-- Card da Tarefa -->
-                                <div class="kanban-card bg-white rounded-xl border-l-4 p-4 shadow-sm hover:shadow-md transition cursor-grab active:cursor-grabbing {{ $isOverdue ? 'ring-1 ring-rose-200' : '' }}"
-                                    style="border-left-color: {{ $isOverdue ? '#f43f5e' : $column->color }};"
-                                    data-id="{{ $todo->id }}">
+                                <div class="relative w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden transition-colors duration-500 flex flex-col max-h-[90vh]"
+                                    x-data="noteForm{{ $note->id }}()" :style="`background-color: ${color}`">
 
-                                    <div class="flex items-start justify-between gap-2">
-                                        <p class="font-bold text-sm text-brand-950 mb-1 leading-snug">
-                                            {{ $todo->title }}
-                                        </p>
-                                        @if ($isOverdue)
-                                            <span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full shrink-0 animate-pulse">
-                                                <i class="fa-solid fa-clock"></i> Atrasada
-                                            </span>
-                                        @endif
+                                    <div
+                                        class="flex items-center justify-between px-6 py-4 border-b border-black/10 bg-black/5">
+                                        <h3 class="font-extrabold text-xl text-slate-900 flex items-center gap-2">
+                                            <i class="fa-solid fa-pen-nib text-black/50"></i> {{ __('Editando Nota') }}
+                                        </h3>
+                                        <button @click="open{{ $note->id }} = false"
+                                            class="h-8 w-8 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/20 text-slate-700 transition">
+                                            <i class="fa-solid fa-xmark text-lg"></i>
+                                        </button>
                                     </div>
 
-                                    @if ($todo->description)
-                                        <p class="text-xs text-gray-500 mb-3 line-clamp-2 leading-relaxed">
-                                            {{ $todo->description }}
-                                        </p>
-                                    @endif
+                                    <form method="POST" action="{{ route('notes.update', $note->id) }}"
+                                        @submit.prevent="submit()"
+                                        class="p-6 space-y-6 overflow-y-auto custom-scrollbar flex-1">
+                                        @csrf @method('PATCH')
 
-                                    <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-50">
-                                        <div class="flex items-center gap-1.5 flex-wrap">
-                                            @if ($todo->priority === 'highest' || $todo->priority === 'high')
-                                                <span class="text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md">Alta</span>
-                                            @elseif ($todo->priority === 'medium')
-                                                <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">Média</span>
-                                            @else
-                                                <span class="text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">Baixa</span>
-                                            @endif
-
-                                            @if ($todo->due_date)
-                                                <span class="text-[10px] font-medium {{ $isOverdue ? 'text-rose-600 font-bold' : 'text-gray-400' }} flex items-center gap-1">
-                                                    <i class="fa-regular fa-calendar"></i>
-                                                    {{ \Carbon\Carbon::parse($todo->due_date)->format('d/m') }}
-                                                </span>
-                                            @endif
+                                        <div>
+                                            <input type="text" name="title" x-model="title" placeholder="Título da Nota"
+                                                class="w-full px-0 py-2 border-0 border-b-2 border-black/10 focus:border-black/40 focus:ring-0 bg-transparent text-3xl font-extrabold text-slate-900 placeholder-black/30 transition">
                                         </div>
 
-                                        <a href="{{ route('todos.show', $todo->id) }}" 
-                                            class="link-externo hover:opacity-75 transition p-1"
-                                            style="color: {{ $column->color }}">
-                                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            @endforeach
+                                        <!-- Toolbar e Editor HTML -->
+                                        <div
+                                            class="rounded-xl border border-black/10 focus-within:border-black/30 bg-white/80 backdrop-blur-sm shadow-sm overflow-hidden transition flex flex-col">
+                                            <div
+                                                class="flex items-center gap-1 p-2 bg-white border-b border-slate-200 flex-wrap shrink-0">
+                                                <button type="button" @click="document.execCommand('bold', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 font-serif font-bold transition">B</button>
+                                                <button type="button" @click="document.execCommand('italic', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 font-serif italic transition">I</button>
+                                                <button type="button" @click="document.execCommand('underline', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 font-serif underline transition">U</button>
+                                                <button type="button"
+                                                    @click="document.execCommand('strikeThrough', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 font-serif line-through transition">S</button>
 
+                                                <div class="w-px h-5 bg-slate-200 mx-1"></div>
+
+                                                <!-- BOTÃO COR DO TEXTO (NOVO) -->
+                                                <div class="relative w-8 h-8 rounded hover:bg-slate-100 flex items-center justify-center transition overflow-hidden"
+                                                    title="Cor do Texto">
+                                                    <input type="color"
+                                                        @input="document.execCommand('foreColor', false, $event.target.value)"
+                                                        class="absolute -top-2 -left-2 w-12 h-12 cursor-pointer opacity-0">
+                                                    <i class="fa-solid fa-droplet text-slate-700 pointer-events-none"></i>
+                                                </div>
+
+                                                <div class="w-px h-5 bg-slate-200 mx-1"></div>
+                                                <button type="button"
+                                                    @click="document.execCommand('insertUnorderedList', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                                        class="fa-solid fa-list-ul"></i></button>
+                                                <button type="button"
+                                                    @click="document.execCommand('insertOrderedList', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                                        class="fa-solid fa-list-ol"></i></button>
+                                                <div class="w-px h-5 bg-slate-200 mx-1"></div>
+                                                <button type="button" @click="document.execCommand('justifyLeft', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                                        class="fa-solid fa-align-left"></i></button>
+                                                <button type="button"
+                                                    @click="document.execCommand('justifyCenter', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                                        class="fa-solid fa-align-center"></i></button>
+                                                <button type="button" @click="document.execCommand('justifyRight', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                                        class="fa-solid fa-align-right"></i></button>
+                                                <div class="w-px h-5 bg-slate-200 mx-1"></div>
+                                                <button type="button" @click="document.execCommand('removeFormat', false, null)"
+                                                    class="w-8 h-8 rounded hover:bg-rose-50 text-rose-600 transition ml-auto"><i
+                                                        class="fa-solid fa-eraser text-sm"></i></button>
+                                            </div>
+                                            <div class="w-full px-5 py-4 min-h-[250px] outline-none text-slate-800 prose-sm prose-slate max-w-none"
+                                                contenteditable="true" x-init="$el.innerHTML = content"
+                                                @input="content = $event.target.innerHTML">
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="content" x-model="content">
+
+                                        <!-- Paleta de Cores e Color Picker -->
+                                        <div>
+                                            <label
+                                                class="block text-sm font-bold text-slate-800 mb-3 uppercase tracking-wider">{{ __('Cor do Post-It') }}</label>
+                                            <div class="flex flex-wrap gap-3 items-center">
+                                                @php
+                                                    $colors = ['#fef08a', '#fecaca', '#bfdbfe', '#bbf7d0', '#e9d5ff', '#f5d5e8', '#fed7aa', '#99f6e4', '#d9f99d', '#c7d2fe', '#e2e8f0'];
+                                                @endphp
+                                                @foreach($colors as $hex)
+                                                    <button type="button" @click="color = '{{ $hex }}'"
+                                                        class="h-10 w-10 rounded-full shadow-sm transition-all duration-200 relative"
+                                                        style="background-color: {{ $hex }};"
+                                                        :class="color === '{{ $hex }}' ? 'ring-4 ring-black/20 scale-110' : 'hover:scale-110 border border-black/10'">
+                                                        <i class="fa-solid fa-check text-black/40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm"
+                                                            x-show="color === '{{ $hex }}'"></i>
+                                                    </button>
+                                                @endforeach
+
+                                                <div class="w-px h-6 bg-black/10 mx-1"></div>
+
+                                                <!-- BOTÃO COR CUSTOMIZADA (NOVO) -->
+                                                <div class="relative h-10 w-10 rounded-full shadow-sm border border-black/20 hover:scale-110 transition-all cursor-pointer overflow-hidden flex items-center justify-center bg-white"
+                                                    title="Escolher cor personalizada">
+                                                    <input type="color" x-model="color"
+                                                        class="absolute -top-4 -left-4 w-20 h-20 cursor-pointer opacity-0">
+                                                    <i class="fa-solid fa-eye-dropper text-slate-600 pointer-events-none"
+                                                        :style="!['#fef08a', '#fecaca', '#bfdbfe', '#bbf7d0', '#e9d5ff', '#f5d5e8', '#fed7aa', '#99f6e4', '#d9f99d', '#c7d2fe', '#e2e8f0'].includes(color) ? `color: ${color}` : ''"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between pt-6 mt-6 border-t border-black/10">
+                                            <div class="text-xs font-semibold text-black/40">
+                                                <i class="fa-regular fa-clock"></i> Atualizado em
+                                                {{ $note->updated_at->format('d/m/Y H:i') }}
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <button type="button" @click="open{{ $note->id }} = false"
+                                                    class="px-5 py-2.5 rounded-xl font-bold text-slate-700 bg-white/50 hover:bg-white border border-black/10 transition shadow-sm">
+                                                    {{ __('Cancelar') }}
+                                                </button>
+                                                <button type="submit"
+                                                    class="px-6 py-2.5 rounded-xl font-bold text-white bg-slate-900 hover:bg-slate-800 transition shadow-lg hover:shadow-xl flex items-center gap-2">
+                                                    <i class="fa-solid fa-floppy-disk"></i> {{ __('Salvar') }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+
+    <!-- MODAL GLOBAL DE CRIAÇÃO -->
+    <div x-data="createNoteForm()"
+        @open-create.window="open = true; title = ''; content = ''; color = '#fef08a'; setTimeout(() => { $refs.createEditor.innerHTML = '' }, 50)">
+        <template x-teleport="body">
+            <div x-show="open" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 transform scale-95"
+                x-transition:enter-end="opacity-100 transform scale-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 transform scale-100"
+                x-transition:leave-end="opacity-0 transform scale-95">
+
+                <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="open = false"></div>
+
+                <div class="relative w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden transition-colors duration-500 flex flex-col max-h-[90vh]"
+                    :style="`background-color: ${color}`">
+
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-black/10 bg-black/5">
+                        <h3 class="font-extrabold text-xl text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-plus text-black/50"></i> {{ __('Nova Anotação') }}
+                        </h3>
+                        <button @click="open = false"
+                            class="h-8 w-8 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/20 text-slate-700 transition">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+
+                    <form method="POST" action="{{ route('notes.store') }}" @submit.prevent="submit()"
+                        class="p-6 space-y-6 overflow-y-auto custom-scrollbar flex-1">
+
+                        <div>
+                            <input type="text" x-model="title" placeholder="Título da Nota"
+                                class="w-full px-0 py-2 border-0 border-b-2 border-black/10 focus:border-black/40 focus:ring-0 bg-transparent text-3xl font-extrabold text-slate-900 placeholder-black/30 transition">
                         </div>
 
-                        <!-- Botão de Criação Rápida (Estilo Trello) -->
-                        <div x-data="{ adding: false, title: '', loading: false }" 
-                             class="p-3 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl">
-                            
-                            <!-- Botão Inicial -->
-                            <button x-show="!adding" 
-                                    @click="adding = true; $nextTick(() => $refs.taskInput.focus())"
-                                    class="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">
-                                <i class="fa-solid fa-plus text-xs"></i> {{ __('Adicionar cartão') }}
-                            </button>
+                        <div
+                            class="rounded-xl border border-black/10 focus-within:border-black/30 bg-white/80 backdrop-blur-sm shadow-sm overflow-hidden transition flex flex-col">
+                            <div
+                                class="flex items-center gap-1 p-2 bg-white border-b border-slate-200 flex-wrap shrink-0">
+                                <button type="button" @click="document.execCommand('bold', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 font-serif font-bold transition">B</button>
+                                <button type="button" @click="document.execCommand('italic', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 font-serif italic transition">I</button>
+                                <button type="button" @click="document.execCommand('underline', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 font-serif underline transition">U</button>
+                                <button type="button" @click="document.execCommand('strikeThrough', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 font-serif line-through transition">S</button>
 
-                            <!-- Formulário Rápido -->
-                            <div x-show="adding" x-cloak class="space-y-2" @click.outside="adding = false; title = ''">
-                                <textarea x-ref="taskInput" x-model="title"
-                                    @keydown.enter.prevent="
-                                        if(title.trim() === '') return;
-                                        loading = true;
-                                        quickCreateTask(title, {{ $column->id }}, '{{ $columnSlug }}')
-                                            .then(() => { adding = false; title = ''; loading = false; })
-                                            .catch(() => { loading = false; })
-                                    "
-                                    @keydown.escape="adding = false; title = ''"
-                                    placeholder="O que precisa ser feito?"
-                                    class="w-full text-sm rounded-lg border-gray-200 focus:border-brand-500 focus:ring-brand-500 shadow-sm resize-none p-2.5 min-h-[60px]"
-                                    rows="2"></textarea>
+                                <div class="w-px h-5 bg-slate-200 mx-1"></div>
 
-                                <div class="flex items-center gap-2">
-                                    <button type="button" :disabled="loading"
-                                        @click="
-                                            if(title.trim() === '') return;
-                                            loading = true;
-                                            quickCreateTask(title, {{ $column->id }}, '{{ $columnSlug }}')
-                                                .then(() => { adding = false; title = ''; loading = false; })
-                                                .catch(() => { loading = false; })
-                                        "
-                                        class="px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors disabled:opacity-50 flex items-center gap-2">
-                                        <span x-show="!loading">{{ __('Adicionar') }}</span>
-                                        <i x-show="loading" class="fa-solid fa-spinner animate-spin"></i>
+                                <!-- BOTÃO COR DO TEXTO (NOVO) -->
+                                <div class="relative w-8 h-8 rounded hover:bg-slate-100 flex items-center justify-center transition overflow-hidden"
+                                    title="Cor do Texto">
+                                    <input type="color"
+                                        @input="document.execCommand('foreColor', false, $event.target.value)"
+                                        class="absolute -top-2 -left-2 w-12 h-12 cursor-pointer opacity-0">
+                                    <i class="fa-solid fa-droplet text-slate-700 pointer-events-none"></i>
+                                </div>
+
+                                <div class="w-px h-5 bg-slate-200 mx-1"></div>
+                                <button type="button" @click="document.execCommand('insertUnorderedList', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                        class="fa-solid fa-list-ul"></i></button>
+                                <button type="button" @click="document.execCommand('insertOrderedList', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                        class="fa-solid fa-list-ol"></i></button>
+                                <div class="w-px h-5 bg-slate-200 mx-1"></div>
+                                <button type="button" @click="document.execCommand('justifyLeft', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                        class="fa-solid fa-align-left"></i></button>
+                                <button type="button" @click="document.execCommand('justifyCenter', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                        class="fa-solid fa-align-center"></i></button>
+                                <button type="button" @click="document.execCommand('justifyRight', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-slate-100 text-slate-700 transition"><i
+                                        class="fa-solid fa-align-right"></i></button>
+                                <div class="w-px h-5 bg-slate-200 mx-1"></div>
+                                <button type="button" @click="document.execCommand('removeFormat', false, null)"
+                                    class="w-8 h-8 rounded hover:bg-rose-50 text-rose-600 transition ml-auto"><i
+                                        class="fa-solid fa-eraser text-sm"></i></button>
+                            </div>
+                            <div class="w-full px-5 py-4 min-h-[250px] outline-none text-slate-800 prose-sm prose-slate max-w-none"
+                                contenteditable="true" x-ref="createEditor" @input="content = $event.target.innerHTML">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-sm font-bold text-slate-800 mb-3 uppercase tracking-wider">{{ __('Cor do Post-It') }}</label>
+                            <div class="flex flex-wrap gap-3 items-center">
+                                @php
+                                    $colors = ['#fef08a', '#fecaca', '#bfdbfe', '#bbf7d0', '#e9d5ff', '#f5d5e8', '#fed7aa', '#99f6e4', '#d9f99d', '#c7d2fe', '#e2e8f0'];
+                                @endphp
+                                @foreach($colors as $hex)
+                                    <button type="button" @click="color = '{{ $hex }}'"
+                                        class="h-10 w-10 rounded-full shadow-sm transition-all duration-200 relative"
+                                        style="background-color: {{ $hex }};"
+                                        :class="color === '{{ $hex }}' ? 'ring-4 ring-black/20 scale-110' : 'hover:scale-110 border border-black/10'">
+                                        <i class="fa-solid fa-check text-black/40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm"
+                                            x-show="color === '{{ $hex }}'"></i>
                                     </button>
-                                    <button type="button" @click="adding = false; title = ''" 
-                                        class="px-2 py-1.5 text-gray-400 hover:text-gray-600 rounded-lg transition-colors">
-                                        <i class="fa-solid fa-xmark text-base"></i>
-                                    </button>
+                                @endforeach
+
+                                <div class="w-px h-6 bg-black/10 mx-1"></div>
+
+                                <!-- BOTÃO COR CUSTOMIZADA (NOVO) -->
+                                <div class="relative h-10 w-10 rounded-full shadow-sm border border-black/20 hover:scale-110 transition-all cursor-pointer overflow-hidden flex items-center justify-center bg-white"
+                                    title="Escolher cor personalizada">
+                                    <input type="color" x-model="color"
+                                        class="absolute -top-4 -left-4 w-20 h-20 cursor-pointer opacity-0">
+                                    <i class="fa-solid fa-eye-dropper text-slate-600 pointer-events-none"
+                                        :style="!['#fef08a', '#fecaca', '#bfdbfe', '#bbf7d0', '#e9d5ff', '#f5d5e8', '#fed7aa', '#99f6e4', '#d9f99d', '#c7d2fe', '#e2e8f0'].includes(color) ? `color: ${color}` : ''"></i>
                                 </div>
                             </div>
                         </div>
-                        <!-- Fim do Botão de Criação Rápida -->
 
-                    </div>
-                @endforeach
-
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: NOVA COLUNA -->
-    <div id="newColumnModal"
-        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 border border-brand-100">
-            <h3 class="text-2xl font-bold text-brand-950 mb-2">{{ __('Criar Nova Coluna') }}</h3>
-            <p class="text-sm text-gray-600 mb-6">{{ __('Personalize seu quadro Kanban com novas colunas.') }}</p>
-
-            <form id="newColumnForm" onsubmit="createNewColumn(event)" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-semibold text-brand-950 mb-2">{{ __('Nome da Coluna') }}</label>
-                    <input type="text" id="columnName" placeholder="Ex: Em Revisão, Bloqueado..."
-                        class="w-full px-4 py-2.5 rounded-lg border border-brand-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none text-sm"
-                        required>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-brand-950 mb-3">{{ __('Cor') }}</label>
-                    <div class="flex items-center gap-3">
-                        <input type="color" id="columnColor" value="#f59e0b"
-                            class="h-10 w-20 rounded-lg cursor-pointer border-2 border-brand-200">
-                        <div class="flex gap-2">
-                            <button type="button" onclick="setColor('#f59e0b')" class="h-8 w-8 rounded-lg bg-amber-500 border border-gray-200 hover:scale-105 transition"></button>
-                            <button type="button" onclick="setColor('#0c8fe6')" class="h-8 w-8 rounded-lg bg-blue-500 border border-gray-200 hover:scale-105 transition"></button>
-                            <button type="button" onclick="setColor('#10b981')" class="h-8 w-8 rounded-lg bg-emerald-500 border border-gray-200 hover:scale-105 transition"></button>
-                            <button type="button" onclick="setColor('#8b5cf6')" class="h-8 w-8 rounded-lg bg-purple-500 border border-gray-200 hover:scale-105 transition"></button>
-                            <button type="button" onclick="setColor('#ec4899')" class="h-8 w-8 rounded-lg bg-pink-500 border border-gray-200 hover:scale-105 transition"></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div x-data="{
-                    selectedIcon: 'fa-layer-group',
-                    icons: [
-                        'fa-layer-group', 'fa-list-ul', 'fa-bars-staggered', 'fa-fire',
-                        'fa-bug', 'fa-rocket', 'fa-code', 'fa-terminal',
-                        'fa-database', 'fa-server', 'fa-paint-roller', 'fa-vial',
-                        'fa-box-open', 'fa-hammer', 'fa-lightbulb', 'fa-star',
-                        'fa-check-double', 'fa-flag-checkered', 'fa-triangle-exclamation', 'fa-calendar-days'
-                    ]
-                }" class="pt-2">
-
-                    <label class="block text-sm font-semibold text-brand-950 mb-2">{{ __('Ícone da Coluna') }}</label>
-
-                    <div class="grid grid-cols-5 sm:grid-cols-10 gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl max-h-40 overflow-y-auto custom-scrollbar">
-                        <template x-for="icon in icons" :key="icon">
-                            <button type="button" @click="selectedIcon = icon" :class="selectedIcon === icon ?
-                                    'bg-brand-100 border-brand-500 text-brand-700 shadow-md scale-105' :
-                                    'bg-white border-gray-200 text-gray-500 hover:bg-gray-100'"
-                                class="h-9 w-9 flex items-center justify-center rounded-lg border transition-all">
-                                <i class="fa-solid text-base" :class="icon"></i>
+                        <div class="flex items-center justify-end pt-6 mt-6 border-t border-black/10 gap-3">
+                            <button type="button" @click="open = false"
+                                class="px-5 py-2.5 rounded-xl font-bold text-slate-700 bg-white/50 hover:bg-white border border-black/10 transition shadow-sm">
+                                {{ __('Cancelar') }}
                             </button>
-                        </template>
-                    </div>
-
-                    <input type="hidden" id="columnIcon" name="icon" x-model="selectedIcon">
+                            <button type="submit"
+                                class="px-6 py-2.5 rounded-xl font-bold text-white bg-slate-900 hover:bg-slate-800 transition shadow-lg hover:shadow-xl flex items-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i> {{ __('Criar Anotação') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="flex gap-3 justify-end pt-4">
-                    <button type="button" onclick="closeNewColumnModal()"
-                        class="px-5 py-2.5 rounded-lg font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 transition text-sm">
-                        {{ __('Cancelar') }}
-                    </button>
-                    <button type="submit"
-                        class="px-5 py-2.5 rounded-lg font-semibold text-white bg-brand-600 hover:bg-brand-700 transition shadow-md text-sm">
-                        {{ __('Criar Coluna') }}
-                    </button>
-                </div>
-            </form>
-        </div>
+            </div>
+        </template>
     </div>
 
+    <!-- Scripts (Sortable e Alpine Models) -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            updateCounts();
-
-            // 1. Sortable para as Colunas
-            const board = document.getElementById('kanban-board');
-            if (board) {
-                new Sortable(board, {
+            const notesGrid = document.getElementById('notes-grid');
+            if (notesGrid) {
+                new Sortable(notesGrid, {
                     animation: 250,
-                    handle: '.column-header',
-                    ghostClass: 'opacity-30',
-                    dragClass: 'shadow-2xl'
-                });
-            }
-
-            // 2. Sortable para os Cards
-            document.querySelectorAll('.kanban-tasks').forEach(column => {
-                new Sortable(column, {
-                    group: 'kanban-cards',
-                    animation: 200,
+                    handle: '.drag-handle',
                     ghostClass: 'opacity-40',
+                    dragClass: 'shadow-2xl',
                     onEnd: function (evt) {
-                        const card = evt.item;
-                        const cardId = card.dataset.id;
-                        const newStatus = evt.to.dataset.status;
-                        const columnId = evt.to.dataset.columnId;
-                        const targetColor = evt.to.dataset.color; // Lê a cor alvo
-
-                        // Atualiza as cores dinamicamente no front-end
-                        if (card && targetColor) {
-                            if (!card.classList.contains('ring-rose-200')) {
-                                card.style.borderLeftColor = targetColor;
-                            }
-                            const linkIcon = card.querySelector('.link-externo');
-                            if (linkIcon) {
-                                linkIcon.style.color = targetColor;
-                            }
-                        }
-
-                        if (cardId && newStatus) {
-                            updateCardStatus(cardId, newStatus, columnId);
-                        }
+                        console.log(`Nota movida da posição ${evt.oldIndex} para ${evt.newIndex}`);
                     }
                 });
-            });
+            }
         });
 
-        async function updateCardStatus(cardId, newStatus, columnId) {
-            try {
-                const response = await fetch('/kanban/move', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        id: cardId,
-                        status: newStatus,
-                        kanban_column_id: columnId
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    updateCounts();
-                } else {
-                    console.error('Erro retornado pelo backend:', data);
-                    alert('Não foi possível mover a tarefa: ' + (data.message || JSON.stringify(data.errors || 'Erro desconhecido')));
-                    location.reload();
+        @foreach ($notes as $note)
+            function noteForm{{ $note->id }}() {
+                return {
+                    title: '{{ addslashes($note->title) }}',
+                    content: {!! json_encode($note->content ?? '') !!},
+                    color: '{{ $note->color ?? '#fef08a' }}',
+                    async submit() {
+                        try {
+                            const res = await fetch('{{ route('notes.update', $note->id) }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                    'X-HTTP-Method-Override': 'PATCH'
+                                },
+                                body: JSON.stringify({ title: this.title, content: this.content, color: this.color })
+                            });
+                            if (res.ok) {
+                                this.open{{ $note->id }} = false;
+                                location.reload();
+                            }
+                        } catch (err) {
+                            alert('Erro de conexão ao tentar salvar.');
+                        }
+                    }
                 }
-            } catch (error) {
-                console.error('Falha na requisição:', error);
-                location.reload();
+            }
+        @endforeach
+
+        function createNoteForm() {
+            return {
+                open: false,
+                title: '',
+                content: '',
+                color: '#fef08a',
+                async submit() {
+                    try {
+                        const res = await fetch('{{ route('notes.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            },
+                            body: JSON.stringify({ title: this.title, content: this.content, color: this.color })
+                        });
+                        if (res.ok) {
+                            this.open = false;
+                            location.reload();
+                        } else {
+                            alert('Erro ao criar a nota. Verifique os dados.');
+                        }
+                    } catch (err) {
+                        alert('Erro de conexão ao tentar criar.');
+                    }
+                }
             }
         }
-
-        async function quickCreateTask(title, columnId, status) {
-            try {
-                const response = await fetch('/kanban/task/quick-create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        title: title,
-                        kanban_column_id: columnId,
-                        status: status
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    location.reload(); 
-                } else {
-                    alert('Erro ao criar tarefa: ' + (data.message || 'Verifique os dados.'));
-                }
-            } catch (error) {
-                console.error('Falha na requisição:', error);
-                alert('Erro de conexão ao tentar criar a tarefa.');
-            }
-        }
-
-        function updateCounts() {
-            document.querySelectorAll('.kanban-column-container').forEach(container => {
-                const tasksContainer = container.querySelector('.kanban-tasks');
-                const badge = container.querySelector('.column-badge');
-                if (tasksContainer && badge) {
-                    const count = tasksContainer.querySelectorAll('.kanban-card').length;
-                    badge.textContent = count;
-                }
-            });
-        }
-
-        function openNewColumnModal() {
-            document.getElementById('newColumnModal').classList.remove('hidden');
-            document.getElementById('columnName').focus();
-        }
-
-        function closeNewColumnModal() {
-            document.getElementById('newColumnModal').classList.add('hidden');
-            document.getElementById('columnName').value = '';
-        }
-
-        function setColor(color) {
-            document.getElementById('columnColor').value = color;
-        }
-
-        function createNewColumn(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('columnName').value.trim();
-            const color = document.getElementById('columnColor').value;
-            const icon = document.getElementById('columnIcon').value;
-
-            if (!name) return;
-
-            fetch('/kanban/column/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ name, color, icon })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    closeNewColumnModal();
-                    setTimeout(() => location.reload(), 200);
-                } else {
-                    alert('Erro ao criar coluna: ' + (data.error || 'Desconhecido'));
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('Erro na requisição.');
-            });
-        }
-
-        function deleteColumn(id) {
-            if (!confirm('Tem certeza que deseja excluir esta coluna? As tarefas nela deixarão de aparecer no Kanban.')) {
-                return;
-            }
-
-            fetch(`/kanban/column/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json',
-                }
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Erro ao excluir a coluna.');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('Erro de conexão ao tentar excluir.');
-            });
-        }
-
-        document.getElementById('newColumnModal').addEventListener('click', function (e) {
-            if (e.target === this) closeNewColumnModal();
-        });
     </script>
 
     <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        [x-cloak] {
+            display: none !important;
         }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
         .custom-scrollbar::-webkit-scrollbar-track {
             background: transparent;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: rgba(0, 0, 0, 0.1);
             border-radius: 4px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: rgba(0, 0, 0, 0.2);
         }
-        [x-cloak] { display: none !important; }
+
+        .prose-sm ul {
+            list-style-type: disc !important;
+            padding-left: 1.5rem !important;
+            margin: 0.5rem 0 !important;
+        }
+
+        .prose-sm ol {
+            list-style-type: decimal !important;
+            padding-left: 1.5rem !important;
+            margin: 0.5rem 0 !important;
+        }
+
+        .prose-sm li {
+            display: list-item !important;
+        }
+
+        .prose-sm p {
+            margin-bottom: 0.75em !important;
+        }
     </style>
 </x-app-layout>
