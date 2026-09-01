@@ -35397,3 +35397,35 @@ CONTEXT:  parâmetro de portal sem nome $2 = '' at C:/Workspace/SkyFlow/vendor/l
 #64 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('...')
 #65 {main}
 "} 
+[2026-09-01 10:48:30] local.ERROR: Command "optmize" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"optmize\" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:785)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(321): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(218): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
+[2026-09-01 10:48:36] local.ERROR: Command "opitmize" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"opitmize\" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear at C:/Workspace/SkyFlow/vendor/symfony/console/Application.php:785)
+[stacktrace]
+#0 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(321): Symfony/Component/Console/Application->find()
+#1 C:/Workspace/SkyFlow/vendor/symfony/console/Application.php(218): Symfony/Component/Console/Application->doRun()
+#2 C:/Workspace/SkyFlow/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run()
+#3 C:/Workspace/SkyFlow/artisan(35): Illuminate/Foundation/Console/Kernel->handle()
+#4 {main}
+"} 
