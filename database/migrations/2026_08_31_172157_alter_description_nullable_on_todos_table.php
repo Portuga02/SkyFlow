@@ -8,18 +8,17 @@ return new class () extends Migration {
     /**
      * Run the migrations.
      */
-    public function up()
-    {
-        Schema::table('todos', function (Blueprint $table) {
-            $table->text('description')->nullable()->change();
-        });
-    }
+  public function up()
+{
+    Schema::table('todos', function (Blueprint $table) {
+        $table->text('description')->nullable()->change();
+    });
+}
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        //
-    }
+public function down()
+{
+    Schema::table('todos', function (Blueprint $table) {
+        $table->text('description')->nullable(false)->change();
+    });
+}
 };

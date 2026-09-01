@@ -39,7 +39,7 @@ class TodoController extends Controller
         return view('auth.create-todo', compact('users'));
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
@@ -48,17 +48,19 @@ class TodoController extends Controller
             'due_date'    => 'nullable|date',
             'category_id' => 'nullable|exists:categories,id',
             'assigned_to' => 'nullable|array',
-            'assigned_to.*' => 'exists:users,id',
+            'assigned_to.*' => 'exists:users,id,team_id,' . (Auth::user()->team_id ?: 'NULL'),
         ]);
 
         $todo = Todo::create([
             'title'       => $validated['title'],
-            'description' => $validated['description'] ?? null,
+            // Correção aplicada aqui: string vazia no lugar de null
+            'description' => $validated['description'] ?? '', 
             'priority'    => $validated['priority'],
             'due_date'    => $validated['due_date'] ?? null,
             'category_id' => $validated['category_id'] ?? null,
             'user_id'     => Auth::id(),
         ]);
+
         if (!empty($validated['assigned_to'])) {
             $todo->assignedUsers()->sync($validated['assigned_to']);
         }
@@ -71,7 +73,7 @@ class TodoController extends Controller
         $this->authorizeTodoAccess($todo);
 
         try {
-         
+
             $users = User::where('team_id', Auth::user()->team_id)
                          ->orderBy('name')
                          ->get();
@@ -128,8 +130,6 @@ class TodoController extends Controller
             'category_id'  => $validated['category_id'] ?? null,
             'is_completed' => $validated['is_completed'],
         ]);
-
-        // Atualiza a lista de responsáveis na tabela pivot
         $todo->assignedUsers()->sync($request->input('assigned_to', []));
 
         return redirect()->route('todos.index')->with('alert-success', 'Tarefa atualizada com sucesso!');
