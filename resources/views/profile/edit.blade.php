@@ -278,8 +278,6 @@
 
         </div>
     </div>
-
-    <!-- Scripts -->
     <script>
         function selectColor(color) {
             const picker = document.getElementById('theme_color_picker');
