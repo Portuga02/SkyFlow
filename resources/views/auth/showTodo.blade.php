@@ -44,13 +44,15 @@
                                 </span>
                             @endif
 
-                            @php
+                          @php
                                 $priorityMap = [
-                                    'high'   => ['label' => 'Alta', 'class' => 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400'],
-                                    'medium' => ['label' => 'Média', 'class' => 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'],
-                                    'low'    => ['label' => 'Baixa', 'class' => 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'],
+                                    'highest' => ['label' => 'Urgente', 'class' => 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'],
+                                    'high'    => ['label' => 'Alta', 'class' => 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400'],
+                                    'medium'  => ['label' => 'Média', 'class' => 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'],
+                                    'low'     => ['label' => 'Baixa', 'class' => 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'],
                                 ];
-                                $p = $priorityMap[$todo->priority ?? 'medium'];
+                                // Se a prioridade que vier do banco não existir no array, cai no medium automaticamente!
+                                $p = $priorityMap[$todo->priority] ?? $priorityMap['medium'];
                             @endphp
                             <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold {{ $p['class'] }}">
                                 <i class="fa-solid fa-flag"></i> {{ __('Prioridade') }} {{ $p['label'] }}
